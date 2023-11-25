@@ -78,7 +78,7 @@ public class Controlador implements Observer {
                     vista.mostrarOpcionesRonda();
                 }
                 case CAMBIO_TURNO -> {
-                    if (esMiTurno()){
+                    if (esMiTurno()) {
                         vista.mostrarOpcionesRonda();
                     }
                 }

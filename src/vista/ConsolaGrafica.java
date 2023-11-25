@@ -28,7 +28,7 @@ public class ConsolaGrafica implements IVista {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
-        frame.setSize(300,600);
+        frame.setSize(350,600);
 
         enterButton.addActionListener(new ActionListener() {
             @Override
@@ -74,7 +74,8 @@ public class ConsolaGrafica implements IVista {
 
     @Override
     public void mostrarMenuPrincipal() {
-        flujoActual = new FlujoMenuPrincipal(this, controlador);
+        frame.setTitle("Truco - JUGADOR: " + controlador.getJugador().getNombre());
+        flujoActual = new FlujoRonda(this, controlador);
         flujoActual.mostrarSiguienteTexto();
     }
 
@@ -83,8 +84,17 @@ public class ConsolaGrafica implements IVista {
         flujoActual.mostrarSiguienteTexto();
     }
 
+    public void mostrarPuntos(){
+        println(controlador.getEstadoPartida());
+    }
+
     public void mostrarGanadorRonda(String ganador){
         println(ganador + " ha ganado la ronda.");
+        println("\n ------------------ \n");
+    }
+
+    public void mostrarTurno(String jugadorActual){
+        println("TURNO DE " + jugadorActual);
     }
 
 }

@@ -13,4 +13,8 @@ public interface IVista {
     void mostrarOpcionesRonda();
 
     void mostrarGanadorRonda(String ganador);
+
+    void mostrarTurno(String jugadorActual);
+
+    public void mostrarPuntos();
 }

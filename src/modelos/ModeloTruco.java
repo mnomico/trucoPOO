@@ -12,6 +12,7 @@ public class ModeloTruco extends Observable {
     private int numeroRonda;
 
     private Jugador jugadorActual;
+    private Jugador jugadorMano;
     private Jugador ganadorRonda;
 
     private Jugador jugador1;
@@ -42,6 +43,7 @@ public class ModeloTruco extends Observable {
         for (Observer observer : observers){
             observer.update(this, Evento.CAMBIO_TURNO);
         }
+
     }
 
     public int getNumeroMano(){
@@ -81,6 +83,7 @@ public class ModeloTruco extends Observable {
         envidoCantado = false;
         trucoCantado = false;
         jugadorActual = jugador1;
+        jugadorMano = jugador2;
         iniciarMano();
     }
 
@@ -88,14 +91,24 @@ public class ModeloTruco extends Observable {
         numeroMano++;
         numeroRonda++;
 
+        cambiarJugadorMano();
+        jugadorActual = jugadorMano;
+
         mazo.mezclarMazo();
         mazo.repartirCartas(jugador1, jugador2);
+
     }
 
     public void cambiarTurno(){
         if (jugadorActual == jugador1){
             jugadorActual = jugador2;
         } else jugadorActual = jugador1;
+    }
+
+    public void cambiarJugadorMano(){
+        if (jugadorMano == jugador1){
+            jugadorMano = jugador2;
+        } else jugadorMano = jugador1;
     }
 
     public String getEstadoPartida(){
@@ -149,6 +162,7 @@ public class ModeloTruco extends Observable {
         mazo.recibirCarta(cartaJ2);
         cartaJ1 = null;
         cartaJ2 = null;
+        jugadorActual = jugadorMano;
     }
 
 }

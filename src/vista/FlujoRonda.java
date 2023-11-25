@@ -61,16 +61,13 @@ public class FlujoRonda extends Flujo{
 
     @Override
     public void mostrarSiguienteTexto() {
-        if (estadoActual == Estados.COMIENZO_RONDA) {
-            vista.println("");
+        if (estadoActual == Estados.COMIENZO_RONDA && controlador.getNumeroRonda() == 1) {
             // Muestra los jugadores y sus puntos
-            vista.println(controlador.getEstadoPartida());
-            // Muestra las cartas
-            vista.println("Cartas:" + "\n");
-            vista.println(controlador.getJugador().mostrarCartas());
+            vista.mostrarPuntos();
         }
         if (!controlador.esMiTurno()){
-            vista.println("TURNO DE " + controlador.getJugadorActual().getNombre());
+            // Muestra quien es el jugador actual
+            vista.mostrarTurno(controlador.getJugadorActual().getNombre());
             vista.println("Esperando respuesta...");
         } else {
             switch (estadoActual) {
