@@ -12,7 +12,7 @@ public class FlujoMenuPrincipal extends Flujo{
     public Flujo procesarEntrada(String input) {
         switch (input){
             case "1" -> {
-                return new FlujoPrimerRonda(vista, controlador);
+                return new FlujoRonda(vista, controlador);
             }
         }
         return this;

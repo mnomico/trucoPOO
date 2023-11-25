@@ -28,7 +28,7 @@ public class ConsolaGrafica implements IVista {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
-        frame.setSize(800,600);
+        frame.setSize(300,600);
 
         enterButton.addActionListener(new ActionListener() {
             @Override
@@ -41,6 +41,17 @@ public class ConsolaGrafica implements IVista {
     }
 
     private void procesarEntrada(String input) {
+
+        if (flujoActual instanceof FlujoMenuPrincipal){
+            enviarEntrada(input);
+        } else {
+            if (controlador.esMiTurno()) {
+                enviarEntrada(input);
+            } else println("Todavía no es su turno.");
+        }
+    }
+
+    public void enviarEntrada(String input){
         input = input.trim();
         if (input.isEmpty())
             return;
@@ -52,15 +63,9 @@ public class ConsolaGrafica implements IVista {
         console.append(texto + "\n");
     }
 
-    public void mostrar() {
-        frame.setVisible(true);
-    }
-
     public void mostrarJugarCarta(String jugador, String carta){
         println("\n " + jugador + " juega " + carta + "\n");
     }
-
-
 
     @Override
     public void setControlador(Controlador controlador) {
@@ -69,9 +74,17 @@ public class ConsolaGrafica implements IVista {
 
     @Override
     public void mostrarMenuPrincipal() {
-        mostrar();
         flujoActual = new FlujoMenuPrincipal(this, controlador);
         flujoActual.mostrarSiguienteTexto();
+    }
+
+    public void mostrarOpcionesRonda(){
+        flujoActual = new FlujoRonda(this, controlador);
+        flujoActual.mostrarSiguienteTexto();
+    }
+
+    public void mostrarGanadorRonda(String ganador){
+        println(ganador + " ha ganado la ronda.");
     }
 
 }

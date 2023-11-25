@@ -10,4 +10,7 @@ public interface IVista {
 
     void mostrarJugarCarta(String jugador, String carta);
 
+    void mostrarOpcionesRonda();
+
+    void mostrarGanadorRonda(String ganador);
 }

@@ -44,15 +44,11 @@ public class FlujoRonda extends Flujo{
             }
         }
 
-        return null;
+        return this;
     }
 
-    public Flujo procesarJugarCarta(int numeroCarta){
+    public void procesarJugarCarta(int numeroCarta){
         controlador.jugarCarta(numeroCarta);
-        controlador.cambiarTurno();
-        if (controlador.getNumeroRonda() != 3){
-            return new FlujoRonda(vista, controlador);
-        } else return new FlujoPrimerRonda(vista, controlador);
     }
 
     public Flujo procesarTruco(){
@@ -65,8 +61,14 @@ public class FlujoRonda extends Flujo{
 
     @Override
     public void mostrarSiguienteTexto() {
-        // Muestra los jugadores y sus puntos
-        vista.println(controlador.getEstadoPartida());
+        if (estadoActual == Estados.COMIENZO_RONDA) {
+            vista.println("");
+            // Muestra los jugadores y sus puntos
+            vista.println(controlador.getEstadoPartida());
+            // Muestra las cartas
+            vista.println("Cartas:" + "\n");
+            vista.println(controlador.getJugador().mostrarCartas());
+        }
         if (!controlador.esMiTurno()){
             vista.println("TURNO DE " + controlador.getJugadorActual().getNombre());
             vista.println("Esperando respuesta...");
@@ -74,9 +76,7 @@ public class FlujoRonda extends Flujo{
             switch (estadoActual) {
                 case COMIENZO_RONDA -> {
                     vista.println("ES TU TURNO.");
-                    // Muestra las cartas
-                    vista.println("Cartas:" + "\n");
-                    vista.println(controlador.getJugador().mostrarCartas());
+
                     // Muestra las opciones
                     vista.println("OPCIONES:");
                     vista.println("1 - Jugar carta");

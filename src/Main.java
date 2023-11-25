@@ -23,6 +23,9 @@ public class Main {
         Controlador controlador1 = new Controlador(vista1, juego, jugador1);
         Controlador controlador2 = new Controlador(vista2, juego, jugador2);
 
+        juego.setObservers(controlador1);
+        juego.setObservers(controlador2);
+
         vista1.setControlador(controlador1);
         vista2.setControlador(controlador2);
 

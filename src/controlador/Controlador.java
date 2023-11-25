@@ -1,5 +1,6 @@
 package controlador;
 
+import modelos.Carta;
 import modelos.Evento;
 import modelos.Jugador;
 import modelos.ModeloTruco;
@@ -42,7 +43,13 @@ public class Controlador implements Observer {
         return modelo.getJugadorActual();
     }
 
+    public Jugador getGanadorRonda(){
+        return modelo.getGanadorRonda();
+    }
 
+    public Carta getCartaJugada(Jugador jugador){
+        return modelo.getCartaJugada(jugador);
+    }
 
     public boolean esMiTurno(){
         return modelo.getJugadorActual() == jugador;
@@ -62,14 +69,18 @@ public class Controlador implements Observer {
             switch ((Evento) arg){
                 case JUGAR_CARTA -> {
                     String nombreJugadorActual = getJugadorActual().getNombre();
-                    String cartaJugada = getJugadorActual().getUltimaCartaJugada().toString();
+                    String cartaJugada = getCartaJugada(getJugadorActual()).toString();
                     vista.mostrarJugarCarta(nombreJugadorActual, cartaJugada);
-                    /*if (!esMiTurno()){
-                        cambiarTurno();
-                        vista.mostrarMenuPrincipal();
+                }
+                case FIN_RONDA -> {
+                    Jugador ganador = getGanadorRonda();
+                    vista.mostrarGanadorRonda(ganador.getNombre());
+                    vista.mostrarOpcionesRonda();
+                }
+                case CAMBIO_TURNO -> {
+                    if (esMiTurno()){
+                        vista.mostrarOpcionesRonda();
                     }
-
-                     */
                 }
             }
         }
