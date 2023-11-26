@@ -9,4 +9,5 @@ public enum Evento {
     FIN_RONDA,
     FIN_MANO,
     CAMBIO_TURNO,
+    RESULTADO_ENVIDO,
 }
