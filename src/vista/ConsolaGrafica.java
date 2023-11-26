@@ -154,6 +154,7 @@ public class ConsolaGrafica implements Observer, IVista {
                     String ganador = controlador.getGanadorRonda().getNombre();
                     println(ganador + " ha ganado la ronda.");
                     println("\n ------------------ \n");
+                    mostrarMenuPrincipal();
                 }
                 case CAMBIO_TURNO -> {
                     if (controlador.esMiTurno()) {
