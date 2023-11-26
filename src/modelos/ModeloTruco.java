@@ -153,11 +153,13 @@ public class ModeloTruco extends Observable {
         if (cartaJ1 == null || cartaJ2 == null){
             notificarCambioTurno();
         } else {
-            ganadorRonda = determinarGanador();
+            ganadorRonda = determinarGanadorRonda();
             limpiarRonda();
             notificarFinRonda();
-            if (numeroRonda == 3) {
-                //notificar(Evento.FIN_MANO);
+            if (numeroRonda > 3) {
+                ganadorMano = determinarGanadorMano();
+                notificarFinMano();
+                // TODO
             }
         }
     }
