@@ -64,6 +64,12 @@ public class ModeloTruco extends Observable {
         }
     }
 
+    public void notificarFinMano(){
+        for (Observer observer : observers){
+            observer.update(this, Evento.FIN_MANO);
+        }
+    }
+
     public int getNumeroMano(){
         return numeroMano;
     }
