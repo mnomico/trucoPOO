@@ -50,7 +50,16 @@ public class ModeloTruco extends Observable {
         for (Observer observer : observers){
             observer.update(this, Evento.TRUCO);
         }
+    }
 
+    public void notificarResponderApuesta(Apuesta apuesta){
+        switch (apuesta){
+            case TRUCO -> {
+                for (Observer observer : observers){
+                    observer.update(this, Apuesta.TRUCO);
+                }
+            }
+        }
     }
 
     public void notificarCambioTurno(){
@@ -191,6 +200,10 @@ public class ModeloTruco extends Observable {
     public void cantarTruco(){
         trucoCantado = true;
         notificarTruco();
+        Jugador jugadorApostador = jugadorActual;
+        cambiarTurno();
+        notificarResponderApuesta(Apuesta.TRUCO);
+
     }
 
     public Jugador determinarGanadorRonda(){

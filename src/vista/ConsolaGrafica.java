@@ -1,6 +1,7 @@
 package vista;
 
 import controlador.Controlador;
+import modelos.Apuesta;
 import modelos.Evento;
 
 import javax.swing.*;
@@ -31,22 +32,28 @@ public class ConsolaGrafica implements Observer, IVista {
         frame.setVisible(true);
         frame.setSize(350,600);
 
-        enterButton.addActionListener(new ActionListener() {
+        Action procesarInputField = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 console.append(inputField.getText() + "\n");
                 procesarEntrada(inputField.getText());
+                console.setCaretPosition(console.getDocument().getLength());
                 inputField.setText("");
             }
-        });
+        };
+
+        enterButton.addActionListener(procesarInputField);
+        inputField.addActionListener(procesarInputField);
     }
 
     enum Estado{
         MENU_PRINCIPAL,
         ELEGIR_CARTA,
+        RESPONDER_APUESTA,
     }
 
     private Estado estadoActual = Estado.MENU_PRINCIPAL;
+    private Apuesta apuestaActual;
 
     private void procesarEntrada(String input) {
         if (controlador.esMiTurno()) {
@@ -63,6 +70,7 @@ public class ConsolaGrafica implements Observer, IVista {
             case MENU_PRINCIPAL -> procesarMenuPrincipal(input);
             case ELEGIR_CARTA -> procesarCartaElegida(input);
 
+            case RESPONDER_APUESTA -> procesarApuesta(input);
         }
     }
 
@@ -72,6 +80,9 @@ public class ConsolaGrafica implements Observer, IVista {
                 mostrarCartas();
                 println("Elija una carta:");
                 estadoActual = Estado.ELEGIR_CARTA;
+            }
+            case "2" -> {
+                controlador.cantarTruco();
             }
             default -> {
                 println("Opción inválida" + "\n");
@@ -124,9 +135,6 @@ public class ConsolaGrafica implements Observer, IVista {
     }
 
     public void mostrarOpcionesRonda(){
-        //flujoActual = new FlujoRonda(this, controlador);
-        //flujoActual.mostrarSiguienteTexto();
-
         println("OPCIONES:");
         println("1 - Jugar carta");
         println("2 - Cantar truco");
@@ -142,6 +150,45 @@ public class ConsolaGrafica implements Observer, IVista {
     public void mostrarCartas(){
         println(" -- CARTAS --");
         println(controlador.getJugador().mostrarCartas());
+    }
+
+    public void procesarApuesta(String input){
+        switch (apuestaActual){
+            case TRUCO, RETRUCO -> {
+                switch (input){
+                    //case "1" -> controlador.quiero(apuestaActual);
+                    //case "2" -> controlador.noQuiero(apuestaActual);
+                    //case "3" -> controlador.redoblarApuesta(apuestaActual);
+                    default -> {
+                        println("Opción inválida");
+                        mostrarResponderApuesta(apuestaActual);
+                    }
+                }
+            }
+            case VALECUATRO -> {
+                switch (input){
+                    //case "1" -> controlador.quiero(apuestaActual);
+                    //case "2" -> controlador.noQuiero(apuestaActual);
+                    default -> {
+                        println("Opción inválida");
+                        mostrarResponderApuesta(apuestaActual);
+                    }
+                }
+            }
+        }
+    }
+
+    public void mostrarResponderApuesta(Apuesta apuesta){
+        switch(apuesta){
+            case TRUCO -> {
+                println(" -- RESPONDÉ --");
+                println("(1) - Quiero");
+                println("(2) - No quiero");
+                println("(3) - Retruco");
+                println("Elija una opción:");
+            }
+        }
+        estadoActual = Estado.RESPONDER_APUESTA;
     }
 
     @Override
@@ -181,7 +228,12 @@ public class ConsolaGrafica implements Observer, IVista {
                     }
                 }
             }
+        } else if (arg instanceof Apuesta){
+            // Para responder apuestas
+            apuestaActual = (Apuesta) arg;
+            mostrarResponderApuesta((Apuesta) arg);
         }
         estadoActual = Estado.MENU_PRINCIPAL;
     }
+
 }
