@@ -75,11 +75,13 @@ public class ConsolaGrafica implements Observer, IVista {
 
     public void procesarMenuPrincipal(String input){
         switch (input){
+            // Elige jugar una carta
             case "1" -> {
                 mostrarCartas();
                 println("Elija una carta:");
                 estadoActual = Estado.ELEGIR_CARTA;
             }
+            // Elige cantar truco
             case "2" -> {
                 if (controlador.getTrucoCantado()){
                     println("\n" + "Ya se cantó truco en esta mano." + "\n");
@@ -88,6 +90,17 @@ public class ConsolaGrafica implements Observer, IVista {
                     controlador.cantarTruco();
                 }
             }
+            // Elige cantar envido
+            case "3" -> {
+                if (controlador.getNumeroRonda() != 1){
+                    println("\n Sólo se puede cantar envido en la primera ronda.");
+                    mostrarOpcionesRonda();
+                } else if (controlador.getEnvidoCantado()){
+                    println("\n" + "Ya se cantó envido en esta mano." + "\n");
+                    mostrarOpcionesRonda();
+                } else controlador.cantarEnvido();
+            }
+            // Ingreso inválido
             default -> {
                 println("Opción inválida" + "\n");
                 mostrarOpcionesRonda();
