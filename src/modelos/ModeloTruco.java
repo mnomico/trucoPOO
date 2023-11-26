@@ -170,8 +170,20 @@ public class ModeloTruco extends Observable {
             notificarFinRonda();
             if (numeroRonda > 3) {
                 ganadorMano = determinarGanadorMano();
+                ganadorMano.darPuntos(puntosRonda);
+
+                limpiarMano();
+                limpiarRonda();
+
                 notificarFinMano();
-                // TODO
+                if (jugador1.getPuntos() >= 30 || jugador2.getPuntos() >= 30){
+                    // TODO notificarGanadorPartida();
+                } else {
+                    iniciarMano();
+                    notificarMostrarMenu();
+                }
+            } else {
+                notificarMostrarMenu();
             }
         }
     }
