@@ -325,7 +325,7 @@ public class ModeloTruco extends Observable {
     }
 
     public void calcularEnvido(){
-        // TODO
+        // TODO implementación
     }
 
     public void quiero(Apuesta apuesta){
@@ -353,7 +353,6 @@ public class ModeloTruco extends Observable {
         switch (apuesta){
             case TRUCO, RETRUCO, VALECUATRO -> notificarMostrarMenu();
             default -> calcularEnvido();
-            // TODO default -> calcularEnvido();
         }
     }
 
