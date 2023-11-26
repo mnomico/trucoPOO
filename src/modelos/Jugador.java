@@ -42,4 +42,8 @@ public class Jugador {
         }
         return stringCartas.toString();
     }
+
+    public void darPuntos(int puntos){
+        this.puntos += puntos;
+    }
 }
