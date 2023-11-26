@@ -93,6 +93,10 @@ public class ModeloTruco extends Observable {
         return ganadorRonda;
     }
 
+    public Jugador getGanadorMano(){
+        return ganadorMano;
+    }
+
     public Carta getCartaJugada(Jugador jugador){
         if (jugador == jugador1){
             return cartaJ1;
