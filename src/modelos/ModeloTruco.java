@@ -17,6 +17,7 @@ public class ModeloTruco extends Observable {
     private Jugador jugadorMano;
     private Jugador ganadorRonda;
     private Jugador ganadorMano;
+    private Jugador ganadorEnvido;
     private ArrayList<Jugador> ganadoresRondas;
     private Jugador jugadorOriginal;
 
@@ -65,6 +66,11 @@ public class ModeloTruco extends Observable {
         }
     }
 
+    private void notificarGanadorEnvido(){
+        for (Observer observer : observers){
+            observer.update(this, Evento.RESULTADO_ENVIDO);
+        }
+    }
 
     public void notificarApuesta(Apuesta apuesta){
         for (Observer observer : observers){
@@ -134,6 +140,10 @@ public class ModeloTruco extends Observable {
         return ganadorMano;
     }
 
+    public Jugador getGanadorEnvido(){
+        return ganadorEnvido;
+    }
+
     public Carta getCartaJugada(Jugador jugador){
         if (jugador == jugador1){
             return cartaJ1;
@@ -154,6 +164,11 @@ public class ModeloTruco extends Observable {
 
     public boolean getEnvidoCantado(){
         return envidoCantado;
+    }
+
+    public String getTantos(){
+        return "TANTO " + jugador1.getNombre() + ":" + jugador1.getTanto() + "\n" +
+               "TANTO " + jugador2.getNombre() + ":" + jugador2.getTanto();
     }
 
     /////////////////////////////////////////
@@ -186,7 +201,8 @@ public class ModeloTruco extends Observable {
 
         mazo.mezclarMazo();
         mazo.repartirCartas(jugador1, jugador2);
-
+        jugador1.calcularTanto();
+        jugador2.calcularTanto();
     }
 
     public void cambiarTurno(){
@@ -324,8 +340,15 @@ public class ModeloTruco extends Observable {
         notificarResponderApuesta();
     }
 
-    public void calcularEnvido(){
-        // TODO implementación
+    public Jugador calcularEnvido(){
+        int tantoJ1 = jugador1.getTanto();
+        int tantoJ2 = jugador2.getTanto();
+
+        if (tantoJ1 > tantoJ2){
+            return jugador1;
+        } else if (tantoJ2 > tantoJ1){
+            return jugador2;
+        } else return jugadorMano;
     }
 
     public void quiero(Apuesta apuesta){
@@ -352,7 +375,12 @@ public class ModeloTruco extends Observable {
 
         switch (apuesta){
             case TRUCO, RETRUCO, VALECUATRO -> notificarMostrarMenu();
-            default -> calcularEnvido();
+            default -> {
+                ganadorEnvido = calcularEnvido();
+                notificarGanadorEnvido();
+                ganadorEnvido.darPuntos(puntosEnvido);
+                notificarMostrarMenu();
+            }
         }
     }
 
