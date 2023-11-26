@@ -1,13 +1,9 @@
 package controlador;
 
 import modelos.Carta;
-import modelos.Evento;
 import modelos.Jugador;
 import modelos.ModeloTruco;
 import vista.IVista;
-
-import java.util.Observable;
-import java.util.Observer;
 
 public class Controlador {
     private final IVista vista;
@@ -44,6 +40,10 @@ public class Controlador {
 
     public Jugador getGanadorRonda(){
         return modelo.getGanadorRonda();
+    }
+
+    public Jugador getGanadorMano(){
+        return modelo.getGanadorMano();
     }
 
     public Carta getCartaJugada(Jugador jugador){
