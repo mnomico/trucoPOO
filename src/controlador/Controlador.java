@@ -27,6 +27,10 @@ public class Controlador {
         return modelo.getEstadoPartida();
     }
 
+    public String getTantos(){
+        return modelo.getTantos();
+    }
+
     public int getNumeroMano(){
         return modelo.getNumeroMano();
     }
@@ -45,6 +49,10 @@ public class Controlador {
 
     public Jugador getGanadorMano(){
         return modelo.getGanadorMano();
+    }
+
+    public Jugador getGanadorEnvido(){
+        return modelo.getGanadorEnvido();
     }
 
     public Carta getCartaJugada(Jugador jugador){
