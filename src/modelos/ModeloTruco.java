@@ -10,13 +10,15 @@ public class ModeloTruco extends Observable {
     private Mazo mazo;
     private int numeroMano;
     private int numeroRonda;
-    private int puntosRonda;
+    private int puntosTruco;
+    private int puntosEnvido;
 
     private Jugador jugadorActual;
     private Jugador jugadorMano;
     private Jugador ganadorRonda;
     private Jugador ganadorMano;
     private ArrayList<Jugador> ganadoresRondas;
+    private Jugador jugadorOriginal;
 
     private Jugador jugador1;
     private Carta cartaJ1;
@@ -39,6 +41,10 @@ public class ModeloTruco extends Observable {
         observers.add(observer);
     }
 
+    /////////////////////////////////////////
+    ///////////// NOTIFICADORES /////////////
+    /////////////////////////////////////////
+
     public void notificarJugarCarta(){
         for (Observer observer : observers){
             observer.update(this, Evento.JUGAR_CARTA);
@@ -46,19 +52,30 @@ public class ModeloTruco extends Observable {
         cambiarTurno();
     }
 
+
     public void notificarTruco(){
         for (Observer observer : observers){
-            observer.update(this, Evento.TRUCO);
+            observer.update(this, Apuesta.TRUCO);
         }
     }
 
-    public void notificarResponderApuesta(Apuesta apuesta){
-        switch (apuesta){
-            case TRUCO -> {
-                for (Observer observer : observers){
-                    observer.update(this, Apuesta.TRUCO);
-                }
-            }
+    public void notificarApuesta(Apuesta apuesta){
+        for (Observer observer : observers){
+            observer.update(this, apuesta);
+        }
+        cambiarTurno();
+        notificarResponderApuesta();
+    }
+
+    public void notificarResponderApuesta(){
+        for (Observer observer : observers){
+            observer.update(this, Evento.RESPONDER_APUESTA);
+        }
+    }
+
+    public void notificarQuiero(){
+        for (Observer observer : observers){
+            observer.update(this, Evento.DIJO_QUIERO);
         }
     }
 
@@ -86,12 +103,12 @@ public class ModeloTruco extends Observable {
         }
     }
 
+    /////////////////////////////////////////
+    //////////////// GETTERS ////////////////
+    /////////////////////////////////////////
+
     public int getNumeroMano(){
         return numeroMano;
-    }
-
-    public int getNumeroRonda(){
-        return numeroRonda;
     }
 
     public Jugador getJugadorActual(){
@@ -115,6 +132,19 @@ public class ModeloTruco extends Observable {
         return null;
     }
 
+    public String getEstadoPartida(){
+        return jugador1.getNombre() + ": " + jugador1.getPuntos() + " - " +
+               jugador2.getNombre() + ": " + jugador2.getPuntos();
+    }
+
+    public boolean getTrucoCantado(){
+        return trucoCantado;
+    }
+
+    /////////////////////////////////////////
+    ///////// MÉTODOS PRINCIPALES ///////////
+    /////////////////////////////////////////
+
     public void ingresarJugador(Jugador jugador){
         if (jugador1 == null){
             jugador1 = jugador;
@@ -134,7 +164,7 @@ public class ModeloTruco extends Observable {
     public void iniciarMano(){
         numeroMano++;
         numeroRonda++;
-        puntosRonda = 1;
+        puntosTruco = 1;
 
         cambiarJugadorMano();
         jugadorActual = jugadorMano;
@@ -156,11 +186,6 @@ public class ModeloTruco extends Observable {
         } else jugadorMano = jugador1;
     }
 
-    public String getEstadoPartida(){
-        return jugador1.getNombre() + ": " + jugador1.getPuntos() + " puntos." + "\n" +
-                jugador2.getNombre() + ": " + jugador2.getPuntos() + " puntos.";
-    }
-
     public void jugarCarta(int numeroCarta) {
 
         if (jugadorActual == jugador1) {
@@ -179,7 +204,7 @@ public class ModeloTruco extends Observable {
             notificarFinRonda();
             if (numeroRonda > 3) {
                 ganadorMano = determinarGanadorMano();
-                ganadorMano.darPuntos(puntosRonda);
+                ganadorMano.darPuntos(puntosTruco);
 
                 limpiarMano();
                 limpiarRonda();
@@ -195,15 +220,6 @@ public class ModeloTruco extends Observable {
                 notificarMostrarMenu();
             }
         }
-    }
-
-    public void cantarTruco(){
-        trucoCantado = true;
-        notificarTruco();
-        Jugador jugadorApostador = jugadorActual;
-        cambiarTurno();
-        notificarResponderApuesta(Apuesta.TRUCO);
-
     }
 
     public Jugador determinarGanadorRonda(){
@@ -271,6 +287,93 @@ public class ModeloTruco extends Observable {
         envidoCantado = false;
         ganadoresRondas.clear();
         cambiarJugadorMano();
+    }
+
+    /////////////////////////////////////////
+    //////// MÉTODOS SOBRE APUESTAS /////////
+    /////////////////////////////////////////
+
+    public void cantarTruco(){
+        trucoCantado = true;
+        notificarTruco();
+        jugadorOriginal = jugadorActual;
+        cambiarTurno();
+        notificarResponderApuesta();
+
+        // TODO loop de respuestas
+
+    }
+
+    public void quiero(Apuesta apuesta){
+        switch (apuesta){
+            case TRUCO -> puntosTruco = 2;
+            case RETRUCO -> puntosTruco = 3;
+            case VALECUATRO -> puntosTruco = 4;
+            case ENVIDO -> puntosEnvido = 2;
+            case REAL_ENVIDO -> puntosEnvido = 3;
+            // TODO case FALTA_ENVIDO
+            case ENVIDO_ENVIDO -> puntosEnvido = 4;
+            case ENVIDO_REAL_ENVIDO -> puntosEnvido = 5;
+            // TODO case ENVIDO_FALTA_ENVIDO
+            // TODO case REAL_ENVIDO_FALTA_ENVIDO
+            case ENVIDO_ENVIDO_REAL_ENVIDO -> puntosEnvido = 7;
+            // TODO case ENVIDO_REAL_ENVIDO_FALTA_ENVIDO
+            // TODO case ENVIDO_ENVIDO_REAL_ENVIDO_FALTA_ENVIDO
+        }
+
+        // Retorna el turno al jugador que apostó inicialmente
+        notificarQuiero();
+
+        jugadorActual = jugadorOriginal;
+
+        switch (apuesta){
+            case TRUCO, RETRUCO, VALECUATRO -> notificarMostrarMenu();
+            // TODO default -> calcularEnvido();
+        }
+    }
+
+    public void noQuiero(Apuesta apuesta){
+        switch (apuesta){
+            case TRUCO -> puntosTruco = 1;
+            case RETRUCO -> puntosTruco = 2;
+            case VALECUATRO -> puntosTruco = 3;
+            case ENVIDO, REAL_ENVIDO, FALTA_ENVIDO -> puntosEnvido = 1;
+            case ENVIDO_ENVIDO, ENVIDO_REAL_ENVIDO, ENVIDO_FALTA_ENVIDO -> puntosEnvido = 2;
+            case REAL_ENVIDO_FALTA_ENVIDO -> puntosEnvido = 3;
+            case ENVIDO_ENVIDO_REAL_ENVIDO -> puntosEnvido = 4;
+            case ENVIDO_REAL_ENVIDO_FALTA_ENVIDO -> puntosEnvido = 5;
+            case ENVIDO_ENVIDO_REAL_ENVIDO_FALTA_ENVIDO -> puntosEnvido = 7;
+        }
+
+        // Retorna el turno al jugador que apostó inicialmente
+        switch (apuesta){
+            // TODO case TRUCO, RETRUCO, VALECUATRO -> terminarMano();
+            default -> {
+                jugadorActual = jugadorOriginal;
+                notificarMostrarMenu();
+            }
+        }
+    }
+
+    public void redoblarApuesta(Apuesta apuesta){
+        switch (apuesta){
+            case TRUCO -> notificarApuesta(Apuesta.RETRUCO);
+            case RETRUCO -> notificarApuesta(Apuesta.VALECUATRO);
+            case ENVIDO -> notificarApuesta(apuesta);
+            // Envido se puede responder con ENVIDO, REAL_ENVIDO, FALTA_ENVIDO
+            case REAL_ENVIDO -> notificarApuesta(Apuesta.REAL_ENVIDO_FALTA_ENVIDO);
+            case ENVIDO_ENVIDO -> notificarApuesta(Apuesta.ENVIDO_ENVIDO_REAL_ENVIDO);
+            case ENVIDO_ENVIDO_REAL_ENVIDO -> notificarApuesta(Apuesta.ENVIDO_ENVIDO_REAL_ENVIDO_FALTA_ENVIDO);
+        }
+    }
+
+    // Para el caso del envido
+    public void redoblarApuesta(Apuesta apuesta, Apuesta apuestaARedoblar){
+        switch (apuestaARedoblar){
+            case ENVIDO -> notificarApuesta(Apuesta.ENVIDO_ENVIDO);
+            case REAL_ENVIDO -> notificarApuesta(Apuesta.ENVIDO_REAL_ENVIDO);
+            case FALTA_ENVIDO -> notificarApuesta(Apuesta.ENVIDO_FALTA_ENVIDO);
+        }
     }
 
 }
