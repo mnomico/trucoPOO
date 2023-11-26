@@ -3,8 +3,9 @@ package modelos;
 public enum Evento {
     MOSTRAR_MENU,
     JUGAR_CARTA,
-    TRUCO,
-    RESPONDER_TRUCO,
+    APOSTAR,
+    RESPONDER_APUESTA,
+    DIJO_QUIERO,
     FIN_RONDA,
     FIN_MANO,
     CAMBIO_TURNO,
