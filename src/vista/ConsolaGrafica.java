@@ -74,6 +74,10 @@ public class ConsolaGrafica implements Observer, IVista {
                 println("Elija una carta:");
                 estadoActual = Estado.ELEGIR_CARTA;
             }
+            default -> {
+                println("Opción inválida" + "\n");
+                mostrarOpcionesRonda();
+            }
         }
     }
 
@@ -82,7 +86,11 @@ public class ConsolaGrafica implements Observer, IVista {
             case "0" -> controlador.jugarCarta(0);
             case "1" -> controlador.jugarCarta(1);
             case "2" -> controlador.jugarCarta(2);
-            default -> println("Opción inválida");
+            default -> {
+                println("Opción inválida" + "\n");
+                procesarMenuPrincipal("1");
+            }
+
         }
     }
 
