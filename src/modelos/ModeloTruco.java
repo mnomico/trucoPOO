@@ -218,16 +218,13 @@ public class ModeloTruco extends Observable {
     }
 
     public void limpiarRonda(){
-        if (numeroRonda != 3){
-            numeroRonda++;
-        } else {
-            numeroRonda = 0;
-        }
+        numeroRonda++;
         mazo.recibirCarta(cartaJ1);
         mazo.recibirCarta(cartaJ2);
         cartaJ1 = null;
         cartaJ2 = null;
         jugadorActual = ganadorRonda;
+        ganadoresRondas.add(ganadorRonda);
     }
 
     public void limpiarMano(){
@@ -235,6 +232,7 @@ public class ModeloTruco extends Observable {
         numeroMano++;
         trucoCantado = false;
         envidoCantado = false;
+        ganadoresRondas.clear();
         cambiarJugadorMano();
     }
 
