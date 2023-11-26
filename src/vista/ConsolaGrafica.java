@@ -69,7 +69,6 @@ public class ConsolaGrafica implements Observer, IVista {
         switch (estadoActual){
             case MENU_PRINCIPAL -> procesarMenuPrincipal(input);
             case ELEGIR_CARTA -> procesarCartaElegida(input);
-
             case RESPONDER_APUESTA -> procesarApuesta(input);
         }
     }
@@ -82,7 +81,12 @@ public class ConsolaGrafica implements Observer, IVista {
                 estadoActual = Estado.ELEGIR_CARTA;
             }
             case "2" -> {
-                controlador.cantarTruco();
+                if (controlador.getTrucoCantado()){
+                    println("\n" + "Ya se cantó truco en esta mano." + "\n");
+                    mostrarOpcionesRonda();
+                } else {
+                    controlador.cantarTruco();
+                }
             }
             default -> {
                 println("Opción inválida" + "\n");
@@ -118,7 +122,7 @@ public class ConsolaGrafica implements Observer, IVista {
         frame.setTitle("Truco - JUGADOR: " + controlador.getJugador().getNombre());
 
         // Muestra los jugadores y sus puntos
-        println("PUNTAJES:");
+        println("\n --- PUNTOS ---");
         mostrarPuntos();
 
         // Muestra las cartas del jugador
@@ -148,46 +152,71 @@ public class ConsolaGrafica implements Observer, IVista {
     }
 
     public void mostrarCartas(){
-        println(" -- CARTAS --");
+        println("\n --- CARTAS ---");
         println(controlador.getJugador().mostrarCartas());
     }
 
     public void procesarApuesta(String input){
         switch (apuestaActual){
-            case TRUCO, RETRUCO -> {
+            case TRUCO, RETRUCO, ENVIDO_ENVIDO, ENVIDO_ENVIDO_REAL_ENVIDO -> {
                 switch (input){
-                    //case "1" -> controlador.quiero(apuestaActual);
-                    //case "2" -> controlador.noQuiero(apuestaActual);
-                    //case "3" -> controlador.redoblarApuesta(apuestaActual);
+                    case "1" -> controlador.quiero(apuestaActual);
+                    case "2" -> controlador.noQuiero(apuestaActual);
+                    case "3" -> controlador.redoblarApuesta(apuestaActual);
                     default -> {
                         println("Opción inválida");
-                        mostrarResponderApuesta(apuestaActual);
+                        mostrarResponderApuesta();
                     }
                 }
             }
-            case VALECUATRO -> {
+            case VALECUATRO, FALTA_ENVIDO, ENVIDO_FALTA_ENVIDO, REAL_ENVIDO_FALTA_ENVIDO, ENVIDO_ENVIDO_REAL_ENVIDO_FALTA_ENVIDO -> {
                 switch (input){
-                    //case "1" -> controlador.quiero(apuestaActual);
-                    //case "2" -> controlador.noQuiero(apuestaActual);
+                    case "1" -> controlador.quiero(apuestaActual);
+                    case "2" -> controlador.noQuiero(apuestaActual);
                     default -> {
                         println("Opción inválida");
-                        mostrarResponderApuesta(apuestaActual);
+                        mostrarResponderApuesta();
+                    }
+                }
+            }
+            case ENVIDO -> {
+                switch (input){
+                    case "1" -> controlador.quiero(apuestaActual);
+                    case "2" -> controlador.noQuiero(apuestaActual);
+                    case "3" -> controlador.redoblarApuesta(apuestaActual, Apuesta.ENVIDO);
+                    case "4" -> controlador.redoblarApuesta(apuestaActual, Apuesta.REAL_ENVIDO);
+                    case "5" -> controlador.redoblarApuesta(apuestaActual, Apuesta.FALTA_ENVIDO);
+                    default -> {
+                        println("Opción inválida");
+                        mostrarResponderApuesta();
                     }
                 }
             }
         }
     }
 
-    public void mostrarResponderApuesta(Apuesta apuesta){
-        switch(apuesta){
-            case TRUCO -> {
-                println(" -- RESPONDÉ --");
-                println("(1) - Quiero");
-                println("(2) - No quiero");
-                println("(3) - Retruco");
-                println("Elija una opción:");
+    public void mostrarResponderApuesta(){
+        println(" -- RESPONDÉ --");
+        println("(1) - Quiero");
+        println("(2) - No quiero");
+        switch(apuestaActual){
+            case TRUCO -> println("(3) - RETRUCO");
+            case RETRUCO -> println("(3) - VALECUATRO");
+            case ENVIDO -> {
+                println("(3) - ENVIDO");
+                println("(4) - REAL ENVIDO");
+                println("(5) - FALTA ENVIDO");
             }
+            case ENVIDO_ENVIDO -> println("(3) - REAL ENVIDO");
+            case ENVIDO_ENVIDO_REAL_ENVIDO, ENVIDO_REAL_ENVIDO -> println("(3) - FALTA ENVIDO");
         }
+        println("Elija una opción:");
+        estadoActual = Estado.RESPONDER_APUESTA;
+    }
+
+    public void mostrarApuesta(){
+        String jugadorActual = controlador.getJugadorActual().getNombre();
+        println("\n * " + jugadorActual + " canta " + apuestaActual.toString() + "\n");
         estadoActual = Estado.RESPONDER_APUESTA;
     }
 
@@ -202,10 +231,6 @@ public class ConsolaGrafica implements Observer, IVista {
                     String nombreJugadorActual = controlador.getJugadorActual().getNombre();
                     String cartaJugada = controlador.getCartaJugada(controlador.getJugadorActual()).toString();
                     println("\n * " + nombreJugadorActual + " juega " + cartaJugada + "\n");
-                }
-                case TRUCO -> {
-                    String nombreJugadorActual = controlador.getJugadorActual().getNombre();
-                    println("\n" + nombreJugadorActual + " cantó TRUCO.");
                 }
                 case FIN_RONDA -> {
                     String ganadorRonda = controlador.getGanadorRonda().getNombre();
@@ -227,13 +252,24 @@ public class ConsolaGrafica implements Observer, IVista {
                         println("Esperando respuesta...");
                     }
                 }
+                case RESPONDER_APUESTA -> {
+                    if (controlador.esMiTurno()) {
+                        mostrarResponderApuesta();
+                    } else {
+                        String jugadorActual = controlador.getJugadorActual().getNombre();
+                        println("Esperando respuesta de " + jugadorActual + "...");
+                    }
+                }
+                case DIJO_QUIERO -> {
+                    String jugadorActual = controlador.getJugadorActual().getNombre();
+                    println("\n" + jugadorActual + " dijo QUIERO");
+                }
             }
         } else if (arg instanceof Apuesta){
-            // Para responder apuestas
+            // Muestra la apuesta y luego muestra para responder
             apuestaActual = (Apuesta) arg;
-            mostrarResponderApuesta((Apuesta) arg);
+            mostrarApuesta();
         }
-        estadoActual = Estado.MENU_PRINCIPAL;
     }
 
 }
