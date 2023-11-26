@@ -27,6 +27,14 @@ public class Controlador {
         return modelo.getEstadoPartida();
     }
 
+    public int getNumeroMano(){
+        return modelo.getNumeroMano();
+    }
+
+    public int getNumeroRonda(){
+        return modelo.getNumeroRonda();
+    }
+
     public Jugador getJugadorActual(){
         return modelo.getJugadorActual();
     }
@@ -47,6 +55,10 @@ public class Controlador {
         return modelo.getTrucoCantado();
     }
 
+    public boolean getEnvidoCantado(){
+        return modelo.getEnvidoCantado();
+    }
+
     public boolean esMiTurno(){
         return modelo.getJugadorActual() == jugador;
     }
@@ -57,6 +69,10 @@ public class Controlador {
 
     public void cantarTruco(){
         modelo.cantarTruco();
+    }
+
+    public void cantarEnvido(){
+        modelo.cantarEnvido();
     }
 
     public void quiero(Apuesta apuesta){
