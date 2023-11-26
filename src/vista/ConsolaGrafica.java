@@ -6,7 +6,6 @@ import modelos.Evento;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -149,6 +148,9 @@ public class ConsolaGrafica implements Observer, IVista {
     public void update(Observable o, Object arg) {
         if (arg instanceof Evento){
             switch ((Evento) arg){
+                case MOSTRAR_MENU -> {
+                    mostrarMenuPrincipal();
+                }
                 case JUGAR_CARTA -> {
                     String nombreJugadorActual = controlador.getJugadorActual().getNombre();
                     String cartaJugada = controlador.getCartaJugada(controlador.getJugadorActual()).toString();
@@ -159,10 +161,15 @@ public class ConsolaGrafica implements Observer, IVista {
                     println("\n" + nombreJugadorActual + " cantó TRUCO.");
                 }
                 case FIN_RONDA -> {
-                    String ganador = controlador.getGanadorRonda().getNombre();
-                    println(ganador + " ha ganado la ronda.");
+                    String ganadorRonda = controlador.getGanadorRonda().getNombre();
+                    println(ganadorRonda + " ha ganado la ronda.");
                     println("\n ------------------ \n");
-                    mostrarMenuPrincipal();
+                    //mostrarMenuPrincipal();
+                }
+                case FIN_MANO -> {
+                    String ganadorMano = controlador.getGanadorMano().getNombre();
+                    println(ganadorMano + " ha ganado la mano.");
+                    println("\n ------------------ \n");
                 }
                 case CAMBIO_TURNO -> {
                     if (controlador.esMiTurno()) {
