@@ -3,6 +3,7 @@ package controlador;
 import modelos.Carta;
 import modelos.Jugador;
 import modelos.ModeloTruco;
+import modelos.Apuesta;
 import vista.IVista;
 
 public class Controlador {
@@ -18,16 +19,8 @@ public class Controlador {
         this.jugador = jugador;
     }
 
-    public void setModelo(ModeloTruco modelo){
-        this.modelo = modelo;
-    }
-
     public Jugador getJugador(){
         return jugador;
-    }
-
-    public int getNumeroRonda(){
-        return modelo.getNumeroRonda();
     }
 
     public String getEstadoPartida(){
@@ -58,16 +51,28 @@ public class Controlador {
         return modelo.getJugadorActual() == jugador;
     }
 
-    public void cambiarTurno(){
-        modelo.cambiarTurno();
-    }
-
     public void jugarCarta(int numeroCarta){
         modelo.jugarCarta(numeroCarta);
     }
 
     public void cantarTruco(){
         modelo.cantarTruco();
+    }
+
+    public void quiero(Apuesta apuesta){
+        modelo.quiero(apuesta);
+    }
+
+    public void noQuiero(Apuesta apuesta){
+        modelo.noQuiero(apuesta);
+    }
+
+    public void redoblarApuesta(Apuesta apuesta){
+        modelo.redoblarApuesta(apuesta);
+    }
+
+    public void redoblarApuesta(Apuesta apuesta, Apuesta apuestaARedoblar){
+        modelo.redoblarApuesta(apuesta, apuestaARedoblar);
     }
 
 }
