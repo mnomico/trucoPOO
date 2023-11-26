@@ -10,6 +10,7 @@ public class ModeloTruco extends Observable {
     private Mazo mazo;
     private int numeroMano;
     private int numeroRonda;
+    private int puntosRonda;
 
     private Jugador jugadorActual;
     private Jugador jugadorMano;
@@ -114,6 +115,7 @@ public class ModeloTruco extends Observable {
     public void iniciarMano(){
         numeroMano++;
         numeroRonda++;
+        puntosRonda = 1;
 
         cambiarJugadorMano();
         jugadorActual = jugadorMano;
