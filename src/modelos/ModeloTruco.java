@@ -59,6 +59,13 @@ public class ModeloTruco extends Observable {
         }
     }
 
+    private void notificarEnvido() {
+        for (Observer observer : observers){
+            observer.update(this, Apuesta.ENVIDO);
+        }
+    }
+
+
     public void notificarApuesta(Apuesta apuesta){
         for (Observer observer : observers){
             observer.update(this, apuesta);
@@ -111,6 +118,10 @@ public class ModeloTruco extends Observable {
         return numeroMano;
     }
 
+    public int getNumeroRonda(){
+        return numeroRonda;
+    }
+
     public Jugador getJugadorActual(){
         return jugadorActual;
     }
@@ -139,6 +150,10 @@ public class ModeloTruco extends Observable {
 
     public boolean getTrucoCantado(){
         return trucoCantado;
+    }
+
+    public boolean getEnvidoCantado(){
+        return envidoCantado;
     }
 
     /////////////////////////////////////////
@@ -299,9 +314,18 @@ public class ModeloTruco extends Observable {
         jugadorOriginal = jugadorActual;
         cambiarTurno();
         notificarResponderApuesta();
+    }
 
-        // TODO loop de respuestas
+    public void cantarEnvido(){
+        envidoCantado = true;
+        notificarEnvido();
+        jugadorOriginal = jugadorActual;
+        cambiarTurno();
+        notificarResponderApuesta();
+    }
 
+    public void calcularEnvido(){
+        // TODO
     }
 
     public void quiero(Apuesta apuesta){
@@ -328,6 +352,7 @@ public class ModeloTruco extends Observable {
 
         switch (apuesta){
             case TRUCO, RETRUCO, VALECUATRO -> notificarMostrarMenu();
+            default -> calcularEnvido();
             // TODO default -> calcularEnvido();
         }
     }
