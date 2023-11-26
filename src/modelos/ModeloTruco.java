@@ -14,6 +14,8 @@ public class ModeloTruco extends Observable {
     private Jugador jugadorActual;
     private Jugador jugadorMano;
     private Jugador ganadorRonda;
+    private Jugador ganadorMano;
+    private ArrayList<Jugador> ganadoresRondas;
 
     private Jugador jugador1;
     private Carta cartaJ1;
@@ -29,6 +31,7 @@ public class ModeloTruco extends Observable {
         numeroMano = 0;
         numeroRonda = 0;
         mazo = new Mazo();
+        ganadoresRondas = new ArrayList<>();
     }
 
     public void setObservers(Observer observer){
