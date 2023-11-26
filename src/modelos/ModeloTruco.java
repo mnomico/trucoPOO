@@ -158,7 +158,7 @@ public class ModeloTruco extends Observable {
         notificarTruco();
     }
 
-    public Jugador determinarGanador(){
+    public Jugador determinarGanadorRonda(){
 
         // Calculo cual carta es la ganadora.
         int diferencia = cartaJ1.getValor().compareTo(cartaJ2.getValor());
