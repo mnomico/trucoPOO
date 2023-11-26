@@ -1,6 +1,7 @@
 package modelos;
 
 public enum Evento {
+    MOSTRAR_MENU,
     JUGAR_CARTA,
     TRUCO,
     FIN_RONDA,
