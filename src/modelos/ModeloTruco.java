@@ -167,8 +167,8 @@ public class ModeloTruco extends Observable {
     }
 
     public String getTantos(){
-        return "TANTO " + jugador1.getNombre() + ":" + jugador1.getTanto() + "\n" +
-               "TANTO " + jugador2.getNombre() + ":" + jugador2.getTanto();
+        return "TANTO " + jugador1.getNombre() + ": " + jugador1.getTanto() + "\n" +
+               "TANTO " + jugador2.getNombre() + ": " + jugador2.getTanto();
     }
 
     /////////////////////////////////////////
