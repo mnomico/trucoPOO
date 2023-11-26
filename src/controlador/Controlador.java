@@ -50,6 +50,10 @@ public class Controlador {
         return modelo.getCartaJugada(jugador);
     }
 
+    public boolean getTrucoCantado(){
+        return modelo.getTrucoCantado();
+    }
+
     public boolean esMiTurno(){
         return modelo.getJugadorActual() == jugador;
     }
