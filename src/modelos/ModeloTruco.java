@@ -185,6 +185,38 @@ public class ModeloTruco extends Observable {
         return null;
     }
 
+    public Jugador determinarGanadorMano(){
+
+        int rondasJ1 = 0;
+        int rondasJ2 = 0;
+        int pardas = 0;
+
+        for (Jugador jugadorGanador : ganadoresRondas){
+            if (jugadorGanador == jugador1){
+                rondasJ1++;
+            } else if (jugadorGanador == jugador2){
+                rondasJ2++;
+            } else if (jugadorGanador == null){
+                pardas++;
+            }
+        }
+
+        if (rondasJ1 >= 2){
+            return jugador1;
+        } else if (rondasJ2 >= 2){
+            return jugador2;
+        } else if (pardas == 1){
+            // Si ambos jugadores ganan una ronda pero empaten en una, gana el primero que haya ganado una ronda
+            for (Jugador jugadorGanador : ganadoresRondas){
+                if (jugadorGanador != null){
+                    return jugadorGanador;
+                }
+            }
+        }
+        // Si todas las rondas se empatan, gana el jugador que fue mano
+        return jugadorMano;
+    }
+
     public void limpiarRonda(){
         if (numeroRonda != 3){
             numeroRonda++;
