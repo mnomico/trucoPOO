@@ -24,8 +24,7 @@ public class ConsolaGrafica implements Observer, IVista {
     private Controlador controlador;
 
     public ConsolaGrafica() {
-
-        this.frame = new JFrame ("Truco");
+        frame = new JFrame ("Truco");
         frame.setContentPane(panel2);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
@@ -276,6 +275,12 @@ public class ConsolaGrafica implements Observer, IVista {
                 case DIJO_QUIERO -> {
                     String jugadorActual = controlador.getJugadorActual().getNombre();
                     println("\n" + jugadorActual + " dijo QUIERO");
+                }
+                case RESULTADO_ENVIDO -> {
+                    println("\n --- RESULTADO ENVIDO ---");
+                    String ganadorEnvido = controlador.getGanadorEnvido().getNombre();
+                    println(controlador.getTantos());
+                    println(" --- GANA " + ganadorEnvido + "---");
                 }
             }
         } else if (arg instanceof Apuesta){
