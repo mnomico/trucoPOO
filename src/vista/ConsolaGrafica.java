@@ -1,12 +1,16 @@
 package vista;
 
 import controlador.Controlador;
+import modelos.Evento;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.util.Observable;
+import java.util.Observer;
 
-public class ConsolaGrafica implements IVista {
+public class ConsolaGrafica implements Observer, IVista {
 
     // Elementos de la consola gráfica
     private final JFrame frame;
@@ -16,13 +20,11 @@ public class ConsolaGrafica implements IVista {
     private JPanel panel2;
     private JScrollPane scrollBar;
 
-    // Flujo
-    private Flujo flujoActual;
-
     // Controlador
     private Controlador controlador;
 
     public ConsolaGrafica() {
+
         this.frame = new JFrame ("Truco");
         frame.setContentPane(panel2);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -40,31 +42,52 @@ public class ConsolaGrafica implements IVista {
         });
     }
 
-    private void procesarEntrada(String input) {
+    enum Estado{
+        MENU_PRINCIPAL,
+        ELEGIR_CARTA,
+    }
 
-        if (flujoActual instanceof FlujoMenuPrincipal){
+    private Estado estadoActual = Estado.MENU_PRINCIPAL;
+
+    private void procesarEntrada(String input) {
+        if (controlador.esMiTurno()) {
             enviarEntrada(input);
-        } else {
-            if (controlador.esMiTurno()) {
-                enviarEntrada(input);
-            } else println("Todavía no es su turno.");
+        } else println("Todavía no es tu turno.");
+    }
+
+    public void enviarEntrada(String input) {
+        input = input.trim();
+        if (input.isEmpty()){
+            return;
+        }
+        switch (estadoActual){
+            case MENU_PRINCIPAL -> procesarMenuPrincipal(input);
+            case ELEGIR_CARTA -> procesarCartaElegida(input);
+
         }
     }
 
-    public void enviarEntrada(String input){
-        input = input.trim();
-        if (input.isEmpty())
-            return;
-        flujoActual = flujoActual.procesarEntrada(input);
-        flujoActual.mostrarSiguienteTexto();
+    public void procesarMenuPrincipal(String input){
+        switch (input){
+            case "1" -> {
+                mostrarCartas();
+                println("Elija una carta:");
+                estadoActual = Estado.ELEGIR_CARTA;
+            }
+        }
+    }
+
+    public void procesarCartaElegida(String input) {
+        switch (input) {
+            case "0" -> controlador.jugarCarta(0);
+            case "1" -> controlador.jugarCarta(1);
+            case "2" -> controlador.jugarCarta(2);
+            default -> println("Opción inválida");
+        }
     }
 
     public void println(String texto) {
         console.append(texto + "\n");
-    }
-
-    public void mostrarJugarCarta(String jugador, String carta){
-        println("\n " + jugador + " juega " + carta + "\n");
     }
 
     @Override
@@ -75,26 +98,74 @@ public class ConsolaGrafica implements IVista {
     @Override
     public void mostrarMenuPrincipal() {
         frame.setTitle("Truco - JUGADOR: " + controlador.getJugador().getNombre());
-        flujoActual = new FlujoRonda(this, controlador);
-        flujoActual.mostrarSiguienteTexto();
+
+        // Muestra los jugadores y sus puntos
+        println("PUNTAJES:");
+        mostrarPuntos();
+
+        // Muestra las cartas del jugador
+        mostrarCartas();
+
+        if (controlador.esMiTurno()) {
+            println("--- ES TU TURNO ---");
+            mostrarOpcionesRonda();
+        } else {
+            println("--- TURNO DE " + controlador.getJugadorActual().getNombre() + " ---");
+            println("Esperando respuesta...");
+        }
+        estadoActual = Estado.MENU_PRINCIPAL;
     }
 
     public void mostrarOpcionesRonda(){
-        flujoActual = new FlujoRonda(this, controlador);
-        flujoActual.mostrarSiguienteTexto();
+        //flujoActual = new FlujoRonda(this, controlador);
+        //flujoActual.mostrarSiguienteTexto();
+
+        println("OPCIONES:");
+        println("1 - Jugar carta");
+        println("2 - Cantar truco");
+        println("3 - Cantar envido");
+        println("4 - Irse al mazo");
+        println("Elija una opción:");
     }
 
     public void mostrarPuntos(){
-        println(controlador.getEstadoPartida());
+        println(controlador.getEstadoPartida() + "\n");
     }
 
-    public void mostrarGanadorRonda(String ganador){
-        println(ganador + " ha ganado la ronda.");
-        println("\n ------------------ \n");
+    public void mostrarCartas(){
+        println(" -- CARTAS --");
+        println(controlador.getJugador().mostrarCartas());
     }
 
-    public void mostrarTurno(String jugadorActual){
-        println("TURNO DE " + jugadorActual);
+    @Override
+    public void update(Observable o, Object arg) {
+        if (arg instanceof Evento){
+            switch ((Evento) arg){
+                case JUGAR_CARTA -> {
+                    String nombreJugadorActual = controlador.getJugadorActual().getNombre();
+                    String cartaJugada = controlador.getCartaJugada(controlador.getJugadorActual()).toString();
+                    println("\n * " + nombreJugadorActual + " juega " + cartaJugada + "\n");
+                }
+                case TRUCO -> {
+                    String nombreJugadorActual = controlador.getJugadorActual().getNombre();
+                    println("\n" + nombreJugadorActual + " cantó TRUCO.");
+                }
+                case FIN_RONDA -> {
+                    String ganador = controlador.getGanadorRonda().getNombre();
+                    println(ganador + " ha ganado la ronda.");
+                    println("\n ------------------ \n");
+                }
+                case CAMBIO_TURNO -> {
+                    if (controlador.esMiTurno()) {
+                        println("--- ES TU TURNO ---");
+                        mostrarOpcionesRonda();
+                    } else {
+                        println("--- TURNO DE " + controlador.getJugadorActual().getNombre() + " ---");
+                        println("Esperando respuesta...");
+                    }
+                }
+            }
+        }
+        estadoActual = Estado.MENU_PRINCIPAL;
     }
-
 }

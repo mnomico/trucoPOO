@@ -5,6 +5,7 @@ import vista.ConsolaGrafica;
 import vista.IVista;
 
 import javax.swing.*;
+import java.util.Observer;
 
 public class Main {
     public static void main(String[] args) {
@@ -23,11 +24,11 @@ public class Main {
         Controlador controlador1 = new Controlador(vista1, juego, jugador1);
         Controlador controlador2 = new Controlador(vista2, juego, jugador2);
 
-        juego.setObservers(controlador1);
-        juego.setObservers(controlador2);
-
         vista1.setControlador(controlador1);
         vista2.setControlador(controlador2);
+
+        juego.setObservers((Observer) vista1);
+        juego.setObservers((Observer) vista2);
 
         vista1.mostrarMenuPrincipal();
         vista2.mostrarMenuPrincipal();

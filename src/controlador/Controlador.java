@@ -9,7 +9,7 @@ import vista.IVista;
 import java.util.Observable;
 import java.util.Observer;
 
-public class Controlador implements Observer {
+public class Controlador {
     private final IVista vista;
     private ModeloTruco modelo;
     private final Jugador jugador;
@@ -18,7 +18,6 @@ public class Controlador implements Observer {
         this.vista = vista;
         this.vista.setControlador(this);
         this.modelo = modelo;
-        this.modelo.addObserver(this);
         this.modelo.ingresarJugador(jugador);
         this.jugador = jugador;
     }
@@ -63,26 +62,8 @@ public class Controlador implements Observer {
         modelo.jugarCarta(numeroCarta);
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-        if (arg instanceof Evento){
-            switch ((Evento) arg){
-                case JUGAR_CARTA -> {
-                    String nombreJugadorActual = getJugadorActual().getNombre();
-                    String cartaJugada = getCartaJugada(getJugadorActual()).toString();
-                    vista.mostrarJugarCarta(nombreJugadorActual, cartaJugada);
-                }
-                case FIN_RONDA -> {
-                    Jugador ganador = getGanadorRonda();
-                    vista.mostrarGanadorRonda(ganador.getNombre());
-                    vista.mostrarOpcionesRonda();
-                }
-                case CAMBIO_TURNO -> {
-                    if (esMiTurno()) {
-                        vista.mostrarOpcionesRonda();
-                    }
-                }
-            }
-        }
+    public void cantarTruco(){
+        modelo.cantarTruco();
     }
+
 }

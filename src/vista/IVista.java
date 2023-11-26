@@ -8,13 +8,10 @@ public interface IVista {
 
     void mostrarMenuPrincipal();
 
-    void mostrarJugarCarta(String jugador, String carta);
-
     void mostrarOpcionesRonda();
 
-    void mostrarGanadorRonda(String ganador);
+    void mostrarPuntos();
 
-    void mostrarTurno(String jugadorActual);
+    void mostrarCartas();
 
-    public void mostrarPuntos();
 }

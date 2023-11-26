@@ -35,15 +35,30 @@ public class ModeloTruco extends Observable {
         observers.add(observer);
     }
 
-    public void notificar(Evento evento) {
+    public void notificarJugarCarta(){
         for (Observer observer : observers){
-            observer.update(this, evento);
+            observer.update(this, Evento.JUGAR_CARTA);
         }
         cambiarTurno();
+    }
+
+    public void notificarTruco(){
+        for (Observer observer : observers){
+            observer.update(this, Evento.TRUCO);
+        }
+
+    }
+
+    public void notificarCambioTurno(){
         for (Observer observer : observers){
             observer.update(this, Evento.CAMBIO_TURNO);
         }
+    }
 
+    public void notificarFinRonda(){
+        for (Observer observer : observers){
+            observer.update(this, Evento.FIN_RONDA);
+        }
     }
 
     public int getNumeroMano(){
@@ -124,16 +139,23 @@ public class ModeloTruco extends Observable {
             cartaJ2 = jugadorActual.jugarCarta(numeroCarta);
         }
 
-        if (cartaJ1 == null || cartaJ2 == null) {
-            notificar(Evento.JUGAR_CARTA);
+        notificarJugarCarta();
+
+        if (cartaJ1 == null || cartaJ2 == null){
+            notificarCambioTurno();
         } else {
             ganadorRonda = determinarGanador();
             limpiarRonda();
-            notificar(Evento.FIN_RONDA);
+            notificarFinRonda();
             if (numeroRonda == 3) {
-                notificar(Evento.FIN_MANO);
+                //notificar(Evento.FIN_MANO);
             }
         }
+    }
+
+    public void cantarTruco(){
+        trucoCantado = true;
+        notificarTruco();
     }
 
     public Jugador determinarGanador(){
@@ -162,7 +184,15 @@ public class ModeloTruco extends Observable {
         mazo.recibirCarta(cartaJ2);
         cartaJ1 = null;
         cartaJ2 = null;
-        jugadorActual = jugadorMano;
+        jugadorActual = ganadorRonda;
+    }
+
+    public void limpiarMano(){
+        numeroRonda = 1;
+        numeroMano++;
+        trucoCantado = false;
+        envidoCantado = false;
+        cambiarJugadorMano();
     }
 
 }
