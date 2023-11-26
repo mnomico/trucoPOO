@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 public class Jugador {
 
-    private String nombre;
+    private final String nombre;
     private int puntos;
     private ArrayList<Carta> cartas;
     private int tanto;
@@ -26,10 +26,6 @@ public class Jugador {
 
     public int getTanto(){
         return tanto;
-    }
-
-    public ArrayList<Carta> getCartas(){
-        return cartas;
     }
 
     public void recibirCarta(Carta carta){
@@ -57,47 +53,46 @@ public class Jugador {
 
         // TODO esto no funciona, hay que buscar otra manera
 
-        Carta[] arrayCarta = new Carta[3];
+        int[] numerosCartas = new int[3];
 
         for (int i = 0; i < 3; i++){
-            Carta carta = cartas.get(i);
-            if (carta.getNumero() >= 10) {
-                carta = new Carta(0, carta.getPalo());
+            int numero = cartas.get(i).getNumero();
+            if (numero < 10) {
+                numerosCartas[i] = numero;
             }
-            arrayCarta[i] = carta;
         }
 
-        Arrays.sort(arrayCarta);
-
         // Si las tres cartas tienen el mismo palo, retorna 20 + el valor de las dos cartas más altas
-        Palo palo0 = arrayCarta[0].getPalo();
-        Palo palo1 = arrayCarta[1].getPalo();
-        Palo palo2 = arrayCarta[2].getPalo();
+        Palo palo0 = cartas.get(0).getPalo();
+        Palo palo1 = cartas.get(1).getPalo();
+        Palo palo2 = cartas.get(2).getPalo();
 
         if (palo0 == palo1 && palo1 == palo2){
-            tanto = 20 + arrayCarta[2].getNumero() + arrayCarta[1].getNumero();
+            Arrays.sort(numerosCartas);
+            tanto = 20 + numerosCartas[2] + numerosCartas[1];
             return;
         }
 
         // Si hay por lo menos dos cartas con el mismo palo, retorna 20 + el valor de dichas cartas
 
         if (palo0 == palo1){
-            tanto = 20 + arrayCarta[0].getNumero() + arrayCarta[1].getNumero();
+            tanto = 20 + numerosCartas[0] + numerosCartas[1];
             return;
         }
 
         if (palo1 == palo2){
-            tanto = 20 + arrayCarta[1].getNumero() + arrayCarta[2].getNumero();
+            tanto = 20 + numerosCartas[1] + numerosCartas[2];
             return;
         }
 
         if (palo2 == palo0){
-            tanto = 20 + arrayCarta[2].getNumero() + arrayCarta[0].getNumero();
+            tanto = 20 + numerosCartas[2] + numerosCartas[0];
             return;
         }
 
         // Si las cartas son de distintos palos, retorna la carta con número más alto
-        tanto = arrayCarta[2].getNumero();
+        Arrays.sort(numerosCartas);
+        tanto = numerosCartas[2];
     }
 
 }
