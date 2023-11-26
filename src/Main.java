@@ -32,6 +32,5 @@ public class Main {
 
         vista1.mostrarMenuPrincipal();
         vista2.mostrarMenuPrincipal();
-
     }
 }
