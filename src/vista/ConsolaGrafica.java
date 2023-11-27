@@ -264,14 +264,48 @@ public class ConsolaGrafica implements Observador, IVista {
     public void update(Observado o, Object arg) {
         if (arg instanceof Evento){
             switch ((Evento) arg){
+
                 case MOSTRAR_MENU -> {
                     mostrarMenuPrincipal();
                 }
+
                 case JUGAR_CARTA -> {
                     String nombreJugadorActual = controlador.getJugadorActual().getNombre();
                     String cartaJugada = controlador.getCartaJugada(controlador.getJugadorActual()).toString();
                     println("\n * " + nombreJugadorActual + " juega " + cartaJugada + "\n");
                 }
+
+                case RESPONDER_APUESTA -> {
+                    if (controlador.esMiTurno()) {
+                        mostrarResponderApuesta();
+                    } else {
+                        String jugadorActual = controlador.getJugadorActual().getNombre();
+                        println("Esperando respuesta de " + jugadorActual + "...");
+                    }
+                }
+
+                case DIJO_QUIERO -> {
+                    String jugadorActual = controlador.getJugadorActual().getNombre();
+                    println("\n" + jugadorActual + " dijo QUIERO");
+                }
+
+                case DIJO_NO_QUIERO -> {
+                    String jugadorActual = controlador.getJugadorActual().getNombre();
+                    println("\n" + jugadorActual + " dijo NO QUIERO");
+                }
+
+                case RESULTADO_ENVIDO -> {
+                    println("\n --- RESULTADO ENVIDO ---");
+                    String ganadorEnvido = controlador.getGanadorEnvido().getNombre();
+                    println(controlador.getTantos());
+                    println(" --- GANA " + ganadorEnvido + "---");
+                }
+
+                case IRSE_AL_MAZO -> {
+                    String jugadorActual = controlador.getJugadorActual().getNombre();
+                    println("\n" + jugadorActual + " se fue al mazo.");
+                }
+
                 case FIN_RONDA -> {
                     if (controlador.getGanadorRonda() == null){
                         println("\n" + "Ronda parda");
@@ -281,15 +315,13 @@ public class ConsolaGrafica implements Observador, IVista {
                     }
                     println("\n ----------------------------------------------- ");
                 }
+
                 case FIN_MANO -> {
                     String ganadorMano = controlador.getGanadorMano().getNombre();
                     println("\n" + ganadorMano + " ha ganado la mano.");
                     println("\n ----------------------------------------------- ");
                 }
-                case IRSE_AL_MAZO -> {
-                    String jugadorActual = controlador.getJugadorActual().getNombre();
-                    println("\n" + jugadorActual + " se fue al mazo.");
-                }
+
                 case CAMBIO_TURNO -> {
                     if (controlador.esMiTurno()) {
                         println("--- ES TU TURNO ---");
@@ -299,28 +331,7 @@ public class ConsolaGrafica implements Observador, IVista {
                         println("Esperando respuesta...");
                     }
                 }
-                case RESPONDER_APUESTA -> {
-                    if (controlador.esMiTurno()) {
-                        mostrarResponderApuesta();
-                    } else {
-                        String jugadorActual = controlador.getJugadorActual().getNombre();
-                        println("Esperando respuesta de " + jugadorActual + "...");
-                    }
-                }
-                case DIJO_QUIERO -> {
-                    String jugadorActual = controlador.getJugadorActual().getNombre();
-                    println("\n" + jugadorActual + " dijo QUIERO");
-                }
-                case DIJO_NO_QUIERO -> {
-                    String jugadorActual = controlador.getJugadorActual().getNombre();
-                    println("\n" + jugadorActual + " dijo NO QUIERO");
-                }
-                case RESULTADO_ENVIDO -> {
-                    println("\n --- RESULTADO ENVIDO ---");
-                    String ganadorEnvido = controlador.getGanadorEnvido().getNombre();
-                    println(controlador.getTantos());
-                    println(" --- GANA " + ganadorEnvido + "---");
-                }
+
                 case FIN_PARTIDA -> {
                     println("\n --- FIN DE LA PARTIDA ---");
                     mostrarPuntos();
@@ -328,7 +339,9 @@ public class ConsolaGrafica implements Observador, IVista {
                     println("\n" + jugadorActual + " HA GANADO.");
                     estadoActual = Estado.FIN_PARTIDA;
                 }
+
             }
+
         } else if (arg instanceof Apuesta){
             // Muestra la apuesta y luego muestra para responder
             apuestaActual = (Apuesta) arg;
