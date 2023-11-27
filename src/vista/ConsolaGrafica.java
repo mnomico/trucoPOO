@@ -3,14 +3,12 @@ package vista;
 import controlador.Controlador;
 import modelos.Apuesta;
 import modelos.Evento;
+import modelos.Observado;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Observable;
-import java.util.Observer;
 
-public class ConsolaGrafica implements Observer, IVista {
+public class ConsolaGrafica implements Observador, IVista {
 
     // Elementos de la consola gráfica
     private final JFrame frame;
@@ -44,7 +42,6 @@ public class ConsolaGrafica implements Observer, IVista {
         enterButton.addActionListener(procesarInputField);
         inputField.addActionListener(procesarInputField);
     }
-
     enum Estado{
         MENU_PRINCIPAL,
         ELEGIR_CARTA,
@@ -251,7 +248,7 @@ public class ConsolaGrafica implements Observer, IVista {
     }
 
     @Override
-    public void update(Observable o, Object arg) {
+    public void update(Observado o, Object arg) {
         if (arg instanceof Evento){
             switch ((Evento) arg){
                 case MOSTRAR_MENU -> {
