@@ -5,9 +5,9 @@ import vista.Observador;
 
 
 public class ModeloTruco implements Observado {
-    private ArrayList<Observador> observers;
+    private final ArrayList<Observador> observers;
 
-    private Mazo mazo;
+    private final Mazo mazo;
     private int numeroMano;
     private int numeroRonda;
     private int puntosTruco;
@@ -18,7 +18,7 @@ public class ModeloTruco implements Observado {
     private Jugador ganadorRonda;
     private Jugador ganadorMano;
     private Jugador ganadorEnvido;
-    private ArrayList<Jugador> ganadoresRondas;
+    private final ArrayList<Jugador> ganadoresRondas;
     private Jugador jugadorOriginal;
 
     private Jugador jugador1;
@@ -420,7 +420,7 @@ public class ModeloTruco implements Observado {
         }
     }
 
-    public void redoblar(Apuesta apuesta){
+    public void redoblarEnvido(Apuesta apuesta){
         notificarApuesta(apuesta);
     }
 
@@ -433,15 +433,6 @@ public class ModeloTruco implements Observado {
             case REAL_ENVIDO -> notificarApuesta(Apuesta.REAL_ENVIDO_FALTA_ENVIDO);
             case ENVIDO_ENVIDO -> notificarApuesta(Apuesta.ENVIDO_ENVIDO_REAL_ENVIDO);
             case ENVIDO_ENVIDO_REAL_ENVIDO -> notificarApuesta(Apuesta.ENVIDO_ENVIDO_REAL_ENVIDO_FALTA_ENVIDO);
-        }
-    }
-
-    // Para el caso del envido
-    public void redoblarApuesta(Apuesta apuesta, Apuesta apuestaARedoblar){
-        switch (apuestaARedoblar){
-            case ENVIDO -> notificarApuesta(Apuesta.ENVIDO_ENVIDO);
-            case REAL_ENVIDO -> notificarApuesta(Apuesta.ENVIDO_REAL_ENVIDO);
-            case FALTA_ENVIDO -> notificarApuesta(Apuesta.ENVIDO_FALTA_ENVIDO);
         }
     }
 

@@ -7,13 +7,11 @@ import modelos.Apuesta;
 import vista.IVista;
 
 public class Controlador {
-    private final IVista vista;
-    private ModeloTruco modelo;
+    private final ModeloTruco modelo;
     private final Jugador jugador;
 
     public Controlador(IVista vista, ModeloTruco modelo, Jugador jugador){
-        this.vista = vista;
-        this.vista.setControlador(this);
+        vista.setControlador(this);
         this.modelo = modelo;
         this.modelo.ingresarJugador(jugador);
         this.jugador = jugador;
@@ -95,16 +93,12 @@ public class Controlador {
         modelo.noQuiero(apuesta);
     }
 
-    public void redoblar(Apuesta apuesta){
-        modelo.redoblar(apuesta);
+    public void redoblarEnvido(Apuesta apuesta){
+        modelo.redoblarEnvido(apuesta);
     }
 
     public void redoblarApuesta(Apuesta apuesta){
         modelo.redoblarApuesta(apuesta);
-    }
-
-    public void redoblarApuesta(Apuesta apuesta, Apuesta apuestaARedoblar){
-        modelo.redoblarApuesta(apuesta, apuestaARedoblar);
     }
 
 }

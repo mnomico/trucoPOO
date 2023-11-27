@@ -7,7 +7,7 @@ public class Jugador {
 
     private final String nombre;
     private int puntos;
-    private ArrayList<Carta> cartas;
+    private final ArrayList<Carta> cartas;
     private int tanto;
 
     public Jugador(String nombre){
@@ -48,7 +48,7 @@ public class Jugador {
         StringBuilder stringCartas = new StringBuilder();
         int nroCarta = 0;
         for (Carta carta : cartas){
-            stringCartas.append("(" + nroCarta++ + ") - " + carta.toString()  + "\n");
+            stringCartas.append("(").append(nroCarta++).append(") - ").append(carta.toString()).append("\n");
         }
         return stringCartas.toString();
     }
@@ -58,8 +58,6 @@ public class Jugador {
     }
 
     public void calcularTanto(){
-
-        // TODO esto no funciona, hay que buscar otra manera
 
         int[] numerosCartas = new int[3];
 

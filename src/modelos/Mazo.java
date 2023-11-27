@@ -4,10 +4,11 @@ import java.util.Collections;
 import java.util.Stack;
 
 public class Mazo {
-    private Stack<Carta> mazo = new Stack<>(); // pila en donde se guardan las cartas
-    private Palo[] palos = Palo.values(); // array en donde se guardan los palos
+    private final Stack<Carta> mazo = new Stack<>(); // pila en donde se guardan las cartas
 
     public Mazo(){
+        // array en donde se guardan los palos
+        Palo[] palos = Palo.values();
         for (Palo palo : palos){
             for (int numero = 1; numero <= 12; numero++) {
                 if (numero != 8 && numero != 9) {

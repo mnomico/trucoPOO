@@ -111,9 +111,7 @@ public class ConsolaGrafica implements Observador, IVista {
                 } else controlador.cantarEnvido();
             }
             // Elige irse al mazo
-            case "4" -> {
-                controlador.irseAlMazo();
-            }
+            case "4" -> controlador.irseAlMazo();
             // Ingreso inválido
             default -> {
                 println("\n" + "Opción inválida");
@@ -212,9 +210,9 @@ public class ConsolaGrafica implements Observador, IVista {
                 switch (input){
                     case "1" -> controlador.quiero(apuestaActual);
                     case "2" -> controlador.noQuiero(apuestaActual);
-                    case "3" -> controlador.redoblar(Apuesta.ENVIDO_ENVIDO);
-                    case "4" -> controlador.redoblar(Apuesta.ENVIDO_REAL_ENVIDO);
-                    case "5" -> controlador.redoblar(Apuesta.ENVIDO_FALTA_ENVIDO);
+                    case "3" -> controlador.redoblarEnvido(Apuesta.ENVIDO_ENVIDO);
+                    case "4" -> controlador.redoblarEnvido(Apuesta.ENVIDO_REAL_ENVIDO);
+                    case "5" -> controlador.redoblarEnvido(Apuesta.ENVIDO_FALTA_ENVIDO);
                     default -> {
                         println("Opción inválida");
                         mostrarResponderApuesta();
@@ -225,7 +223,7 @@ public class ConsolaGrafica implements Observador, IVista {
                 switch (input){
                     case "1" -> controlador.quiero(apuestaActual);
                     case "2" -> controlador.noQuiero(apuestaActual);
-                    case "3" -> controlador.redoblar(Apuesta.ENVIDO_REAL_ENVIDO_FALTA_ENVIDO);
+                    case "3" -> controlador.redoblarEnvido(Apuesta.ENVIDO_REAL_ENVIDO_FALTA_ENVIDO);
                     default -> {
                         println("Opción inválida");
                         mostrarResponderApuesta();
@@ -236,7 +234,7 @@ public class ConsolaGrafica implements Observador, IVista {
                 switch (input){
                     case "1" -> controlador.quiero(apuestaActual);
                     case "2" -> controlador.noQuiero(apuestaActual);
-                    case "3" -> controlador.redoblar(Apuesta.ENVIDO_ENVIDO_REAL_ENVIDO_FALTA_ENVIDO);
+                    case "3" -> controlador.redoblarEnvido(Apuesta.ENVIDO_ENVIDO_REAL_ENVIDO_FALTA_ENVIDO);
                     default -> {
                         println("Opción inválida");
                         mostrarResponderApuesta();
@@ -276,9 +274,7 @@ public class ConsolaGrafica implements Observador, IVista {
         if (arg instanceof Evento){
             switch ((Evento) arg){
 
-                case MOSTRAR_MENU -> {
-                    mostrarMenuPrincipal();
-                }
+                case MOSTRAR_MENU -> mostrarMenuPrincipal();
 
                 case JUGAR_CARTA -> {
                     String nombreJugadorActual = controlador.getJugadorActual().getNombre();
