@@ -3,15 +3,13 @@ import modelos.ModeloTruco;
 import controlador.Controlador;
 import vista.ConsolaGrafica;
 import vista.IVista;
-
-import javax.swing.*;
-import java.util.Observer;
+import vista.Observador;
 
 public class Main {
     public static void main(String[] args) {
         ModeloTruco juego = new ModeloTruco();
-        Jugador jugador1 = new Jugador("Maria");
-        Jugador jugador2 = new Jugador("Laurence");
+        Jugador jugador1 = new Jugador("J1");
+        Jugador jugador2 = new Jugador("J2");
 
         juego.ingresarJugador(jugador1);
         juego.ingresarJugador(jugador2);
@@ -27,8 +25,8 @@ public class Main {
         vista1.setControlador(controlador1);
         vista2.setControlador(controlador2);
 
-        juego.setObservers((Observer) vista1);
-        juego.setObservers((Observer) vista2);
+        juego.setObservers((Observador) vista1);
+        juego.setObservers((Observador) vista2);
 
         vista1.mostrarMenuPrincipal();
         vista2.mostrarMenuPrincipal();
