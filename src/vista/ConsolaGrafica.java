@@ -221,6 +221,17 @@ public class ConsolaGrafica implements Observador, IVista {
                     }
                 }
             }
+            case ENVIDO_REAL_ENVIDO -> {
+                switch (input){
+                    case "1" -> controlador.quiero(apuestaActual);
+                    case "2" -> controlador.noQuiero(apuestaActual);
+                    case "3" -> controlador.redoblar(Apuesta.ENVIDO_REAL_ENVIDO_FALTA_ENVIDO);
+                    default -> {
+                        println("Opción inválida");
+                        mostrarResponderApuesta();
+                    }
+                }
+            }
             case ENVIDO_ENVIDO_REAL_ENVIDO -> {
                 switch (input){
                     case "1" -> controlador.quiero(apuestaActual);
