@@ -83,12 +83,20 @@ public class Controlador {
         modelo.cantarEnvido();
     }
 
+    public void irseAlMazo(){
+        modelo.irseAlMazo();
+    }
+
     public void quiero(Apuesta apuesta){
         modelo.quiero(apuesta);
     }
 
     public void noQuiero(Apuesta apuesta){
         modelo.noQuiero(apuesta);
+    }
+
+    public void redoblar(Apuesta apuesta){
+        modelo.redoblar(apuesta);
     }
 
     public void redoblarApuesta(Apuesta apuesta){
