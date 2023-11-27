@@ -28,6 +28,14 @@ public class Jugador {
         return tanto;
     }
 
+    public ArrayList<Carta> devolverCartas(){
+        return cartas;
+    }
+
+    public void removerCartas(){
+        cartas.clear();
+    }
+
     public void recibirCarta(Carta carta){
         cartas.add(carta);
     }
