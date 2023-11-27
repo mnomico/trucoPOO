@@ -92,6 +92,12 @@ public class ModeloTruco extends Observable {
         }
     }
 
+    public void notificarNoQuiero(){
+        for (Observer observer : observers){
+            observer.update(this, Evento.DIJO_NO_QUIERO);
+        }
+    }
+
     public void notificarCambioTurno(){
         for (Observer observer : observers){
             observer.update(this, Evento.CAMBIO_TURNO);
@@ -107,6 +113,18 @@ public class ModeloTruco extends Observable {
     public void notificarFinMano(){
         for (Observer observer : observers){
             observer.update(this, Evento.FIN_MANO);
+        }
+    }
+
+    public void notificarFinPartida(){
+        for (Observer observer : observers){
+            observer.update(this, Evento.FIN_PARTIDA);
+        }
+    }
+
+    public void notificarIrseAlMazo(){
+        for (Observer observer : observers){
+            observer.update(this, Evento.IRSE_AL_MAZO);
         }
     }
 
@@ -238,11 +256,10 @@ public class ModeloTruco extends Observable {
                 ganadorMano.darPuntos(puntosTruco);
 
                 limpiarMano();
-                limpiarRonda();
 
                 notificarFinMano();
-                if (jugador1.getPuntos() >= 30 || jugador2.getPuntos() >= 30){
-                    // TODO notificarGanadorPartida();
+                if (finPartida()){
+                    notificarFinPartida();
                 } else {
                     iniciarMano();
                     notificarMostrarMenu();
@@ -251,6 +268,18 @@ public class ModeloTruco extends Observable {
                 notificarMostrarMenu();
             }
         }
+    }
+
+    // Chequea si alguno de los jugadores tiene 30 puntos o más y retorna true si eso sucede
+    public boolean finPartida(){
+        if (jugador1.getPuntos() >= 30){
+            jugadorActual = jugador1;
+            return true;
+        } else if (jugador2.getPuntos() >= 30){
+            jugadorActual = jugador2;
+            return true;
+        }
+        return false;
     }
 
     public Jugador determinarGanadorRonda(){
@@ -301,23 +330,61 @@ public class ModeloTruco extends Observable {
         return jugadorMano;
     }
 
-    public void limpiarRonda(){
-        numeroRonda++;
-        mazo.recibirCarta(cartaJ1);
-        mazo.recibirCarta(cartaJ2);
+    public void irseAlMazo(){
+        notificarIrseAlMazo();
+        cambiarTurno();
+        ganadorMano = jugadorActual;
+        ganadorMano.darPuntos(puntosTruco);
+        notificarFinMano();
+        limpiarMano();
+        iniciarMano();
+        notificarMostrarMenu();
+    }
+
+    public void guardarCartasJugadasAlMazo(){
+        if (cartaJ1 != null){
+            mazo.recibirCarta(cartaJ1);
+        }
+        if (cartaJ2 != null){
+            mazo.recibirCarta(cartaJ2);
+        }
         cartaJ1 = null;
         cartaJ2 = null;
+    }
+
+    public void guardarCartasNoJugadasAlMazo(){
+        ArrayList<Carta> cartasJ1 = jugador1.devolverCartas();
+        ArrayList<Carta> cartasJ2 = jugador2.devolverCartas();
+
+        if (!cartasJ1.isEmpty()){
+            for (Carta carta : cartasJ1){
+                mazo.recibirCarta(carta);
+            }
+        }
+        jugador1.removerCartas();
+
+        if (!cartasJ2.isEmpty()){
+            for (Carta carta : cartasJ2){
+                mazo.recibirCarta(carta);
+            }
+        }
+        jugador2.removerCartas();
+    }
+
+    public void limpiarRonda(){
+        numeroRonda++;
+        guardarCartasJugadasAlMazo();
         jugadorActual = ganadorRonda;
         ganadoresRondas.add(ganadorRonda);
     }
 
     public void limpiarMano(){
-        numeroRonda = 1;
-        numeroMano++;
+        numeroRonda = 0;
         trucoCantado = false;
         envidoCantado = false;
+        guardarCartasJugadasAlMazo();
+        guardarCartasNoJugadasAlMazo();
         ganadoresRondas.clear();
-        cambiarJugadorMano();
     }
 
     /////////////////////////////////////////
@@ -379,7 +446,11 @@ public class ModeloTruco extends Observable {
                 ganadorEnvido = calcularEnvido();
                 notificarGanadorEnvido();
                 ganadorEnvido.darPuntos(puntosEnvido);
-                notificarMostrarMenu();
+                if (finPartida()){
+                    notificarFinPartida();
+                } else {
+                    notificarMostrarMenu();
+                }
             }
         }
     }
@@ -399,12 +470,29 @@ public class ModeloTruco extends Observable {
 
         // Retorna el turno al jugador que apostó inicialmente
         switch (apuesta){
-            // TODO case TRUCO, RETRUCO, VALECUATRO -> terminarMano();
+            case TRUCO, RETRUCO, VALECUATRO -> {
+                notificarNoQuiero();
+                cambiarTurno();
+                ganadorMano = jugadorActual;
+                ganadorMano.darPuntos(puntosTruco);
+                notificarFinMano();
+                if (finPartida()){
+                    notificarFinPartida();
+                } else {
+                    limpiarMano();
+                    iniciarMano();
+                    notificarMostrarMenu();
+                }
+            }
             default -> {
                 jugadorActual = jugadorOriginal;
                 notificarMostrarMenu();
             }
         }
+    }
+
+    public void redoblar(Apuesta apuesta){
+        notificarApuesta(apuesta);
     }
 
     public void redoblarApuesta(Apuesta apuesta){
