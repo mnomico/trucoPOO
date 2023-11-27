@@ -1,11 +1,11 @@
 package modelos;
 
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
+import vista.Observador;
 
-public class ModeloTruco extends Observable {
-    private ArrayList<Observer> observers;
+
+public class ModeloTruco implements Observado {
+    private ArrayList<Observador> observers;
 
     private Mazo mazo;
     private int numeroMano;
@@ -38,7 +38,7 @@ public class ModeloTruco extends Observable {
         ganadoresRondas = new ArrayList<>();
     }
 
-    public void setObservers(Observer observer){
+    public void setObservers(Observador observer){
         observers.add(observer);
     }
 
@@ -46,8 +46,14 @@ public class ModeloTruco extends Observable {
     ///////////// NOTIFICADORES /////////////
     /////////////////////////////////////////
 
+    public void notificar(Evento evento){
+        for (Observador observer : observers){
+            observer.update(this, evento);
+        }
+    }
+
     public void notificarJugarCarta(){
-        for (Observer observer : observers){
+        for (Observador observer : observers){
             observer.update(this, Evento.JUGAR_CARTA);
         }
         cambiarTurno();
@@ -55,25 +61,25 @@ public class ModeloTruco extends Observable {
 
 
     public void notificarTruco(){
-        for (Observer observer : observers){
+        for (Observador observer : observers){
             observer.update(this, Apuesta.TRUCO);
         }
     }
 
     private void notificarEnvido() {
-        for (Observer observer : observers){
+        for (Observador observer : observers){
             observer.update(this, Apuesta.ENVIDO);
         }
     }
 
     private void notificarGanadorEnvido(){
-        for (Observer observer : observers){
+        for (Observador observer : observers){
             observer.update(this, Evento.RESULTADO_ENVIDO);
         }
     }
 
     public void notificarApuesta(Apuesta apuesta){
-        for (Observer observer : observers){
+        for (Observador observer : observers){
             observer.update(this, apuesta);
         }
         cambiarTurno();
@@ -81,55 +87,55 @@ public class ModeloTruco extends Observable {
     }
 
     public void notificarResponderApuesta(){
-        for (Observer observer : observers){
+        for (Observador observer : observers){
             observer.update(this, Evento.RESPONDER_APUESTA);
         }
     }
 
     public void notificarQuiero(){
-        for (Observer observer : observers){
+        for (Observador observer : observers){
             observer.update(this, Evento.DIJO_QUIERO);
         }
     }
 
     public void notificarNoQuiero(){
-        for (Observer observer : observers){
+        for (Observador observer : observers){
             observer.update(this, Evento.DIJO_NO_QUIERO);
         }
     }
 
     public void notificarCambioTurno(){
-        for (Observer observer : observers){
+        for (Observador observer : observers){
             observer.update(this, Evento.CAMBIO_TURNO);
         }
     }
 
     public void notificarFinRonda(){
-        for (Observer observer : observers){
+        for (Observador observer : observers){
             observer.update(this, Evento.FIN_RONDA);
         }
     }
 
     public void notificarFinMano(){
-        for (Observer observer : observers){
+        for (Observador observer : observers){
             observer.update(this, Evento.FIN_MANO);
         }
     }
 
     public void notificarFinPartida(){
-        for (Observer observer : observers){
+        for (Observador observer : observers){
             observer.update(this, Evento.FIN_PARTIDA);
         }
     }
 
     public void notificarIrseAlMazo(){
-        for (Observer observer : observers){
+        for (Observador observer : observers){
             observer.update(this, Evento.IRSE_AL_MAZO);
         }
     }
 
     public void notificarMostrarMenu(){
-        for (Observer observer : observers){
+        for (Observador observer : observers){
             observer.update(this, Evento.MOSTRAR_MENU);
         }
     }
