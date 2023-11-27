@@ -49,6 +49,7 @@ public class ConsolaGrafica implements Observer, IVista {
         MENU_PRINCIPAL,
         ELEGIR_CARTA,
         RESPONDER_APUESTA,
+        FIN_PARTIDA,
     }
 
     private Estado estadoActual = Estado.MENU_PRINCIPAL;
@@ -99,6 +100,10 @@ public class ConsolaGrafica implements Observer, IVista {
                     mostrarOpcionesRonda();
                 } else controlador.cantarEnvido();
             }
+            // Elige irse al mazo
+            case "4" -> {
+                controlador.irseAlMazo();
+            }
             // Ingreso inválido
             default -> {
                 println("Opción inválida" + "\n");
@@ -116,7 +121,6 @@ public class ConsolaGrafica implements Observer, IVista {
                 println("Opción inválida" + "\n");
                 procesarMenuPrincipal("1");
             }
-
         }
     }
 
@@ -136,6 +140,9 @@ public class ConsolaGrafica implements Observer, IVista {
         // Muestra los jugadores y sus puntos
         println("\n --- PUNTOS ---");
         mostrarPuntos();
+
+        // Muestra el número de la mano
+        println("\n --- MANO " + controlador.getNumeroMano() + "---");
 
         // Muestra las cartas del jugador
         mostrarCartas();
@@ -170,7 +177,7 @@ public class ConsolaGrafica implements Observer, IVista {
 
     public void procesarApuesta(String input){
         switch (apuestaActual){
-            case TRUCO, RETRUCO, ENVIDO_ENVIDO, ENVIDO_ENVIDO_REAL_ENVIDO -> {
+            case TRUCO, RETRUCO, ENVIDO_ENVIDO -> {
                 switch (input){
                     case "1" -> controlador.quiero(apuestaActual);
                     case "2" -> controlador.noQuiero(apuestaActual);
@@ -195,9 +202,20 @@ public class ConsolaGrafica implements Observer, IVista {
                 switch (input){
                     case "1" -> controlador.quiero(apuestaActual);
                     case "2" -> controlador.noQuiero(apuestaActual);
-                    case "3" -> controlador.redoblarApuesta(apuestaActual, Apuesta.ENVIDO);
-                    case "4" -> controlador.redoblarApuesta(apuestaActual, Apuesta.REAL_ENVIDO);
-                    case "5" -> controlador.redoblarApuesta(apuestaActual, Apuesta.FALTA_ENVIDO);
+                    case "3" -> controlador.redoblar(Apuesta.ENVIDO_ENVIDO);
+                    case "4" -> controlador.redoblar(Apuesta.ENVIDO_REAL_ENVIDO);
+                    case "5" -> controlador.redoblar(Apuesta.ENVIDO_FALTA_ENVIDO);
+                    default -> {
+                        println("Opción inválida");
+                        mostrarResponderApuesta();
+                    }
+                }
+            }
+            case ENVIDO_ENVIDO_REAL_ENVIDO -> {
+                switch (input){
+                    case "1" -> controlador.quiero(apuestaActual);
+                    case "2" -> controlador.noQuiero(apuestaActual);
+                    case "3" -> controlador.redoblar(Apuesta.ENVIDO_ENVIDO_REAL_ENVIDO_FALTA_ENVIDO);
                     default -> {
                         println("Opción inválida");
                         mostrarResponderApuesta();
@@ -245,14 +263,22 @@ public class ConsolaGrafica implements Observer, IVista {
                     println("\n * " + nombreJugadorActual + " juega " + cartaJugada + "\n");
                 }
                 case FIN_RONDA -> {
-                    String ganadorRonda = controlador.getGanadorRonda().getNombre();
-                    println(ganadorRonda + " ha ganado la ronda.");
+                    if (controlador.getGanadorRonda() == null){
+                        println("\n" + "Ronda parda");
+                    } else {
+                        String ganadorRonda = controlador.getGanadorRonda().getNombre();
+                        println(ganadorRonda + " ha ganado la ronda.");
+                    }
                     println("\n ----------------------------------------------- ");
                 }
                 case FIN_MANO -> {
                     String ganadorMano = controlador.getGanadorMano().getNombre();
-                    println(ganadorMano + " ha ganado la mano.");
+                    println("\n" + ganadorMano + " ha ganado la mano.");
                     println("\n ----------------------------------------------- ");
+                }
+                case IRSE_AL_MAZO -> {
+                    String jugadorActual = controlador.getJugadorActual().getNombre();
+                    println("\n" + jugadorActual + " se fue al mazo.");
                 }
                 case CAMBIO_TURNO -> {
                     if (controlador.esMiTurno()) {
@@ -275,11 +301,22 @@ public class ConsolaGrafica implements Observer, IVista {
                     String jugadorActual = controlador.getJugadorActual().getNombre();
                     println("\n" + jugadorActual + " dijo QUIERO");
                 }
+                case DIJO_NO_QUIERO -> {
+                    String jugadorActual = controlador.getJugadorActual().getNombre();
+                    println("\n" + jugadorActual + " dijo NO QUIERO");
+                }
                 case RESULTADO_ENVIDO -> {
                     println("\n --- RESULTADO ENVIDO ---");
                     String ganadorEnvido = controlador.getGanadorEnvido().getNombre();
                     println(controlador.getTantos());
                     println(" --- GANA " + ganadorEnvido + "---");
+                }
+                case FIN_PARTIDA -> {
+                    println("\n --- FIN DE LA PARTIDA ---");
+                    mostrarPuntos();
+                    String jugadorActual = controlador.getJugadorActual().getNombre();
+                    println("\n" + jugadorActual + " HA GANADO.");
+                    estadoActual = Estado.FIN_PARTIDA;
                 }
             }
         } else if (arg instanceof Apuesta){
