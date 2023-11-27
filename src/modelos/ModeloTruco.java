@@ -46,98 +46,21 @@ public class ModeloTruco implements Observado {
     ///////////// NOTIFICADORES /////////////
     /////////////////////////////////////////
 
-    public void notificar(Evento evento){
+    public void notificar(Object arg){
         for (Observador observer : observers){
-            observer.update(this, evento);
+            observer.update(this, arg);
         }
     }
 
     public void notificarJugarCarta(){
-        for (Observador observer : observers){
-            observer.update(this, Evento.JUGAR_CARTA);
-        }
+        notificar(Evento.JUGAR_CARTA);
         cambiarTurno();
-    }
-
-
-    public void notificarTruco(){
-        for (Observador observer : observers){
-            observer.update(this, Apuesta.TRUCO);
-        }
-    }
-
-    private void notificarEnvido() {
-        for (Observador observer : observers){
-            observer.update(this, Apuesta.ENVIDO);
-        }
-    }
-
-    private void notificarGanadorEnvido(){
-        for (Observador observer : observers){
-            observer.update(this, Evento.RESULTADO_ENVIDO);
-        }
     }
 
     public void notificarApuesta(Apuesta apuesta){
-        for (Observador observer : observers){
-            observer.update(this, apuesta);
-        }
+        notificar(apuesta);
         cambiarTurno();
-        notificarResponderApuesta();
-    }
-
-    public void notificarResponderApuesta(){
-        for (Observador observer : observers){
-            observer.update(this, Evento.RESPONDER_APUESTA);
-        }
-    }
-
-    public void notificarQuiero(){
-        for (Observador observer : observers){
-            observer.update(this, Evento.DIJO_QUIERO);
-        }
-    }
-
-    public void notificarNoQuiero(){
-        for (Observador observer : observers){
-            observer.update(this, Evento.DIJO_NO_QUIERO);
-        }
-    }
-
-    public void notificarCambioTurno(){
-        for (Observador observer : observers){
-            observer.update(this, Evento.CAMBIO_TURNO);
-        }
-    }
-
-    public void notificarFinRonda(){
-        for (Observador observer : observers){
-            observer.update(this, Evento.FIN_RONDA);
-        }
-    }
-
-    public void notificarFinMano(){
-        for (Observador observer : observers){
-            observer.update(this, Evento.FIN_MANO);
-        }
-    }
-
-    public void notificarFinPartida(){
-        for (Observador observer : observers){
-            observer.update(this, Evento.FIN_PARTIDA);
-        }
-    }
-
-    public void notificarIrseAlMazo(){
-        for (Observador observer : observers){
-            observer.update(this, Evento.IRSE_AL_MAZO);
-        }
-    }
-
-    public void notificarMostrarMenu(){
-        for (Observador observer : observers){
-            observer.update(this, Evento.MOSTRAR_MENU);
-        }
+        notificar(Evento.RESPONDER_APUESTA);
     }
 
     /////////////////////////////////////////
@@ -252,26 +175,26 @@ public class ModeloTruco implements Observado {
         notificarJugarCarta();
 
         if (cartaJ1 == null || cartaJ2 == null){
-            notificarCambioTurno();
+            notificar(Evento.CAMBIO_TURNO);
         } else {
             ganadorRonda = determinarGanadorRonda();
             limpiarRonda();
-            notificarFinRonda();
+            notificar(Evento.FIN_RONDA);
             if (numeroRonda > 3) {
                 ganadorMano = determinarGanadorMano();
                 ganadorMano.darPuntos(puntosTruco);
 
                 limpiarMano();
 
-                notificarFinMano();
+                notificar(Evento.FIN_MANO);
                 if (finPartida()){
-                    notificarFinPartida();
+                    notificar(Evento.FIN_PARTIDA);
                 } else {
                     iniciarMano();
-                    notificarMostrarMenu();
+                    notificar(Evento.MOSTRAR_MENU);
                 }
             } else {
-                notificarMostrarMenu();
+                notificar(Evento.MOSTRAR_MENU);
             }
         }
     }
@@ -337,14 +260,14 @@ public class ModeloTruco implements Observado {
     }
 
     public void irseAlMazo(){
-        notificarIrseAlMazo();
+        notificar(Evento.IRSE_AL_MAZO);
         cambiarTurno();
         ganadorMano = jugadorActual;
         ganadorMano.darPuntos(puntosTruco);
-        notificarFinMano();
+        notificar(Evento.FIN_MANO);
         limpiarMano();
         iniciarMano();
-        notificarMostrarMenu();
+        notificar(Evento.MOSTRAR_MENU);
     }
 
     public void guardarCartasJugadasAlMazo(){
@@ -399,18 +322,18 @@ public class ModeloTruco implements Observado {
 
     public void cantarTruco(){
         trucoCantado = true;
-        notificarTruco();
+        notificar(Apuesta.TRUCO);
         jugadorOriginal = jugadorActual;
         cambiarTurno();
-        notificarResponderApuesta();
+        notificar(Evento.RESPONDER_APUESTA);
     }
 
     public void cantarEnvido(){
         envidoCantado = true;
-        notificarEnvido();
+        notificar(Apuesta.ENVIDO);
         jugadorOriginal = jugadorActual;
         cambiarTurno();
-        notificarResponderApuesta();
+        notificar(Evento.RESPONDER_APUESTA);
     }
 
     public Jugador calcularEnvido(){
@@ -442,20 +365,20 @@ public class ModeloTruco implements Observado {
         }
 
         // Retorna el turno al jugador que apostó inicialmente
-        notificarQuiero();
+        notificar(Evento.DIJO_QUIERO);
 
         jugadorActual = jugadorOriginal;
 
         switch (apuesta){
-            case TRUCO, RETRUCO, VALECUATRO -> notificarMostrarMenu();
+            case TRUCO, RETRUCO, VALECUATRO -> notificar(Evento.MOSTRAR_MENU);
             default -> {
                 ganadorEnvido = calcularEnvido();
-                notificarGanadorEnvido();
+                notificar(Evento.RESULTADO_ENVIDO);
                 ganadorEnvido.darPuntos(puntosEnvido);
                 if (finPartida()){
-                    notificarFinPartida();
+                    notificar(Evento.FIN_PARTIDA);
                 } else {
-                    notificarMostrarMenu();
+                    notificar(Evento.MOSTRAR_MENU);
                 }
             }
         }
@@ -477,22 +400,22 @@ public class ModeloTruco implements Observado {
         // Retorna el turno al jugador que apostó inicialmente
         switch (apuesta){
             case TRUCO, RETRUCO, VALECUATRO -> {
-                notificarNoQuiero();
+                notificar(Evento.DIJO_NO_QUIERO);
                 cambiarTurno();
                 ganadorMano = jugadorActual;
                 ganadorMano.darPuntos(puntosTruco);
-                notificarFinMano();
+                notificar(Evento.FIN_MANO);
                 if (finPartida()){
-                    notificarFinPartida();
+                    notificar(Evento.FIN_PARTIDA);
                 } else {
                     limpiarMano();
                     iniciarMano();
-                    notificarMostrarMenu();
+                    notificar(Evento.MOSTRAR_MENU);
                 }
             }
             default -> {
                 jugadorActual = jugadorOriginal;
-                notificarMostrarMenu();
+                notificar(Evento.MOSTRAR_MENU);
             }
         }
     }
