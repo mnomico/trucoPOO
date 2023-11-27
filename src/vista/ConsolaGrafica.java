@@ -27,7 +27,7 @@ public class ConsolaGrafica implements Observador, IVista {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
-        frame.setSize(350,600);
+        frame.setSize(400,600);
 
         Action procesarInputField = new AbstractAction() {
             @Override
@@ -42,6 +42,19 @@ public class ConsolaGrafica implements Observador, IVista {
         enterButton.addActionListener(procesarInputField);
         inputField.addActionListener(procesarInputField);
     }
+
+    public int returnFrameXPos(){
+        return frame.getX();
+    }
+
+    public int returnFrameYPos(){
+        return frame.getY();
+    }
+
+    public void setLocation(int x, int y){
+        frame.setLocation(x + frame.getWidth(), y);
+    }
+
     enum Estado{
         MENU_PRINCIPAL,
         ELEGIR_CARTA,
@@ -55,7 +68,7 @@ public class ConsolaGrafica implements Observador, IVista {
     private void procesarEntrada(String input) {
         if (controlador.esMiTurno()) {
             enviarEntrada(input);
-        } else println("Todavía no es tu turno.");
+        } else println("\n" + "Todavía no es tu turno.");
     }
 
     public void enviarEntrada(String input) {
@@ -103,7 +116,7 @@ public class ConsolaGrafica implements Observador, IVista {
             }
             // Ingreso inválido
             default -> {
-                println("Opción inválida" + "\n");
+                println("\n" + "Opción inválida");
                 mostrarOpcionesRonda();
             }
         }
@@ -139,17 +152,17 @@ public class ConsolaGrafica implements Observador, IVista {
         mostrarPuntos();
 
         // Muestra el número de la mano
-        println("\n --- MANO " + controlador.getNumeroMano() + "---");
+        println("\n --- MANO " + controlador.getNumeroMano() + " - RONDA " + controlador.getNumeroRonda() + " ---");
 
         // Muestra las cartas del jugador
         mostrarCartas();
 
+
+        println("--- TURNO DE " + controlador.getJugadorActual().getNombre() + " ---");
+        println("Esperando respuesta...");
         if (controlador.esMiTurno()) {
-            println("--- ES TU TURNO ---");
+            println("\n" + "--- ES TU TURNO ---");
             mostrarOpcionesRonda();
-        } else {
-            println("--- TURNO DE " + controlador.getJugadorActual().getNombre() + " ---");
-            println("Esperando respuesta...");
         }
         estadoActual = Estado.MENU_PRINCIPAL;
     }
