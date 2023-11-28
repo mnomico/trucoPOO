@@ -178,6 +178,7 @@ public class ModeloTruco implements Observado {
             notificar(Evento.CAMBIO_TURNO);
         } else {
             ganadorRonda = determinarGanadorRonda();
+
             limpiarRonda();
             notificar(Evento.FIN_RONDA);
             if (numeroRonda > 3) {
