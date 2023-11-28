@@ -270,6 +270,14 @@ public class ConsolaGrafica implements Observador, IVista {
         }
     }
 
+    public void mostrarEnvidoInicial(){
+        println("\n -- ENVIDO --");
+        println("(1) - ENVIDO");
+        println("(2) - REAL ENVIDO");
+        println("(3) - FALTA ENVIDO");
+        println("Elija una opción:");
+    }
+
     public void mostrarResponderApuesta(){
         println("\n -- RESPONDÉ --");
         println("(1) - Quiero");
