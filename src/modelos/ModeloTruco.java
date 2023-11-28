@@ -435,6 +435,9 @@ public class ModeloTruco implements Observado {
                 }
             }
             default -> {
+                notificar(Evento.DIJO_NO_QUIERO);
+                cambiarTurno();
+                jugadorActual.darPuntos(puntosEnvido);
                 jugadorActual = jugadorOriginal;
                 notificar(Evento.MOSTRAR_MENU);
             }
