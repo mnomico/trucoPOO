@@ -158,12 +158,12 @@ public class ConsolaGrafica implements Observador, IVista {
         // Muestra las cartas del jugador
         mostrarCartas();
 
-
-        println("--- TURNO DE " + controlador.getJugadorActual().getNombre() + " ---");
-        println("Esperando respuesta...");
         if (controlador.esMiTurno()) {
-            println("\n" + "--- ES TU TURNO ---");
+            println("--- ES TU TURNO ---");
             mostrarOpcionesRonda();
+        } else {
+            println("--- TURNO DE " + controlador.getJugadorActual().getNombre() + " ---");
+            println("Esperando respuesta...");
         }
         estadoActual = Estado.MENU_PRINCIPAL;
     }
