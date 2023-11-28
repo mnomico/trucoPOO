@@ -48,7 +48,7 @@ public class Jugador {
         StringBuilder stringCartas = new StringBuilder();
         int nroCarta = 0;
         for (Carta carta : cartas){
-            stringCartas.append("(").append(nroCarta++).append(") - ").append(carta.toString()).append("\n");
+            stringCartas.append("\t           (").append(nroCarta++).append(") - ").append(carta.toString()).append("\n");
         }
         return stringCartas.toString();
     }

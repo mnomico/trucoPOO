@@ -57,6 +57,7 @@
                   <disabledTextColor color="-1"/>
                   <editable value="false"/>
                   <enabled value="false"/>
+                  <lineWrap value="true"/>
                 </properties>
               </component>
             </children>

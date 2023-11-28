@@ -101,7 +101,7 @@ public class ModeloTruco implements Observado {
     }
 
     public String getEstadoPartida(){
-        return jugador1.getNombre() + ": " + jugador1.getPuntos() + " - " +
+        return "\t" + jugador1.getNombre() + ": " + jugador1.getPuntos() + " - " +
                jugador2.getNombre() + ": " + jugador2.getPuntos();
     }
 
@@ -114,8 +114,8 @@ public class ModeloTruco implements Observado {
     }
 
     public String getTantos(){
-        return "TANTO " + jugador1.getNombre() + ": " + jugador1.getTanto() + "\n" +
-               "TANTO " + jugador2.getNombre() + ": " + jugador2.getTanto();
+        return "\tTANTO " + jugador1.getNombre() + ": " + jugador1.getTanto() + "\n" +
+               "\tTANTO " + jugador2.getNombre() + ": " + jugador2.getTanto();
     }
 
     /////////////////////////////////////////
@@ -334,6 +334,7 @@ public class ModeloTruco implements Observado {
         notificar(Evento.RESPONDER_APUESTA);
     }
 
+    // Para el envido inicial
     public void cantarEnvido(Apuesta apuesta){
         envidoCantado = true;
         notificar(apuesta);
@@ -373,6 +374,7 @@ public class ModeloTruco implements Observado {
         switch (apuesta){
             case TRUCO, RETRUCO, VALECUATRO -> notificar(Evento.MOSTRAR_MENU);
 
+            // Casos de falta envido
             case FALTA_ENVIDO, ENVIDO_FALTA_ENVIDO, REAL_ENVIDO_FALTA_ENVIDO,
                  ENVIDO_REAL_ENVIDO_FALTA_ENVIDO,
                  ENVIDO_ENVIDO_REAL_ENVIDO_FALTA_ENVIDO ->
@@ -393,6 +395,7 @@ public class ModeloTruco implements Observado {
                 }
             }
 
+            // Para el resto de los casos de envido
             default -> {
                 ganadorEnvido = calcularEnvido();
                 notificar(Evento.RESULTADO_ENVIDO);
@@ -435,6 +438,8 @@ public class ModeloTruco implements Observado {
                     notificar(Evento.MOSTRAR_MENU);
                 }
             }
+
+            // Para los casos de envido
             default -> {
                 notificar(Evento.DIJO_NO_QUIERO);
                 cambiarTurno();
@@ -445,6 +450,7 @@ public class ModeloTruco implements Observado {
         }
     }
 
+    // Para el primer envido
     public void redoblarEnvido(Apuesta apuesta){
         notificarApuesta(apuesta);
     }
