@@ -303,7 +303,12 @@ public class ModeloTruco implements Observado {
     public void limpiarRonda(){
         numeroRonda++;
         guardarCartasJugadasAlMazo();
-        jugadorActual = ganadorRonda;
+        // Si se produce una parda
+        if (ganadorRonda == null){
+            jugadorActual = jugadorMano;
+        } else {
+            jugadorActual = ganadorRonda;
+        }
         ganadoresRondas.add(ganadorRonda);
     }
 
