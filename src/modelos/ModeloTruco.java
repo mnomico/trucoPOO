@@ -359,14 +359,9 @@ public class ModeloTruco implements Observado {
             case VALECUATRO -> puntosTruco = 4;
             case ENVIDO -> puntosEnvido = 2;
             case REAL_ENVIDO -> puntosEnvido = 3;
-            // TODO case FALTA_ENVIDO
             case ENVIDO_ENVIDO -> puntosEnvido = 4;
             case ENVIDO_REAL_ENVIDO -> puntosEnvido = 5;
-            // TODO case ENVIDO_FALTA_ENVIDO
-            // TODO case REAL_ENVIDO_FALTA_ENVIDO
             case ENVIDO_ENVIDO_REAL_ENVIDO -> puntosEnvido = 7;
-            // TODO case ENVIDO_REAL_ENVIDO_FALTA_ENVIDO
-            // TODO case ENVIDO_ENVIDO_REAL_ENVIDO_FALTA_ENVIDO
         }
 
         // Retorna el turno al jugador que apostó inicialmente
