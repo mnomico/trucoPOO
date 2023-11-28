@@ -333,9 +333,9 @@ public class ModeloTruco implements Observado {
         notificar(Evento.RESPONDER_APUESTA);
     }
 
-    public void cantarEnvido(){
+    public void cantarEnvido(Apuesta apuesta){
         envidoCantado = true;
-        notificar(Apuesta.ENVIDO);
+        notificar(apuesta);
         jugadorOriginal = jugadorActual;
         cambiarTurno();
         notificar(Evento.RESPONDER_APUESTA);
