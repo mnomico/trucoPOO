@@ -371,6 +371,27 @@ public class ModeloTruco implements Observado {
 
         switch (apuesta){
             case TRUCO, RETRUCO, VALECUATRO -> notificar(Evento.MOSTRAR_MENU);
+
+            case FALTA_ENVIDO, ENVIDO_FALTA_ENVIDO, REAL_ENVIDO_FALTA_ENVIDO,
+                 ENVIDO_REAL_ENVIDO_FALTA_ENVIDO,
+                 ENVIDO_ENVIDO_REAL_ENVIDO_FALTA_ENVIDO ->
+            {
+                ganadorEnvido = calcularEnvido();
+                notificar(Evento.RESULTADO_ENVIDO);
+                int puntosFalta = 0;
+                if (ganadorEnvido != jugador1){
+                    puntosFalta = 30 - jugador1.getPuntos();
+                } else if (ganadorEnvido != jugador2){
+                    puntosFalta = 30 - jugador2.getPuntos();
+                }
+                ganadorEnvido.darPuntos(puntosFalta);
+                if (finPartida()){
+                    notificar(Evento.FIN_PARTIDA);
+                } else {
+                    notificar(Evento.MOSTRAR_MENU);
+                }
+            }
+
             default -> {
                 ganadorEnvido = calcularEnvido();
                 notificar(Evento.RESULTADO_ENVIDO);
