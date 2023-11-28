@@ -294,7 +294,7 @@ public class ConsolaGrafica implements Observador, IVista {
                 println("(5) - FALTA ENVIDO");
             }
             case ENVIDO_ENVIDO -> println("(3) - REAL ENVIDO");
-            case ENVIDO_ENVIDO_REAL_ENVIDO, ENVIDO_REAL_ENVIDO -> println("(3) - FALTA ENVIDO");
+            case ENVIDO_ENVIDO_REAL_ENVIDO, ENVIDO_REAL_ENVIDO, REAL_ENVIDO -> println("(3) - FALTA ENVIDO");
         }
         println("Elija una opción:");
         estadoActual = Estado.RESPONDER_APUESTA;
