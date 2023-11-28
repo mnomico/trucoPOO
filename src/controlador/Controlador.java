@@ -77,8 +77,8 @@ public class Controlador {
         modelo.cantarTruco();
     }
 
-    public void cantarEnvido(){
-        modelo.cantarEnvido();
+    public void cantarEnvido(Apuesta apuesta){
+        modelo.cantarEnvido(apuesta);
     }
 
     public void irseAlMazo(){
