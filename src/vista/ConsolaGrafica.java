@@ -184,8 +184,32 @@ public class ConsolaGrafica implements Observador, IVista {
     }
 
     public void procesarApuesta(String input){
+        // Para el primer envido
+        if (apuestaActual == null){
+            switch (input) {
+                case "1" -> {
+                    apuestaActual = Apuesta.ENVIDO;
+                    controlador.cantarEnvido(apuestaActual);
+                }
+                case "2" -> {
+                    apuestaActual = Apuesta.REAL_ENVIDO;
+                    controlador.cantarEnvido(apuestaActual);
+                }
+                case "3" -> {
+                    apuestaActual = Apuesta.FALTA_ENVIDO;
+                    controlador.cantarEnvido(apuestaActual);
+                }
+                default -> {
+                    println("Opción inválida");
+                    mostrarEnvidoInicial();
+                }
+            }
+            return;
+        }
+
         switch (apuestaActual){
-            case TRUCO, RETRUCO, ENVIDO_ENVIDO -> {
+
+            case TRUCO, RETRUCO, ENVIDO_ENVIDO, REAL_ENVIDO -> {
                 switch (input){
                     case "1" -> controlador.quiero(apuestaActual);
                     case "2" -> controlador.noQuiero(apuestaActual);
@@ -219,6 +243,7 @@ public class ConsolaGrafica implements Observador, IVista {
                     }
                 }
             }
+
             case ENVIDO_REAL_ENVIDO -> {
                 switch (input){
                     case "1" -> controlador.quiero(apuestaActual);
@@ -230,6 +255,7 @@ public class ConsolaGrafica implements Observador, IVista {
                     }
                 }
             }
+
             case ENVIDO_ENVIDO_REAL_ENVIDO -> {
                 switch (input){
                     case "1" -> controlador.quiero(apuestaActual);
