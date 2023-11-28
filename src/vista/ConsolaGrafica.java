@@ -108,7 +108,10 @@ public class ConsolaGrafica implements Observador, IVista {
                 } else if (controlador.getEnvidoCantado()){
                     println("\n" + "Ya se cantó envido en esta mano.");
                     mostrarOpcionesRonda();
-                } else controlador.cantarEnvido();
+                } else {
+                    mostrarEnvidoInicial();
+                    estadoActual = Estado.RESPONDER_APUESTA;
+                }
             }
             // Elige irse al mazo
             case "4" -> controlador.irseAlMazo();
