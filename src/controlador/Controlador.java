@@ -1,19 +1,19 @@
 package controlador;
 
-import modelos.Carta;
-import modelos.Jugador;
-import modelos.ModeloTruco;
-import modelos.Apuesta;
+import modelos.*;
 import vista.IVista;
+import vista.Observador;
 
-public class Controlador {
+public class Controlador implements Observador {
     private final ModeloTruco modelo;
+    private final IVista vista;
     private final Jugador jugador;
 
     public Controlador(IVista vista, ModeloTruco modelo, Jugador jugador){
         vista.setControlador(this);
         this.modelo = modelo;
         this.modelo.ingresarJugador(jugador);
+        this.vista = vista;
         this.jugador = jugador;
     }
 
@@ -39,6 +39,10 @@ public class Controlador {
 
     public Jugador getJugadorActual(){
         return modelo.getJugadorActual();
+    }
+
+    public String getNombreJugadorActual(){
+        return getJugadorActual().getNombre();
     }
 
     public Jugador getGanadorRonda(){
@@ -101,4 +105,75 @@ public class Controlador {
         modelo.redoblarApuesta(apuesta);
     }
 
+    public void update(Observado o, Object arg) {
+        if (arg instanceof Evento){
+            switch ((Evento) arg){
+
+                case MOSTRAR_MENU -> vista.mostrarMenuPrincipal();
+
+                case JUGAR_CARTA -> {
+                    String nombreJugadorActual = getNombreJugadorActual();
+                    String cartaJugada = getCartaJugada(getJugadorActual()).toString();
+                    vista.mostrarCartaJugada(nombreJugadorActual, cartaJugada);
+                }
+
+                case RESPONDER_APUESTA -> {
+                    if (esMiTurno()) {
+                        vista.mostrarResponderApuesta();
+                    } else {
+                        String nombreJugadorActual = getNombreJugadorActual();
+                        vista.mostrarEsperandoRespuesta(nombreJugadorActual);
+                    }
+                }
+
+                case DIJO_QUIERO -> {
+                    String nombreJugadorActual = getNombreJugadorActual();
+                    vista.mostrarDijoQuiero(nombreJugadorActual);
+                }
+
+                case DIJO_NO_QUIERO -> {
+                    String nombreJugadorActual = getNombreJugadorActual();
+                    vista.mostrarDijoNoQuiero(nombreJugadorActual);
+                }
+
+                case RESULTADO_ENVIDO -> {
+                    String ganadorEnvido = getGanadorEnvido().getNombre();
+                    String tantos = getTantos();
+                    vista.mostrarResultadoEnvido(ganadorEnvido, tantos);
+                }
+
+                case IRSE_AL_MAZO -> {
+                    String nombreJugadorActual = getNombreJugadorActual();
+                    vista.mostrarIrseAlMazo(nombreJugadorActual);
+                }
+
+                case FIN_RONDA -> {
+                    if (getGanadorRonda() == null){
+                        vista.mostrarGanadorRonda(null);
+                    } else {
+                        String ganadorRonda = getGanadorRonda().getNombre();
+                        vista.mostrarGanadorRonda(ganadorRonda);
+                    }
+                }
+
+                case FIN_MANO -> {
+                    String ganadorMano = getGanadorMano().getNombre();
+                    vista.mostrarGanadorMano(ganadorMano);
+                }
+
+                case CAMBIO_TURNO -> vista.mostrarTurno(esMiTurno());
+
+                case FIN_PARTIDA -> {
+                    String jugadorGanador = getNombreJugadorActual();
+                    vista.mostrarFinPartida(jugadorGanador);
+                }
+
+            }
+
+        } else if (arg instanceof Apuesta apuestaActual){
+            // Muestra la apuesta y luego muestra para responder
+            String jugadorActual = getJugadorActual().getNombre();
+            vista.mostrarApuesta(jugadorActual, apuestaActual);
+        }
+    }
 }
