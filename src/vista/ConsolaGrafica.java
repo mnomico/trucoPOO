@@ -2,13 +2,11 @@ package vista;
 
 import controlador.Controlador;
 import modelos.Apuesta;
-import modelos.Evento;
-import modelos.Observado;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class ConsolaGrafica implements Observador, IVista {
+public class ConsolaGrafica implements IVista {
 
     // Elementos de la consola gráfica
     private final JFrame frame;
@@ -43,6 +41,12 @@ public class ConsolaGrafica implements Observador, IVista {
         inputField.addActionListener(procesarInputField);
     }
 
+    @Override
+    public void setControlador(Controlador controlador) {
+        this.controlador = controlador;
+        frame.setTitle("Truco - JUGADOR: " + controlador.getJugador().getNombre());
+    }
+
     public int returnFrameXPos(){
         return frame.getX();
     }
@@ -55,15 +59,19 @@ public class ConsolaGrafica implements Observador, IVista {
         frame.setLocation(x + frame.getWidth(), y);
     }
 
+    // ESTADOS DE FLUJO
+
     enum Estado{
         MENU_PRINCIPAL,
         ELEGIR_CARTA,
         RESPONDER_APUESTA,
         FIN_PARTIDA,
-    }
 
+    }
     private Estado estadoActual = Estado.MENU_PRINCIPAL;
     private Apuesta apuestaActual;
+
+    // MÉTODOS SOBRE ENTRADA DE DATOS
 
     private void procesarEntrada(String input) {
         if (controlador.esMiTurno()) {
@@ -133,57 +141,6 @@ public class ConsolaGrafica implements Observador, IVista {
                 procesarMenuPrincipal("1");
             }
         }
-    }
-
-    public void println(String texto) {
-        console.append(texto + "\n");
-    }
-
-    @Override
-    public void setControlador(Controlador controlador) {
-        this.controlador = controlador;
-    }
-
-    @Override
-    public void mostrarMenuPrincipal() {
-        frame.setTitle("Truco - JUGADOR: " + controlador.getJugador().getNombre());
-
-        // Muestra los jugadores y sus puntos
-        println("\n\t ------------ PUNTOS ------------");
-        mostrarPuntos();
-
-        // Muestra el número de la mano
-        println("\n\t ---- MANO " + controlador.getNumeroMano() + " - RONDA " + controlador.getNumeroRonda() + " ----");
-
-        // Muestra las cartas del jugador
-        mostrarCartas();
-
-        if (controlador.esMiTurno()) {
-            println("\t-------- ES TU TURNO --------");
-            mostrarOpcionesRonda();
-        } else {
-            println("\t--- TURNO DE " + controlador.getJugadorActual().getNombre() + " ---");
-            println("\nEsperando respuesta...");
-        }
-        estadoActual = Estado.MENU_PRINCIPAL;
-    }
-
-    public void mostrarOpcionesRonda(){
-        println("\n --- OPCIONES ---");
-        println("1 - Jugar carta");
-        println("2 - Cantar truco");
-        println("3 - Cantar envido");
-        println("4 - Irse al mazo");
-        println("Elija una opción:");
-    }
-
-    public void mostrarPuntos(){
-        println(controlador.getEstadoPartida());
-    }
-
-    public void mostrarCartas(){
-        println("\n\t ------------ CARTAS ------------");
-        println(controlador.getJugador().mostrarCartas());
     }
 
     public void procesarApuesta(String input){
@@ -275,12 +232,67 @@ public class ConsolaGrafica implements Observador, IVista {
         }
     }
 
+    // MÉTODOS SOBRE SALIDA DE DATOS
+
+    public void println(String texto) {
+        console.append(texto + "\n");
+    }
+
+    @Override
+    public void mostrarMenuPrincipal() {
+
+        // Muestra los jugadores y sus puntos
+        println("\n\t ------------ PUNTOS ------------");
+        mostrarPuntos();
+
+        // Muestra el número de la mano
+        println("\n\t ---- MANO " + controlador.getNumeroMano() + " - RONDA " + controlador.getNumeroRonda() + " ----");
+
+        // Muestra las cartas del jugador
+        mostrarCartas();
+
+        if (controlador.esMiTurno()) {
+            println("\t-------- ES TU TURNO --------");
+            mostrarOpcionesRonda();
+        } else {
+            println("\t--- TURNO DE " + controlador.getJugadorActual().getNombre() + " ---");
+            println("\nEsperando respuesta...");
+        }
+        estadoActual = Estado.MENU_PRINCIPAL;
+    }
+
+    public void mostrarOpcionesRonda(){
+        println("\n --- OPCIONES ---");
+        println("1 - Jugar carta");
+        println("2 - Cantar truco");
+        println("3 - Cantar envido");
+        println("4 - Irse al mazo");
+        println("Elija una opción:");
+    }
+
+    public void mostrarPuntos(){
+        println(controlador.getEstadoPartida());
+    }
+
+    public void mostrarCartas(){
+        println("\n\t ------------ CARTAS ------------");
+        println(controlador.getJugador().mostrarCartas());
+    }
+
     public void mostrarEnvidoInicial(){
         println("\n -- ENVIDO --");
         println("(1) - ENVIDO");
         println("(2) - REAL ENVIDO");
         println("(3) - FALTA ENVIDO");
         println("Elija una opción:");
+    }
+
+    ////////////////////////////
+    /// MÉTODOS PARA MOSTRAR ///
+    ////////////////////////////
+
+    public void mostrarCartaJugada(String jugadorActual, String cartaJugada){
+        println("\n\t * " + jugadorActual + " juega " + cartaJugada + "\n");
     }
 
     public void mostrarResponderApuesta(){
@@ -302,95 +314,61 @@ public class ConsolaGrafica implements Observador, IVista {
         estadoActual = Estado.RESPONDER_APUESTA;
     }
 
-    public void mostrarApuesta(){
-        String jugadorActual = controlador.getJugadorActual().getNombre();
-        println("\n\t * " + jugadorActual + " canta " + apuestaActual.toString());
-        estadoActual = Estado.RESPONDER_APUESTA;
+    public void mostrarEsperandoRespuesta(String jugadorActual){
+        println("Esperando respuesta de " + jugadorActual + "...");
     }
 
-    @Override
-    public void update(Observado o, Object arg) {
-        if (arg instanceof Evento){
-            switch ((Evento) arg){
+    public void mostrarDijoQuiero(String jugadorActual){
+        println("\n\t * " +  jugadorActual + " dijo QUIERO");
+    }
 
-                case MOSTRAR_MENU -> mostrarMenuPrincipal();
+    public void mostrarDijoNoQuiero(String jugadorActual){
+        println("\n\t * " + jugadorActual + " dijo NO QUIERO");
+    }
 
-                case JUGAR_CARTA -> {
-                    String nombreJugadorActual = controlador.getJugadorActual().getNombre();
-                    String cartaJugada = controlador.getCartaJugada(controlador.getJugadorActual()).toString();
-                    println("\n\t * " + nombreJugadorActual + " juega " + cartaJugada + "\n");
-                }
+    public void mostrarResultadoEnvido(String ganadorEnvido, String tantos){
+        println("\n\t --- RESULTADO ENVIDO ---");
+        println(tantos);
+        println("\t --- GANA " + ganadorEnvido + "---");
+    }
 
-                case RESPONDER_APUESTA -> {
-                    if (controlador.esMiTurno()) {
-                        mostrarResponderApuesta();
-                    } else {
-                        String jugadorActual = controlador.getJugadorActual().getNombre();
-                        println("Esperando respuesta de " + jugadorActual + "...");
-                    }
-                }
+    public void mostrarIrseAlMazo(String jugadorActual){
+        println("\n\t * " + jugadorActual + " se fue al mazo.");
+    }
 
-                case DIJO_QUIERO -> {
-                    String jugadorActual = controlador.getJugadorActual().getNombre();
-                    println("\n\t * " +  jugadorActual + " dijo QUIERO");
-                }
-
-                case DIJO_NO_QUIERO -> {
-                    String jugadorActual = controlador.getJugadorActual().getNombre();
-                    println("\n\t * " + jugadorActual + " dijo NO QUIERO");
-                }
-
-                case RESULTADO_ENVIDO -> {
-                    println("\n\t --- RESULTADO ENVIDO ---");
-                    String ganadorEnvido = controlador.getGanadorEnvido().getNombre();
-                    println(controlador.getTantos());
-                    println("\t --- GANA " + ganadorEnvido + "---");
-                }
-
-                case IRSE_AL_MAZO -> {
-                    String jugadorActual = controlador.getJugadorActual().getNombre();
-                    println("\n\t * " + jugadorActual + " se fue al mazo.");
-                }
-
-                case FIN_RONDA -> {
-                    if (controlador.getGanadorRonda() == null){
-                        println(" * PARDA *");
-                    } else {
-                        String ganadorRonda = controlador.getGanadorRonda().getNombre();
-                        println("\n\t * " + ganadorRonda + " ganó la ronda.");
-                    }
-                }
-
-                case FIN_MANO -> {
-                    String ganadorMano = controlador.getGanadorMano().getNombre();
-                    println("\n\t * " + ganadorMano + " ganó la mano.");
-                }
-
-                case CAMBIO_TURNO -> {
-                    if (controlador.esMiTurno()) {
-                        println("\t--- ES TU TURNO ---");
-                        mostrarOpcionesRonda();
-                    } else {
-                        println("\t--- TURNO DE " + controlador.getJugadorActual().getNombre() + " ---");
-                        println("\nEsperando respuesta...");
-                    }
-                }
-
-                case FIN_PARTIDA -> {
-                    println("\n\t --- FIN DE LA PARTIDA ---");
-                    mostrarPuntos();
-                    String jugadorActual = controlador.getJugadorActual().getNombre();
-                    println("\n\t ** " + jugadorActual + " HA GANADO. **");
-                    estadoActual = Estado.FIN_PARTIDA;
-                }
-
-            }
-
-        } else if (arg instanceof Apuesta){
-            // Muestra la apuesta y luego muestra para responder
-            apuestaActual = (Apuesta) arg;
-            mostrarApuesta();
+    public void mostrarGanadorRonda(String ganadorRonda){
+        if (ganadorRonda == null){
+            println(" * PARDA *");
+        } else {
+            println("\n\t * " + ganadorRonda + " ganó la ronda.");
         }
+    }
+
+    public void mostrarGanadorMano(String ganadorMano){
+        println("\n\t * " + ganadorMano + " ganó la mano.");
+    }
+
+    public void mostrarTurno(boolean esMiTurno){
+        if (esMiTurno){
+            println("\t--- ES TU TURNO ---");
+            mostrarOpcionesRonda();
+        } else {
+            println("\t--- TURNO DE " + controlador.getJugadorActual().getNombre() + " ---");
+            println("\nEsperando respuesta...");
+        }
+    }
+
+    public void mostrarFinPartida(String jugadorGanador){
+        println("\n\t --- FIN DE LA PARTIDA ---");
+        mostrarPuntos();
+        println("\n\t ** " + jugadorGanador + " HA GANADO. **");
+        estadoActual = ConsolaGrafica.Estado.FIN_PARTIDA;
+    }
+
+    public void mostrarApuesta(String jugadorActual, Apuesta apuesta){
+        apuestaActual = apuesta;
+        println("\n\t * " + jugadorActual + " canta " + apuestaActual.toString());
+        estadoActual = Estado.RESPONDER_APUESTA;
     }
 
 }
