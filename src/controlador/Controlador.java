@@ -1,8 +1,8 @@
 package controlador;
 
 import modelos.*;
-import vista.IVista;
-import vista.Observador;
+import vistas.IVista;
+import vistas.Observador;
 
 public class Controlador implements Observador {
     private final ModeloTruco modelo;
