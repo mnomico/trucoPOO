@@ -65,6 +65,10 @@ public class Controlador implements Observador {
         return modelo.getTrucoCantado();
     }
 
+    public Apuesta getTrucoActual(){
+        return modelo.getTrucoActual();
+    }
+
     public boolean getEnvidoCantado(){
         return modelo.getEnvidoCantado();
     }
