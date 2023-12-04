@@ -96,7 +96,8 @@ public class ConsolaGrafica implements IVista {
             // Elige jugar una carta
             case "1" -> {
                 mostrarCartas();
-                println("Elija una carta:");
+                println("\t           (X) - Volver atrás");
+                println("Elija una opción:");
                 estadoActual = Estado.ELEGIR_CARTA;
             }
             // Elige cantar truco
