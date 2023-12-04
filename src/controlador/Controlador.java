@@ -53,6 +53,10 @@ public class Controlador implements Observador {
         return modelo.getGanadorMano();
     }
 
+    public Jugador getJugadorQuieroTruco(){
+        return modelo.getJugadorQuieroTruco();
+    }
+
     public Jugador getGanadorEnvido(){
         return modelo.getGanadorEnvido();
     }
