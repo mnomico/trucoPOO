@@ -290,6 +290,7 @@ public class ConsolaGrafica implements IVista {
 
     @Override
     public void mostrarMenuPrincipal() {
+        frame.setTitle("Truco - JUGADOR: " + controlador.getJugador().getNombre());
 
         // Muestra los jugadores y sus puntos
         println("\n\t ------------ PUNTOS ------------");
@@ -309,6 +310,7 @@ public class ConsolaGrafica implements IVista {
             println("\nEsperando respuesta...");
         }
         estadoActual = Estado.MENU_PRINCIPAL;
+        apuestaActual = null;
     }
 
     public void mostrarOpcionesRonda(){
