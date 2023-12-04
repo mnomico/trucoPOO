@@ -1,4 +1,4 @@
-package vista;
+package vistas;
 
 import modelos.Observado;
 
