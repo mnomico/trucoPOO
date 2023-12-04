@@ -107,7 +107,7 @@ public class ConsolaGrafica implements IVista {
                     println("\n" + "Ya se cantó VALECUATRO en esta mano.");
                     mostrarOpcionesRonda();
                 } else if (controlador.getJugadorQuieroTruco() == controlador.getJugadorActual()){
-                    controlador.redoblarApuesta(controlador.getTrucoActual());
+                    controlador.cantarTruco();
                 } else {
                     println("\n" + "Ya cantaste truco.");
                     mostrarOpcionesRonda();
