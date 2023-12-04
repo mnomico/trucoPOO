@@ -340,6 +340,7 @@ public class ModeloTruco implements Observado {
 
     public void cantarTruco(){
         trucoCantado = true;
+        trucoActual = Apuesta.TRUCO;
         notificar(Apuesta.TRUCO);
         jugadorOriginal = jugadorActual;
         cambiarTurno();
