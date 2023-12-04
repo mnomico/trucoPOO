@@ -100,12 +100,19 @@ public class ConsolaGrafica implements IVista {
             }
             // Elige cantar truco
             case "2" -> {
-                if (controlador.getTrucoCantado()){
-                    println("\n" + "Ya se cantó truco en esta mano.");
-                    mostrarOpcionesRonda();
-                } else {
+
+                if (!controlador.getTrucoCantado()){
                     controlador.cantarTruco();
+                } else if (controlador.getTrucoActual() == Apuesta.VALECUATRO){
+                    println("\n" + "Ya se cantó VALECUATRO en esta mano.");
+                    mostrarOpcionesRonda();
+                } else if (controlador.getJugadorQuieroTruco() == controlador.getJugadorActual()){
+                    controlador.redoblarApuesta(controlador.getTrucoActual());
+                } else {
+                    println("\n" + "Ya cantaste truco.");
+                    mostrarOpcionesRonda();
                 }
+
             }
             // Elige cantar envido
             case "3" -> {
