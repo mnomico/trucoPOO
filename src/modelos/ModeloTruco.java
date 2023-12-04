@@ -20,6 +20,7 @@ public class ModeloTruco implements Observado {
     private Jugador ganadorEnvido;
     private final ArrayList<Jugador> ganadoresRondas;
     private Jugador jugadorOriginal;
+    private Jugador jugadorQuieroTruco;
 
     private Jugador jugador1;
     private Carta cartaJ1;
@@ -85,6 +86,10 @@ public class ModeloTruco implements Observado {
 
     public Jugador getGanadorMano(){
         return ganadorMano;
+    }
+
+    public Jugador getJugadorQuieroTruco(){
+        return jugadorQuieroTruco;
     }
 
     public Jugador getGanadorEnvido(){
@@ -320,6 +325,7 @@ public class ModeloTruco implements Observado {
         guardarCartasJugadasAlMazo();
         guardarCartasNoJugadasAlMazo();
         ganadoresRondas.clear();
+        jugadorQuieroTruco = null;
     }
 
     /////////////////////////////////////////
@@ -369,10 +375,15 @@ public class ModeloTruco implements Observado {
         // Retorna el turno al jugador que apostó inicialmente
         notificar(Evento.DIJO_QUIERO);
 
+        jugadorQuieroTruco = jugadorActual;
         jugadorActual = jugadorOriginal;
 
         switch (apuesta){
-            case TRUCO, RETRUCO, VALECUATRO -> notificar(Evento.MOSTRAR_MENU);
+            case TRUCO, RETRUCO -> notificar(Evento.MOSTRAR_MENU);
+            case VALECUATRO -> {
+                jugadorQuieroTruco = null;
+                notificar(Evento.MOSTRAR_MENU);
+            }
 
             // Casos de falta envido
             case FALTA_ENVIDO, ENVIDO_FALTA_ENVIDO, REAL_ENVIDO_FALTA_ENVIDO,
