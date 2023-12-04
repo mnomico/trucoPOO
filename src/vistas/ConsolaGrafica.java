@@ -138,15 +138,55 @@ public class ConsolaGrafica implements IVista {
     }
 
     public void procesarCartaElegida(String input) {
-        switch (input) {
-            case "0" -> controlador.jugarCarta(0);
-            case "1" -> controlador.jugarCarta(1);
-            case "2" -> controlador.jugarCarta(2);
-            default -> {
-                println("Opción inválida" + "\n");
-                procesarMenuPrincipal("1");
+
+        switch (controlador.getNumeroRonda()){
+
+            case 1 -> {
+                switch (input) {
+                    case "1" -> controlador.jugarCarta(0);
+                    case "2" -> controlador.jugarCarta(1);
+                    case "3" -> controlador.jugarCarta(2);
+                    case "X", "x" -> {
+                        estadoActual = Estado.MENU_PRINCIPAL;
+                        mostrarOpcionesRonda();
+                    }
+                    default -> {
+                        println("Opción inválida" + "\n");
+                        procesarMenuPrincipal("1");
+                    }
+                }
+            }
+
+            case 2 -> {
+                switch (input) {
+                    case "1" -> controlador.jugarCarta(0);
+                    case "2" -> controlador.jugarCarta(1);
+                    case "X", "x" -> {
+                        estadoActual = Estado.MENU_PRINCIPAL;
+                        mostrarOpcionesRonda();
+                    }
+                    default -> {
+                        println("Opción inválida" + "\n");
+                        procesarMenuPrincipal("1");
+                    }
+                }
+            }
+
+            case 3 -> {
+                switch (input) {
+                    case "1" -> controlador.jugarCarta(0);
+                    case "X", "x" -> {
+                        estadoActual = Estado.MENU_PRINCIPAL;
+                        mostrarOpcionesRonda();
+                    }
+                    default -> {
+                        println("Opción inválida" + "\n");
+                        procesarMenuPrincipal("1");
+                    }
+                }
             }
         }
+
     }
 
     public void procesarApuesta(String input){
