@@ -314,7 +314,15 @@ public class ConsolaGrafica implements IVista {
     public void mostrarOpcionesRonda(){
         println("\n --- OPCIONES ---");
         println("1 - Jugar carta");
-        println("2 - Cantar truco");
+        if (controlador.getTrucoActual() == null){
+            println("2 - Cantar truco");
+        } else {
+            switch (controlador.getTrucoActual()) {
+                case TRUCO -> println("2 - Cantar retruco");
+                case RETRUCO -> println("2 - Cantar valecuatro");
+                case VALECUATRO -> println("2 - Valecuatro cantado");
+            }
+        }
         println("3 - Cantar envido");
         println("4 - Irse al mazo");
         println("Elija una opción:");
