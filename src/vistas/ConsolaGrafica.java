@@ -44,7 +44,6 @@ public class ConsolaGrafica implements IVista {
     @Override
     public void setControlador(Controlador controlador) {
         this.controlador = controlador;
-        frame.setTitle("Truco - JUGADOR: " + controlador.getJugador().getNombre());
     }
 
     public int returnFrameXPos(){
@@ -66,7 +65,6 @@ public class ConsolaGrafica implements IVista {
         ELEGIR_CARTA,
         RESPONDER_APUESTA,
         FIN_PARTIDA,
-
     }
     private Estado estadoActual = Estado.MENU_PRINCIPAL;
     private Apuesta apuestaActual;
