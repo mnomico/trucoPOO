@@ -1,8 +1,9 @@
 import modelos.Jugador;
 import modelos.ModeloTruco;
 import controlador.Controlador;
-import vista.ConsolaGrafica;
-import vista.IVista;
+import vistas.ConsolaGrafica;
+import vistas.IVista;
+import vistas.VistaGrafica;
 
 public class Main {
     public static void main(String[] args) {
