@@ -1,7 +1,7 @@
 package modelos;
 
 import java.util.ArrayList;
-import vista.Observador;
+import vistas.Observador;
 
 
 public class ModeloTruco implements Observado {
