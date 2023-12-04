@@ -30,6 +30,7 @@ public class ModeloTruco implements Observado {
 
     private boolean envidoCantado;
     private boolean trucoCantado;
+    private Apuesta trucoActual;
 
     public ModeloTruco(){
         observers = new ArrayList<>();
@@ -112,6 +113,10 @@ public class ModeloTruco implements Observado {
 
     public boolean getTrucoCantado(){
         return trucoCantado;
+    }
+
+    public Apuesta getTrucoActual(){
+        return trucoActual;
     }
 
     public boolean getEnvidoCantado(){
@@ -321,6 +326,7 @@ public class ModeloTruco implements Observado {
     public void limpiarMano(){
         numeroRonda = 0;
         trucoCantado = false;
+        trucoActual = null;
         envidoCantado = false;
         guardarCartasJugadasAlMazo();
         guardarCartasNoJugadasAlMazo();
@@ -468,8 +474,14 @@ public class ModeloTruco implements Observado {
 
     public void redoblarApuesta(Apuesta apuesta){
         switch (apuesta){
-            case TRUCO -> notificarApuesta(Apuesta.RETRUCO);
-            case RETRUCO -> notificarApuesta(Apuesta.VALECUATRO);
+            case TRUCO -> {
+                trucoActual = Apuesta.RETRUCO;
+                notificarApuesta(Apuesta.RETRUCO);
+            }
+            case RETRUCO -> {
+                trucoActual = Apuesta.VALECUATRO;
+                notificarApuesta(Apuesta.VALECUATRO);
+            }
             case ENVIDO -> notificarApuesta(apuesta);
             // Envido se puede responder con ENVIDO, REAL_ENVIDO, FALTA_ENVIDO
             case REAL_ENVIDO -> notificarApuesta(Apuesta.REAL_ENVIDO_FALTA_ENVIDO);
