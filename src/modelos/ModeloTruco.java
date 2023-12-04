@@ -339,9 +339,16 @@ public class ModeloTruco implements Observado {
     /////////////////////////////////////////
 
     public void cantarTruco(){
-        trucoCantado = true;
-        trucoActual = Apuesta.TRUCO;
-        notificar(Apuesta.TRUCO);
+        if (!trucoCantado){
+            trucoCantado = true;
+            trucoActual = Apuesta.TRUCO;
+        } else {
+            switch (trucoActual){
+                case TRUCO -> trucoActual = Apuesta.RETRUCO;
+                case RETRUCO -> trucoActual = Apuesta.VALECUATRO;
+            }
+        }
+        notificar(trucoActual);
         jugadorOriginal = jugadorActual;
         cambiarTurno();
         notificar(Evento.RESPONDER_APUESTA);
@@ -384,6 +391,8 @@ public class ModeloTruco implements Observado {
 
         jugadorQuieroTruco = jugadorActual;
         jugadorActual = jugadorOriginal;
+
+
 
         switch (apuesta){
             case TRUCO, RETRUCO -> notificar(Evento.MOSTRAR_MENU);
