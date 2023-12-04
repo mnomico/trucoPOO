@@ -344,6 +344,7 @@ public class ConsolaGrafica implements IVista {
         println("(1) - ENVIDO");
         println("(2) - REAL ENVIDO");
         println("(3) - FALTA ENVIDO");
+        println("\n(X) - Volver atrás");
         println("Elija una opción:");
     }
 
