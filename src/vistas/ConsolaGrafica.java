@@ -205,6 +205,10 @@ public class ConsolaGrafica implements IVista {
                     apuestaActual = Apuesta.FALTA_ENVIDO;
                     controlador.cantarEnvido(apuestaActual);
                 }
+                case "X", "x" -> {
+                    estadoActual = Estado.MENU_PRINCIPAL;
+                    mostrarOpcionesRonda();
+                }
                 default -> {
                     println("Opción inválida");
                     mostrarEnvidoInicial();
