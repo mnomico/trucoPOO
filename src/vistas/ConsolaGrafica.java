@@ -219,7 +219,34 @@ public class ConsolaGrafica implements IVista {
 
         switch (apuestaActual){
 
-            case TRUCO, RETRUCO, ENVIDO_ENVIDO, REAL_ENVIDO -> {
+            case TRUCO, RETRUCO -> {
+                if (controlador.getEnvidoCantado()) {
+                    switch (input) {
+                        case "1" -> controlador.quiero(apuestaActual);
+                        case "2" -> controlador.noQuiero(apuestaActual);
+                        case "3" -> controlador.redoblarApuesta(apuestaActual);
+                        default -> {
+                            println("Opción inválida");
+                            mostrarResponderApuesta();
+                        }
+                    }
+                } else {
+                    switch (input) {
+                        case "1" -> controlador.quiero(apuestaActual);
+                        case "2" -> controlador.noQuiero(apuestaActual);
+                        case "3" -> controlador.redoblarApuesta(apuestaActual);
+                        case "4" -> {
+                            cantarEnvidoDuranteTruco();
+                        }
+                        default -> {
+                            println("Opción inválida");
+                            mostrarResponderApuesta();
+                        }
+                    }
+                }
+            }
+
+            case ENVIDO_ENVIDO, REAL_ENVIDO -> {
                 switch (input){
                     case "1" -> controlador.quiero(apuestaActual);
                     case "2" -> controlador.noQuiero(apuestaActual);
@@ -280,6 +307,18 @@ public class ConsolaGrafica implements IVista {
                 }
             }
         }
+    }
+
+    public void cantarEnvidoDuranteTruco(){
+        println("\n -- ENVIDO --");
+        println("(1) - ENVIDO");
+        println("(2) - REAL ENVIDO");
+        println("(3) - FALTA ENVIDO");
+        println("\n(X) - Volver atrás");
+        println("Elija una opción:");
+        apuestaActual = null;
+        // TODO continuar
+        //procesarApuesta();
     }
 
     // MÉTODOS SOBRE SALIDA DE DATOS
@@ -357,12 +396,22 @@ public class ConsolaGrafica implements IVista {
     }
 
     public void mostrarResponderApuesta(){
-        println("\n -- RESPONDÉ --");
+        println("\n -- RESPONDA --");
         println("(1) - Quiero");
         println("(2) - No quiero");
         switch(apuestaActual){
-            case TRUCO -> println("(3) - RETRUCO");
-            case RETRUCO -> println("(3) - VALECUATRO");
+            case TRUCO -> {
+                println("(3) - RETRUCO");
+                if (!controlador.getEnvidoCantado()){
+                    println("(4) - ENVIDO");
+                }
+            }
+            case RETRUCO -> {
+                println("(3) - VALECUATRO");
+                if (!controlador.getEnvidoCantado()){
+                    println("(4) - ENVIDO");
+                }
+            }
             case ENVIDO -> {
                 println("(3) - ENVIDO");
                 println("(4) - REAL ENVIDO");
