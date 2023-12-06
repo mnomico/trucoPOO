@@ -7,17 +7,17 @@ import vistas.Observador;
 public class Controlador implements Observador {
     private final ModeloTruco modelo;
     private final IVista vista;
-    private final Jugador jugador;
+    //private final Jugador jugador;
+    private final int jugador;
 
-    public Controlador(IVista vista, ModeloTruco modelo, Jugador jugador){
+    public Controlador(IVista vista, ModeloTruco modelo, int numeroJugador){
         vista.setControlador(this);
         this.modelo = modelo;
-        this.modelo.ingresarJugador(jugador);
         this.vista = vista;
-        this.jugador = jugador;
+        this.jugador = numeroJugador;
     }
 
-    public Jugador getJugador(){
+    public int getJugador(){
         return jugador;
     }
 
@@ -37,31 +37,47 @@ public class Controlador implements Observador {
         return modelo.getNumeroRonda();
     }
 
-    public Jugador getJugadorActual(){
+    public int getJugadorActual(){
         return modelo.getJugadorActual();
     }
 
     public String getNombreJugadorActual(){
-        return getJugadorActual().getNombre();
+        return modelo.getNombreJugadorActual();
     }
 
-    public Jugador getGanadorRonda(){
+    public int getGanadorRonda(){
         return modelo.getGanadorRonda();
     }
 
-    public Jugador getGanadorMano(){
+    public String getNombreGanadorRonda(){
+        return modelo.getNombreGanadorRonda();
+    }
+
+    public int getGanadorMano(){
         return modelo.getGanadorMano();
     }
 
-    public Jugador getJugadorQuieroTruco(){
+    public String getNombreGanadorMano(){
+        return modelo.getNombreGanadorMano();
+    }
+
+    public int getJugadorQuieroTruco(){
         return modelo.getJugadorQuieroTruco();
     }
 
-    public Jugador getGanadorEnvido(){
+    public int getGanadorEnvido(){
         return modelo.getGanadorEnvido();
     }
 
-    public Carta getCartaJugada(Jugador jugador){
+    public String getNombreGanadorEnvido(){
+        return modelo.getNombreGanadorEnvido();
+    }
+
+    public String getCartas(){
+        return modelo.getCartas(jugador);
+    }
+
+    public String getCartaJugada(int jugador){
         return modelo.getCartaJugada(jugador);
     }
 
@@ -93,6 +109,10 @@ public class Controlador implements Observador {
         modelo.cantarEnvido(apuesta);
     }
 
+    public void cantarEnvidoTruco(Apuesta apuesta){
+        modelo.cantarEnvidoTruco(apuesta);
+    }
+
     public void irseAlMazo(){
         modelo.irseAlMazo();
     }
@@ -121,7 +141,7 @@ public class Controlador implements Observador {
 
                 case JUGAR_CARTA -> {
                     String nombreJugadorActual = getNombreJugadorActual();
-                    String cartaJugada = getCartaJugada(getJugadorActual()).toString();
+                    String cartaJugada = getCartaJugada(getJugadorActual());
                     vista.mostrarCartaJugada(nombreJugadorActual, cartaJugada);
                 }
 
@@ -145,7 +165,7 @@ public class Controlador implements Observador {
                 }
 
                 case RESULTADO_ENVIDO -> {
-                    String ganadorEnvido = getGanadorEnvido().getNombre();
+                    String ganadorEnvido = getNombreGanadorEnvido();
                     String tantos = getTantos();
                     vista.mostrarResultadoEnvido(ganadorEnvido, tantos);
                 }
@@ -156,16 +176,16 @@ public class Controlador implements Observador {
                 }
 
                 case FIN_RONDA -> {
-                    if (getGanadorRonda() == null){
+                    if (getGanadorRonda() == 0){
                         vista.mostrarGanadorRonda(null);
                     } else {
-                        String ganadorRonda = getGanadorRonda().getNombre();
+                        String ganadorRonda = getNombreGanadorRonda();
                         vista.mostrarGanadorRonda(ganadorRonda);
                     }
                 }
 
                 case FIN_MANO -> {
-                    String ganadorMano = getGanadorMano().getNombre();
+                    String ganadorMano = getNombreGanadorMano();
                     vista.mostrarGanadorMano(ganadorMano);
                 }
 
@@ -180,7 +200,7 @@ public class Controlador implements Observador {
 
         } else if (arg instanceof Apuesta apuestaActual){
             // Muestra la apuesta y luego muestra para responder
-            String jugadorActual = getJugadorActual().getNombre();
+            String jugadorActual = getNombreJugadorActual();
             vista.mostrarApuesta(jugadorActual, apuestaActual);
         }
     }
