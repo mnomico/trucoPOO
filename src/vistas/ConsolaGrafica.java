@@ -219,34 +219,7 @@ public class ConsolaGrafica implements IVista {
 
         switch (apuestaActual){
 
-            case TRUCO, RETRUCO -> {
-                if (controlador.getEnvidoCantado()) {
-                    switch (input) {
-                        case "1" -> controlador.quiero(apuestaActual);
-                        case "2" -> controlador.noQuiero(apuestaActual);
-                        case "3" -> controlador.redoblarApuesta(apuestaActual);
-                        default -> {
-                            println("Opción inválida");
-                            mostrarResponderApuesta();
-                        }
-                    }
-                } else {
-                    switch (input) {
-                        case "1" -> controlador.quiero(apuestaActual);
-                        case "2" -> controlador.noQuiero(apuestaActual);
-                        case "3" -> controlador.redoblarApuesta(apuestaActual);
-                        case "4" -> {
-                            cantarEnvidoDuranteTruco();
-                        }
-                        default -> {
-                            println("Opción inválida");
-                            mostrarResponderApuesta();
-                        }
-                    }
-                }
-            }
-
-            case ENVIDO_ENVIDO, REAL_ENVIDO -> {
+            case TRUCO, RETRUCO, ENVIDO_ENVIDO, REAL_ENVIDO -> {
                 switch (input){
                     case "1" -> controlador.quiero(apuestaActual);
                     case "2" -> controlador.noQuiero(apuestaActual);
@@ -309,18 +282,6 @@ public class ConsolaGrafica implements IVista {
         }
     }
 
-    public void cantarEnvidoDuranteTruco(){
-        println("\n -- ENVIDO --");
-        println("(1) - ENVIDO");
-        println("(2) - REAL ENVIDO");
-        println("(3) - FALTA ENVIDO");
-        println("\n(X) - Volver atrás");
-        println("Elija una opción:");
-        apuestaActual = null;
-        // TODO continuar
-        //procesarApuesta();
-    }
-
     // MÉTODOS SOBRE SALIDA DE DATOS
 
     public void println(String texto) {
@@ -329,7 +290,7 @@ public class ConsolaGrafica implements IVista {
 
     @Override
     public void mostrarMenuPrincipal() {
-        frame.setTitle("Truco - JUGADOR: " + controlador.getJugador().getNombre());
+        //frame.setTitle("Truco - JUGADOR: " + controlador.getJugador().getNombre());
 
         // Muestra los jugadores y sus puntos
         println("\n\t ------------ PUNTOS ------------");
@@ -345,7 +306,7 @@ public class ConsolaGrafica implements IVista {
             println("\t-------- ES TU TURNO --------");
             mostrarOpcionesRonda();
         } else {
-            println("\t--- TURNO DE " + controlador.getJugadorActual().getNombre() + " ---");
+            println("\t--- TURNO DE " + controlador.getNombreJugadorActual() + " ---");
             println("\nEsperando respuesta...");
         }
         estadoActual = Estado.MENU_PRINCIPAL;
@@ -375,7 +336,7 @@ public class ConsolaGrafica implements IVista {
 
     public void mostrarCartas(){
         println("\n\t ------------ CARTAS ------------");
-        println(controlador.getJugador().mostrarCartas());
+        println(controlador.getCartas());
     }
 
     public void mostrarEnvidoInicial(){
@@ -400,18 +361,8 @@ public class ConsolaGrafica implements IVista {
         println("(1) - Quiero");
         println("(2) - No quiero");
         switch(apuestaActual){
-            case TRUCO -> {
-                println("(3) - RETRUCO");
-                if (!controlador.getEnvidoCantado()){
-                    println("(4) - ENVIDO");
-                }
-            }
-            case RETRUCO -> {
-                println("(3) - VALECUATRO");
-                if (!controlador.getEnvidoCantado()){
-                    println("(4) - ENVIDO");
-                }
-            }
+            case TRUCO -> println("(3) - RETRUCO");
+            case RETRUCO -> println("(3) - VALECUATRO");
             case ENVIDO -> {
                 println("(3) - ENVIDO");
                 println("(4) - REAL ENVIDO");
@@ -463,7 +414,7 @@ public class ConsolaGrafica implements IVista {
             println("\t--- ES TU TURNO ---");
             mostrarOpcionesRonda();
         } else {
-            println("\t--- TURNO DE " + controlador.getJugadorActual().getNombre() + " ---");
+            println("\t--- TURNO DE " + controlador.getNombreJugadorActual() + " ---");
             println("\nEsperando respuesta...");
         }
     }
