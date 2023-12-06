@@ -13,14 +13,14 @@ public class ModeloTruco implements Observado {
     private int puntosTruco;
     private int puntosEnvido;
 
-    private Jugador jugadorActual;
-    private Jugador jugadorMano;
-    private Jugador ganadorRonda;
-    private Jugador ganadorMano;
-    private Jugador ganadorEnvido;
-    private final ArrayList<Jugador> ganadoresRondas;
-    private Jugador jugadorOriginal;
-    private Jugador jugadorQuieroTruco;
+    private int jugadorActual;
+    private int jugadorMano;
+    private int ganadorRonda;
+    private int ganadorMano;
+    private int ganadorEnvido;
+    private int jugadorOriginal;
+    private int jugadorQuieroTruco;
+    private final ArrayList<Integer> ganadoresRondas;
 
     private Jugador jugador1;
     private Carta cartaJ1;
@@ -77,33 +77,78 @@ public class ModeloTruco implements Observado {
         return numeroRonda;
     }
 
-    public Jugador getJugadorActual(){
+    public int getJugadorActual(){
         return jugadorActual;
     }
 
-    public Jugador getGanadorRonda(){
+    public String getNombreJugadorActual(){
+        if (jugadorActual == 1){
+            return jugador1.getNombre();
+        } else if (jugadorActual == 2){
+            return jugador2.getNombre();
+        }
+        return "";
+    }
+
+    public String getCartas(int jugador){
+        if (jugador == 1){
+            return jugador1.mostrarCartas();
+        } else if (jugador == 2){
+            return jugador2.mostrarCartas();
+        }
+        return "";
+    }
+
+    public int getGanadorRonda(){
         return ganadorRonda;
     }
 
-    public Jugador getGanadorMano(){
+    public String getNombreGanadorRonda(){
+        if (ganadorRonda == 1){
+            return jugador1.getNombre();
+        } else if (ganadorRonda == 2){
+            return jugador2.getNombre();
+        }
+        return "";
+    }
+
+    public int getGanadorMano(){
         return ganadorMano;
     }
 
-    public Jugador getJugadorQuieroTruco(){
+    public String getNombreGanadorMano(){
+        if (ganadorMano == 1){
+            return jugador1.getNombre();
+        } else if (ganadorMano == 2){
+            return jugador2.getNombre();
+        }
+        return "";
+    }
+
+    public int getJugadorQuieroTruco(){
         return jugadorQuieroTruco;
     }
 
-    public Jugador getGanadorEnvido(){
+    public int getGanadorEnvido(){
         return ganadorEnvido;
     }
 
-    public Carta getCartaJugada(Jugador jugador){
-        if (jugador == jugador1){
-            return cartaJ1;
-        } else if (jugador == jugador2) {
-            return cartaJ2;
+    public String getNombreGanadorEnvido(){
+        if (ganadorEnvido == 1){
+            return jugador1.getNombre();
+        } else if (ganadorEnvido == 2){
+            return jugador2.getNombre();
         }
-        return null;
+        return "";
+    }
+
+    public String getCartaJugada(int jugador){
+        if (jugador == 1){
+            return cartaJ1.toString();
+        } else if (jugador == 2) {
+            return cartaJ2.toString();
+        }
+        return "";
     }
 
     public String getEstadoPartida(){
@@ -143,8 +188,8 @@ public class ModeloTruco implements Observado {
     public void iniciarJuego(){
         envidoCantado = false;
         trucoCantado = false;
-        jugadorActual = jugador1;
-        jugadorMano = jugador2;
+        jugadorActual = 1;
+        jugadorMano = 2;
         iniciarMano();
     }
 
@@ -163,23 +208,23 @@ public class ModeloTruco implements Observado {
     }
 
     public void cambiarTurno(){
-        if (jugadorActual == jugador1){
-            jugadorActual = jugador2;
-        } else jugadorActual = jugador1;
+        if (jugadorActual == 1){
+            jugadorActual = 2;
+        } else jugadorActual = 1;
     }
 
     public void cambiarJugadorMano(){
-        if (jugadorMano == jugador1){
-            jugadorMano = jugador2;
-        } else jugadorMano = jugador1;
+        if (jugadorMano == 1){
+            jugadorMano = 2;
+        } else jugadorMano = 1;
     }
 
     public void jugarCarta(int numeroCarta) {
 
-        if (jugadorActual == jugador1) {
-            cartaJ1 = jugadorActual.jugarCarta(numeroCarta);
-        } else if (jugadorActual == jugador2) {
-            cartaJ2 = jugadorActual.jugarCarta(numeroCarta);
+        if (jugadorActual == 1) {
+            cartaJ1 = jugador1.jugarCarta(numeroCarta);
+        } else if (jugadorActual == 2) {
+            cartaJ2 = jugador2.jugarCarta(numeroCarta);
         }
 
         notificarJugarCarta();
@@ -193,7 +238,7 @@ public class ModeloTruco implements Observado {
             notificar(Evento.FIN_RONDA);
             if (numeroRonda > 3) {
                 ganadorMano = determinarGanadorMano();
-                ganadorMano.darPuntos(puntosTruco);
+                darPuntos(ganadorMano, puntosTruco);
 
                 limpiarMano();
 
@@ -211,57 +256,58 @@ public class ModeloTruco implements Observado {
     }
 
     // Chequea si alguno de los jugadores tiene 30 puntos o más y retorna true si eso sucede
+
     public boolean finPartida(){
         if (jugador1.getPuntos() >= 30){
-            jugadorActual = jugador1;
+            jugadorActual = 1;
             return true;
         } else if (jugador2.getPuntos() >= 30){
-            jugadorActual = jugador2;
+            jugadorActual = 2;
             return true;
         }
         return false;
     }
 
-    public Jugador determinarGanadorRonda(){
+    public int determinarGanadorRonda(){
 
         // Calculo cual carta es la ganadora.
         int diferencia = cartaJ1.getValor().compareTo(cartaJ2.getValor());
 
         if (diferencia < 0){
             // La carta del jugador 2 gana
-            return jugador2;
+            return 2;
         } else if (diferencia > 0) {
             // La carta del jugador 1 gana
-            return jugador1;
+            return 1;
         }
         // Parda
-        return null;
+        return 0;
     }
 
-    public Jugador determinarGanadorMano(){
+    public int determinarGanadorMano(){
 
         int rondasJ1 = 0;
         int rondasJ2 = 0;
         int pardas = 0;
 
-        for (Jugador jugadorGanador : ganadoresRondas){
-            if (jugadorGanador == jugador1){
+        for (int jugadorGanador : ganadoresRondas){
+            if (jugadorGanador == 1){
                 rondasJ1++;
-            } else if (jugadorGanador == jugador2){
+            } else if (jugadorGanador == 2){
                 rondasJ2++;
-            } else if (jugadorGanador == null){
+            } else if (jugadorGanador == 0){
                 pardas++;
             }
         }
 
         if (rondasJ1 >= 2){
-            return jugador1;
+            return 1;
         } else if (rondasJ2 >= 2){
-            return jugador2;
+            return 2;
         } else if (pardas == 1){
             // Si ambos jugadores ganan una ronda pero empaten en una, gana el primero que haya ganado una ronda
-            for (Jugador jugadorGanador : ganadoresRondas){
-                if (jugadorGanador != null){
+            for (int jugadorGanador : ganadoresRondas){
+                if (jugadorGanador != 0){
                     return jugadorGanador;
                 }
             }
@@ -274,7 +320,7 @@ public class ModeloTruco implements Observado {
         notificar(Evento.IRSE_AL_MAZO);
         cambiarTurno();
         ganadorMano = jugadorActual;
-        ganadorMano.darPuntos(puntosTruco);
+        darPuntos(ganadorMano, puntosTruco);
         notificar(Evento.FIN_MANO);
         limpiarMano();
         iniciarMano();
@@ -315,7 +361,7 @@ public class ModeloTruco implements Observado {
         numeroRonda++;
         guardarCartasJugadasAlMazo();
         // Si se produce una parda
-        if (ganadorRonda == null){
+        if (ganadorRonda == 0){
             jugadorActual = jugadorMano;
         } else {
             jugadorActual = ganadorRonda;
@@ -331,7 +377,7 @@ public class ModeloTruco implements Observado {
         guardarCartasJugadasAlMazo();
         guardarCartasNoJugadasAlMazo();
         ganadoresRondas.clear();
-        jugadorQuieroTruco = null;
+        jugadorQuieroTruco = 0;
     }
 
     /////////////////////////////////////////
@@ -363,14 +409,21 @@ public class ModeloTruco implements Observado {
         notificar(Evento.RESPONDER_APUESTA);
     }
 
-    public Jugador calcularEnvido(){
+    public void cantarEnvidoTruco(Apuesta apuesta){
+        envidoCantado = true;
+        notificar(apuesta);
+        cambiarTurno();
+        notificar(Evento.RESPONDER_APUESTA);
+    }
+
+    public int calcularEnvido(){
         int tantoJ1 = jugador1.getTanto();
         int tantoJ2 = jugador2.getTanto();
 
         if (tantoJ1 > tantoJ2){
-            return jugador1;
+            return 1;
         } else if (tantoJ2 > tantoJ1){
-            return jugador2;
+            return 2;
         } else return jugadorMano;
     }
 
@@ -392,29 +445,27 @@ public class ModeloTruco implements Observado {
         jugadorQuieroTruco = jugadorActual;
         jugadorActual = jugadorOriginal;
 
-
-
         switch (apuesta){
             case TRUCO, RETRUCO -> notificar(Evento.MOSTRAR_MENU);
             case VALECUATRO -> {
-                jugadorQuieroTruco = null;
+                jugadorQuieroTruco = 0;
                 notificar(Evento.MOSTRAR_MENU);
             }
 
             // Casos de falta envido
             case FALTA_ENVIDO, ENVIDO_FALTA_ENVIDO, REAL_ENVIDO_FALTA_ENVIDO,
-                 ENVIDO_REAL_ENVIDO_FALTA_ENVIDO,
-                 ENVIDO_ENVIDO_REAL_ENVIDO_FALTA_ENVIDO ->
+                    ENVIDO_REAL_ENVIDO_FALTA_ENVIDO,
+                    ENVIDO_ENVIDO_REAL_ENVIDO_FALTA_ENVIDO ->
             {
                 ganadorEnvido = calcularEnvido();
                 notificar(Evento.RESULTADO_ENVIDO);
                 int puntosFalta = 0;
-                if (ganadorEnvido != jugador1){
+                if (ganadorEnvido != 1){
                     puntosFalta = 30 - jugador1.getPuntos();
-                } else if (ganadorEnvido != jugador2){
+                } else if (ganadorEnvido != 2){
                     puntosFalta = 30 - jugador2.getPuntos();
                 }
-                ganadorEnvido.darPuntos(puntosFalta);
+                darPuntos(ganadorEnvido, puntosFalta);
                 if (finPartida()){
                     notificar(Evento.FIN_PARTIDA);
                 } else {
@@ -426,7 +477,7 @@ public class ModeloTruco implements Observado {
             default -> {
                 ganadorEnvido = calcularEnvido();
                 notificar(Evento.RESULTADO_ENVIDO);
-                ganadorEnvido.darPuntos(puntosEnvido);
+                darPuntos(ganadorEnvido, puntosEnvido);
                 if (finPartida()){
                     notificar(Evento.FIN_PARTIDA);
                 } else {
@@ -455,7 +506,7 @@ public class ModeloTruco implements Observado {
                 notificar(Evento.DIJO_NO_QUIERO);
                 cambiarTurno();
                 ganadorMano = jugadorActual;
-                ganadorMano.darPuntos(puntosTruco);
+                darPuntos(ganadorMano, puntosTruco);
                 notificar(Evento.FIN_MANO);
                 if (finPartida()){
                     notificar(Evento.FIN_PARTIDA);
@@ -470,7 +521,7 @@ public class ModeloTruco implements Observado {
             default -> {
                 notificar(Evento.DIJO_NO_QUIERO);
                 cambiarTurno();
-                jugadorActual.darPuntos(puntosEnvido);
+                darPuntos(jugadorActual, puntosEnvido);
                 jugadorActual = jugadorOriginal;
                 notificar(Evento.MOSTRAR_MENU);
             }
@@ -497,6 +548,14 @@ public class ModeloTruco implements Observado {
             case REAL_ENVIDO -> notificarApuesta(Apuesta.REAL_ENVIDO_FALTA_ENVIDO);
             case ENVIDO_ENVIDO -> notificarApuesta(Apuesta.ENVIDO_ENVIDO_REAL_ENVIDO);
             case ENVIDO_ENVIDO_REAL_ENVIDO -> notificarApuesta(Apuesta.ENVIDO_ENVIDO_REAL_ENVIDO_FALTA_ENVIDO);
+        }
+    }
+
+    public void darPuntos(int jugador, int puntos){
+        if (jugador == 1){
+            jugador1.darPuntos(puntos);
+        } else if (jugador == 2){
+            jugador2.darPuntos(puntos);
         }
     }
 
