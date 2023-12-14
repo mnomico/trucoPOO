@@ -28,6 +28,8 @@ public class ModeloTruco implements Observado {
     private Jugador jugador2;
     private Carta cartaJ2;
 
+    private Carta cartaGanadora;
+
     private boolean envidoCantado;
     private boolean trucoCantado;
     private Apuesta trucoActual;
