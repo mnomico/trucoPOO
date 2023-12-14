@@ -153,6 +153,10 @@ public class ModeloTruco implements Observado {
         return "";
     }
 
+    public String getCartaGanadora(){
+        return cartaGanadora.toString();
+    }
+
     public String getEstadoPartida(){
         return "\t" + jugador1.getNombre() + ": " + jugador1.getPuntos() + " - " +
                jugador2.getNombre() + ": " + jugador2.getPuntos();
@@ -277,12 +281,15 @@ public class ModeloTruco implements Observado {
 
         if (diferencia < 0){
             // La carta del jugador 2 gana
+            cartaGanadora = cartaJ2;
             return 2;
         } else if (diferencia > 0) {
             // La carta del jugador 1 gana
+            cartaGanadora = cartaJ1;
             return 1;
         }
         // Parda
+        cartaGanadora = null;
         return 0;
     }
 
