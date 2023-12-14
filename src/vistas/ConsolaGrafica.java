@@ -336,7 +336,11 @@ public class ConsolaGrafica implements IVista {
 
     public void mostrarCartas(){
         println("\n\t ------------ CARTAS ------------");
-        println(controlador.getCartas());
+        int nroCarta = 1;
+        for (String carta : controlador.getCartas()){
+            println("\t           (" + nroCarta++ + ") - " + carta + "\n");
+        }
+        //println(controlador.getCartas());
     }
 
     public void mostrarEnvidoInicial(){
