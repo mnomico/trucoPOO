@@ -3,6 +3,7 @@ package controlador;
 import modelos.*;
 import vistas.IVista;
 import vistas.Observador;
+import java.util.ArrayList;
 
 public class Controlador implements Observador {
     private final ModeloTruco modelo;
@@ -73,12 +74,16 @@ public class Controlador implements Observador {
         return modelo.getNombreGanadorEnvido();
     }
 
-    public String getCartas(){
+    public ArrayList<String> getCartas(){
         return modelo.getCartas(jugador);
     }
 
     public String getCartaJugada(int jugador){
         return modelo.getCartaJugada(jugador);
+    }
+
+    public String getCartaGanadora(){
+        return modelo.getCartaGanadora();
     }
 
     public boolean getTrucoCantado(){
