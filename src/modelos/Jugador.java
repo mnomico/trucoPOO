@@ -44,6 +44,15 @@ public class Jugador {
         return cartas.remove(numeroCarta);
     }
 
+    public ArrayList<String> mostrarCartas(){
+        ArrayList<String> cartas = new ArrayList<>();
+        for (Carta carta : this.cartas){
+            cartas.add(carta.toString());
+        }
+        return cartas;
+    }
+
+    /*
     public String mostrarCartas(){
         StringBuilder stringCartas = new StringBuilder();
         int nroCarta = 1;
@@ -52,6 +61,7 @@ public class Jugador {
         }
         return stringCartas.toString();
     }
+    */
 
     public void darPuntos(int puntos){
         this.puntos += puntos;
