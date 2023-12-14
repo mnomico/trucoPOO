@@ -92,13 +92,13 @@ public class ModeloTruco implements Observado {
         return "";
     }
 
-    public String getCartas(int jugador){
+    public ArrayList<String> getCartas(int jugador){
         if (jugador == 1){
             return jugador1.mostrarCartas();
         } else if (jugador == 2){
             return jugador2.mostrarCartas();
         }
-        return "";
+        return new ArrayList<>();
     }
 
     public int getGanadorRonda(){
