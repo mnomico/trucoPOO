@@ -17,13 +17,13 @@ public class Main {
 
         juego.iniciarJuego();
 
-        IVista vista1 = new ConsolaGrafica();
+        IVista vista1 = new VistaGrafica();
         IVista vista2 = new ConsolaGrafica();
 
         vista2.setLocation(vista1.returnFrameXPos(), vista1.returnFrameYPos());
 
-        Controlador controlador1 = new Controlador(vista1, juego, jugador1);
-        Controlador controlador2 = new Controlador(vista2, juego, jugador2);
+        Controlador controlador1 = new Controlador(vista1, juego, 1);
+        Controlador controlador2 = new Controlador(vista2, juego, 2);
 
         vista1.setControlador(controlador1);
         vista2.setControlador(controlador2);
