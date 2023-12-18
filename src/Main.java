@@ -5,8 +5,10 @@ import vistas.ConsolaGrafica;
 import vistas.IVista;
 import vistas.VistaGrafica;
 
+import java.rmi.RemoteException;
+
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws RemoteException {
         ModeloTruco juego = new ModeloTruco();
 
         Jugador jugador1 = new Jugador("JUGADOR 1");
@@ -22,14 +24,20 @@ public class Main {
 
         vista2.setLocation(vista1.returnFrameXPos(), vista1.returnFrameYPos());
 
-        Controlador controlador1 = new Controlador(vista1, juego, 1);
-        Controlador controlador2 = new Controlador(vista2, juego, 2);
+        Controlador controlador1 = new Controlador(vista1, 1);
+        Controlador controlador2 = new Controlador(vista2, 2);
+
+        controlador1.setModeloRemoto(juego);
+        controlador2.setModeloRemoto(juego);
 
         vista1.setControlador(controlador1);
         vista2.setControlador(controlador2);
 
         juego.setObservers(controlador1);
         juego.setObservers(controlador2);
+
+        vista1.setVisible(true);
+        vista2.setVisible(true);
 
         vista1.mostrarMenuPrincipal();
         vista2.mostrarMenuPrincipal();

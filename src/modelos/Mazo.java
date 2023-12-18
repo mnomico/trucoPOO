@@ -1,9 +1,10 @@
 package modelos;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Stack;
 
-public class Mazo {
+public class Mazo implements Serializable {
     private final Stack<Carta> mazo = new Stack<>(); // pila en donde se guardan las cartas
 
     public Mazo(){

@@ -3,6 +3,8 @@ package vistas;
 import controlador.Controlador;
 import modelos.Apuesta;
 
+import java.rmi.RemoteException;
+
 public interface IVista {
 
     int returnFrameXPos();
@@ -11,13 +13,15 @@ public interface IVista {
 
     void setLocation(int x, int y);
 
+    void setVisible(boolean flag);
+
     void setControlador(Controlador controlador);
 
     void mostrarMenuPrincipal();
 
     void mostrarOpcionesRonda();
 
-    void mostrarPuntos();
+    void mostrarPuntos() throws RemoteException;
 
     void mostrarCartas();
 

@@ -1,6 +1,8 @@
 package modelos;
 
-public class Carta {
+import java.io.Serializable;
+
+public class Carta implements Serializable {
 
     private final int numero;
     private final Palo palo;

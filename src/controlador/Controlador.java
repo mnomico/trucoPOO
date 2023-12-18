@@ -1,19 +1,22 @@
 package controlador;
 
+import ar.edu.unlu.rmimvc.cliente.IControladorRemoto;
+import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
 import modelos.*;
 import vistas.IVista;
-import vistas.Observador;
+
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-public class Controlador implements Observador {
-    private final ModeloTruco modelo;
+public class Controlador implements IControladorRemoto {
+    private ModeloTrucoI modelo;
     private final IVista vista;
     //private final Jugador jugador;
     private final int jugador;
 
-    public Controlador(IVista vista, ModeloTruco modelo, int numeroJugador){
+    public Controlador(IVista vista, int numeroJugador){
         vista.setControlador(this);
-        this.modelo = modelo;
+        //this.modelo = modelo;
         this.vista = vista;
         this.jugador = numeroJugador;
     }
@@ -22,123 +25,253 @@ public class Controlador implements Observador {
         return jugador;
     }
 
-    public String getEstadoPartida(){
-        return modelo.getEstadoPartida();
+    public String getEstadoPartida() {
+        try {
+            return modelo.getEstadoPartida();
+        } catch (RemoteException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public String getTantos(){
-        return modelo.getTantos();
+    public String getTantos() {
+        try {
+            return modelo.getTantos();
+        } catch (RemoteException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public int getNumeroMano(){
-        return modelo.getNumeroMano();
+    public int getNumeroMano() {
+        try {
+            return modelo.getNumeroMano();
+        } catch (RemoteException e){
+            e.printStackTrace();
+        }
+        return 0;
     }
 
-    public int getNumeroRonda(){
-        return modelo.getNumeroRonda();
+    public int getNumeroRonda() {
+        try {
+            return modelo.getNumeroRonda();
+        } catch (RemoteException e){
+            e.printStackTrace();
+        }
+        return 0;
     }
 
-    public int getJugadorActual(){
-        return modelo.getJugadorActual();
+    public int getJugadorActual() {
+        try {
+            return modelo.getJugadorActual();
+        } catch (RemoteException e){
+            e.printStackTrace();
+        }
+        return 0;
     }
 
-    public String getNombreJugadorActual(){
-        return modelo.getNombreJugadorActual();
+    public String getNombreJugadorActual() {
+        try {
+            return modelo.getNombreJugadorActual();
+        } catch (RemoteException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public int getGanadorRonda(){
-        return modelo.getGanadorRonda();
+    public int getGanadorRonda() {
+        try {
+            return modelo.getGanadorRonda();
+        } catch (RemoteException e){
+            e.printStackTrace();
+        }
+        return 0;
     }
 
-    public String getNombreGanadorRonda(){
-        return modelo.getNombreGanadorRonda();
+    public String getNombreGanadorRonda() {
+        try {
+            return modelo.getNombreGanadorRonda();
+        } catch (RemoteException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public int getGanadorMano(){
+    /*
+    public int getGanadorMano() {
         return modelo.getGanadorMano();
     }
+    */
 
-    public String getNombreGanadorMano(){
-        return modelo.getNombreGanadorMano();
+    public String getNombreGanadorMano() {
+        try {
+            return modelo.getNombreGanadorMano();
+        } catch (RemoteException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public int getJugadorQuieroTruco(){
-        return modelo.getJugadorQuieroTruco();
+    public int getJugadorQuieroTruco() {
+        try {
+            return modelo.getJugadorQuieroTruco();
+        } catch (RemoteException e){
+            e.printStackTrace();
+        }
+        return 0;
     }
 
-    public int getGanadorEnvido(){
+    /*
+    public int getGanadorEnvido() throws RemoteException {
         return modelo.getGanadorEnvido();
     }
+    */
 
-    public String getNombreGanadorEnvido(){
-        return modelo.getNombreGanadorEnvido();
+    public String getNombreGanadorEnvido() {
+        try {
+            return modelo.getNombreGanadorEnvido();
+        } catch (RemoteException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public ArrayList<String> getCartas(){
-        return modelo.getCartas(jugador);
+    public ArrayList<String> getCartas() {
+        try {
+            return modelo.getCartas(jugador);
+        } catch (RemoteException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public String getCartaJugada(int jugador){
-        return modelo.getCartaJugada(jugador);
+    public String getCartaJugada(int jugador) {
+        try {
+            return modelo.getCartaJugada(jugador);
+        } catch (RemoteException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public String getCartaGanadora(){
-        return modelo.getCartaGanadora();
+    public String getCartaGanadora()  {
+        try {
+            return modelo.getCartaGanadora();
+        } catch (RemoteException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public boolean getTrucoCantado(){
-        return modelo.getTrucoCantado();
+    public boolean getTrucoCantado()  {
+        try {
+            return modelo.getTrucoCantado();
+        } catch (RemoteException e){
+            e.printStackTrace();
+        }
+        return false;
     }
 
-    public Apuesta getTrucoActual(){
-        return modelo.getTrucoActual();
+    public Apuesta getTrucoActual() {
+        try {
+            return modelo.getTrucoActual();
+        } catch (RemoteException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public boolean getEnvidoCantado(){
-        return modelo.getEnvidoCantado();
+    public boolean getEnvidoCantado() {
+        try {
+            return modelo.getEnvidoCantado();
+        } catch (RemoteException e){
+            e.printStackTrace();
+        }
+        return false;
     }
 
-    public boolean esMiTurno(){
-        return modelo.getJugadorActual() == jugador;
+    public boolean esMiTurno()  {
+        try {
+            return modelo.getJugadorActual() == jugador;
+        } catch (RemoteException e){
+            e.printStackTrace();
+        }
+        return false;
     }
 
-    public void jugarCarta(int numeroCarta){
-        modelo.jugarCarta(numeroCarta);
+    public void jugarCarta(int numeroCarta)  {
+        try {
+            modelo.jugarCarta(numeroCarta);
+        }catch (RemoteException e){
+            e.printStackTrace();
+        }
     }
 
-    public void cantarTruco(){
-        modelo.cantarTruco();
+    public void cantarTruco()  {
+        try {
+            modelo.cantarTruco();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void cantarEnvido(Apuesta apuesta){
-        modelo.cantarEnvido(apuesta);
+    public void cantarEnvido(Apuesta apuesta)  {
+        try {
+            modelo.cantarEnvido(apuesta);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void cantarEnvidoTruco(Apuesta apuesta){
-        modelo.cantarEnvidoTruco(apuesta);
+    public void cantarEnvidoTruco(Apuesta apuesta)  {
+        try {
+            modelo.cantarEnvidoTruco(apuesta);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void irseAlMazo(){
-        modelo.irseAlMazo();
+    public void irseAlMazo()  {
+        try {
+            modelo.irseAlMazo();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void quiero(Apuesta apuesta){
-        modelo.quiero(apuesta);
+    public void quiero(Apuesta apuesta)  {
+        try {
+            modelo.quiero(apuesta);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void noQuiero(Apuesta apuesta){
-        modelo.noQuiero(apuesta);
+    public void noQuiero(Apuesta apuesta)  {
+        try {
+            modelo.noQuiero(apuesta);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void redoblarEnvido(Apuesta apuesta){
-        modelo.redoblarEnvido(apuesta);
+    public void redoblarEnvido(Apuesta apuesta)  {
+        try {
+            modelo.redoblarEnvido(apuesta);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void redoblarApuesta(Apuesta apuesta){
-        modelo.redoblarApuesta(apuesta);
+    public void redoblarApuesta(Apuesta apuesta)  {
+        try {
+            modelo.redoblarApuesta(apuesta);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void update(Observado o, Object arg) {
+    public void actualizar(IObservableRemoto o, Object arg) throws RemoteException{
         if (arg instanceof Evento){
             switch ((Evento) arg){
 
@@ -208,5 +341,10 @@ public class Controlador implements Observador {
             String jugadorActual = getNombreJugadorActual();
             vista.mostrarApuesta(jugadorActual, apuestaActual);
         }
+    }
+
+    @Override
+    public <T extends IObservableRemoto> void setModeloRemoto(T modeloRemoto) throws RemoteException{
+        this.modelo = (ModeloTrucoI) modeloRemoto;
     }
 }

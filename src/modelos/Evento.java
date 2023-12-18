@@ -1,6 +1,8 @@
 package modelos;
 
-public enum Evento {
+import java.io.Serializable;
+
+public enum Evento implements Serializable {
     MOSTRAR_MENU,
     JUGAR_CARTA,
     RESPONDER_APUESTA,

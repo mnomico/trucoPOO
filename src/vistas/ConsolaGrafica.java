@@ -5,6 +5,7 @@ import modelos.Apuesta;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.rmi.RemoteException;
 
 public class ConsolaGrafica implements IVista {
 
@@ -24,7 +25,7 @@ public class ConsolaGrafica implements IVista {
         frame.setContentPane(panel2);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
-        frame.setVisible(true);
+        frame.setVisible(false);
         frame.setSize(400,600);
 
         Action procesarInputField = new AbstractAction() {
@@ -56,6 +57,10 @@ public class ConsolaGrafica implements IVista {
 
     public void setLocation(int x, int y){
         frame.setLocation(x + frame.getWidth(), y);
+    }
+
+    public void setVisible(boolean flag){
+        frame.setVisible(flag);
     }
 
     // ESTADOS DE FLUJO
@@ -330,11 +335,11 @@ public class ConsolaGrafica implements IVista {
         println("Elija una opción:");
     }
 
-    public void mostrarPuntos(){
+    public void mostrarPuntos() {
         println(controlador.getEstadoPartida());
     }
 
-    public void mostrarCartas(){
+    public void mostrarCartas() {
         println("\n\t ------------ CARTAS ------------");
         int nroCarta = 1;
         for (String carta : controlador.getCartas()){

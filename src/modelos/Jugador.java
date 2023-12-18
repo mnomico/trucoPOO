@@ -1,9 +1,10 @@
 package modelos;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Jugador {
+public class Jugador implements Serializable {
 
     private final String nombre;
     private int puntos;

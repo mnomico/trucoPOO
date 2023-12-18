@@ -282,8 +282,7 @@ public class VistaGrafica implements IVista {
 
         // Mostrar Ventana Principal
         ventanaPrincipal.pack();
-        ventanaPrincipal.setVisible(true);
-
+        ventanaPrincipal.setVisible(false);
     }
 
     private Apuesta apuestaActual;
@@ -301,6 +300,10 @@ public class VistaGrafica implements IVista {
     @Override
     public void setLocation(int x, int y) {
 
+    }
+
+    public void setVisible(boolean flag){
+        ventanaPrincipal.setVisible(flag);
     }
 
     @Override

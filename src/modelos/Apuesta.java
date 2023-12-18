@@ -1,6 +1,8 @@
 package modelos;
 
-public enum Apuesta {
+import java.io.Serializable;
+
+public enum Apuesta implements Serializable {
     ENVIDO("ENVIDO"),
     REAL_ENVIDO("REAL ENVIDO"),
     FALTA_ENVIDO("FALTA ENVIDO"),

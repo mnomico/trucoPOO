@@ -1,8 +1,10 @@
 package modelos;
 
+import java.io.Serializable;
+
 import static modelos.Palo.*;
 
-public enum Valor {
+public enum Valor implements Serializable {
     CUATRO(4),
     CINCO(5),
     SEIS(6),

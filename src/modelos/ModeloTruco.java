@@ -1,11 +1,15 @@
 package modelos;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
+
+import ar.edu.unlu.rmimvc.cliente.IControladorRemoto;
+import ar.edu.unlu.rmimvc.observer.ObservableRemoto;
 import vistas.Observador;
 
 
-public class ModeloTruco implements Observado {
-    private final ArrayList<Observador> observers;
+public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI {
+    private final ArrayList<IControladorRemoto> observers;
 
     private final Mazo mazo;
     private int numeroMano;
@@ -42,7 +46,8 @@ public class ModeloTruco implements Observado {
         ganadoresRondas = new ArrayList<>();
     }
 
-    public void setObservers(Observador observer){
+    @Override
+    public void setObservers(IControladorRemoto observer) throws RemoteException{
         observers.add(observer);
     }
 
@@ -50,40 +55,47 @@ public class ModeloTruco implements Observado {
     ///////////// NOTIFICADORES /////////////
     /////////////////////////////////////////
 
-    public void notificar(Object arg){
-        for (Observador observer : observers){
-            observer.update(this, arg);
+    @Override
+    public void notificarObservadoresObservadores(Object arg) throws RemoteException {
+        for (IControladorRemoto observer : observers){
+            observer.actualizar(this, arg);
         }
     }
 
-    public void notificarJugarCarta(){
-        notificar(Evento.JUGAR_CARTA);
+    @Override
+    public void notificarObservadoresJugarCarta() throws RemoteException {
+        notificarObservadoresObservadores(Evento.JUGAR_CARTA);
         cambiarTurno();
     }
 
-    public void notificarApuesta(Apuesta apuesta){
-        notificar(apuesta);
+    @Override
+    public void notificarObservadoresApuesta(Apuesta apuesta) throws RemoteException {
+        notificarObservadoresObservadores(apuesta);
         cambiarTurno();
-        notificar(Evento.RESPONDER_APUESTA);
+        notificarObservadoresObservadores(Evento.RESPONDER_APUESTA);
     }
 
     /////////////////////////////////////////
     //////////////// GETTERS ////////////////
     /////////////////////////////////////////
 
-    public int getNumeroMano(){
+    @Override
+    public int getNumeroMano() throws RemoteException {
         return numeroMano;
     }
 
-    public int getNumeroRonda(){
+    @Override
+    public int getNumeroRonda() throws RemoteException{
         return numeroRonda;
     }
 
-    public int getJugadorActual(){
+    @Override
+    public int getJugadorActual() throws RemoteException{
         return jugadorActual;
     }
 
-    public String getNombreJugadorActual(){
+    @Override
+    public String getNombreJugadorActual() throws RemoteException{
         if (jugadorActual == 1){
             return jugador1.getNombre();
         } else if (jugadorActual == 2){
@@ -92,7 +104,8 @@ public class ModeloTruco implements Observado {
         return "";
     }
 
-    public ArrayList<String> getCartas(int jugador){
+    @Override
+    public ArrayList<String> getCartas(int jugador) throws RemoteException{
         if (jugador == 1){
             return jugador1.mostrarCartas();
         } else if (jugador == 2){
@@ -101,11 +114,13 @@ public class ModeloTruco implements Observado {
         return new ArrayList<>();
     }
 
-    public int getGanadorRonda(){
+    @Override
+    public int getGanadorRonda() throws RemoteException{
         return ganadorRonda;
     }
 
-    public String getNombreGanadorRonda(){
+    @Override
+    public String getNombreGanadorRonda() throws RemoteException{
         if (ganadorRonda == 1){
             return jugador1.getNombre();
         } else if (ganadorRonda == 2){
@@ -114,11 +129,13 @@ public class ModeloTruco implements Observado {
         return "";
     }
 
-    public int getGanadorMano(){
+    @Override
+    public int getGanadorMano() throws RemoteException{
         return ganadorMano;
     }
 
-    public String getNombreGanadorMano(){
+    @Override
+    public String getNombreGanadorMano() throws RemoteException{
         if (ganadorMano == 1){
             return jugador1.getNombre();
         } else if (ganadorMano == 2){
@@ -127,15 +144,18 @@ public class ModeloTruco implements Observado {
         return "";
     }
 
-    public int getJugadorQuieroTruco(){
+    @Override
+    public int getJugadorQuieroTruco() throws RemoteException{
         return jugadorQuieroTruco;
     }
 
-    public int getGanadorEnvido(){
+    @Override
+    public int getGanadorEnvido() throws RemoteException{
         return ganadorEnvido;
     }
 
-    public String getNombreGanadorEnvido(){
+    @Override
+    public String getNombreGanadorEnvido() throws RemoteException{
         if (ganadorEnvido == 1){
             return jugador1.getNombre();
         } else if (ganadorEnvido == 2){
@@ -144,7 +164,8 @@ public class ModeloTruco implements Observado {
         return "";
     }
 
-    public String getCartaJugada(int jugador){
+    @Override
+    public String getCartaJugada(int jugador) throws RemoteException{
         if (jugador == 1){
             return cartaJ1.toString();
         } else if (jugador == 2) {
@@ -153,31 +174,37 @@ public class ModeloTruco implements Observado {
         return "";
     }
 
-    public String getCartaGanadora(){
+    @Override
+    public String getCartaGanadora() throws RemoteException{
         if (cartaGanadora == null){
             return "";
         }
         return cartaGanadora.toString();
     }
 
-    public String getEstadoPartida(){
+    @Override
+    public String getEstadoPartida() throws RemoteException{
         return "\t" + jugador1.getNombre() + ": " + jugador1.getPuntos() + " - " +
                jugador2.getNombre() + ": " + jugador2.getPuntos();
     }
 
-    public boolean getTrucoCantado(){
+    @Override
+    public boolean getTrucoCantado() throws RemoteException{
         return trucoCantado;
     }
 
-    public Apuesta getTrucoActual(){
+    @Override
+    public Apuesta getTrucoActual() throws RemoteException{
         return trucoActual;
     }
 
-    public boolean getEnvidoCantado(){
+    @Override
+    public boolean getEnvidoCantado() throws RemoteException{
         return envidoCantado;
     }
 
-    public String getTantos(){
+    @Override
+    public String getTantos() throws RemoteException{
         return "\tTANTO " + jugador1.getNombre() + ": " + jugador1.getTanto() + "\n" +
                "\tTANTO " + jugador2.getNombre() + ": " + jugador2.getTanto();
     }
@@ -186,7 +213,8 @@ public class ModeloTruco implements Observado {
     ///////// MÉTODOS PRINCIPALES ///////////
     /////////////////////////////////////////
 
-    public void ingresarJugador(Jugador jugador){
+    @Override
+    public void ingresarJugador(Jugador jugador) throws RemoteException{
         if (jugador1 == null){
             jugador1 = jugador;
         } else if (jugador2 == null){
@@ -194,7 +222,8 @@ public class ModeloTruco implements Observado {
         }
     }
 
-    public void iniciarJuego(){
+    @Override
+    public void iniciarJuego() throws RemoteException{
         envidoCantado = false;
         trucoCantado = false;
         jugadorActual = 1;
@@ -202,7 +231,8 @@ public class ModeloTruco implements Observado {
         iniciarMano();
     }
 
-    public void iniciarMano(){
+    @Override
+    public void iniciarMano() throws RemoteException{
         numeroMano++;
         numeroRonda++;
         puntosTruco = 1;
@@ -216,19 +246,22 @@ public class ModeloTruco implements Observado {
         jugador2.calcularTanto();
     }
 
-    public void cambiarTurno(){
+    @Override
+    public void cambiarTurno() throws RemoteException{
         if (jugadorActual == 1){
             jugadorActual = 2;
         } else jugadorActual = 1;
     }
 
-    public void cambiarJugadorMano(){
+    @Override
+    public void cambiarJugadorMano() throws RemoteException{
         if (jugadorMano == 1){
             jugadorMano = 2;
         } else jugadorMano = 1;
     }
 
-    public void jugarCarta(int numeroCarta) {
+    @Override
+    public void jugarCarta(int numeroCarta) throws RemoteException{
 
         if (jugadorActual == 1) {
             cartaJ1 = jugador1.jugarCarta(numeroCarta);
@@ -236,37 +269,38 @@ public class ModeloTruco implements Observado {
             cartaJ2 = jugador2.jugarCarta(numeroCarta);
         }
 
-        notificarJugarCarta();
+        notificarObservadoresJugarCarta();
 
         if (cartaJ1 == null || cartaJ2 == null){
-            notificar(Evento.CAMBIO_TURNO);
+            notificarObservadoresObservadores(Evento.CAMBIO_TURNO);
         } else {
             ganadorRonda = determinarGanadorRonda();
 
             limpiarRonda();
-            notificar(Evento.FIN_RONDA);
+            notificarObservadoresObservadores(Evento.FIN_RONDA);
             if (numeroRonda > 3) {
                 ganadorMano = determinarGanadorMano();
                 darPuntos(ganadorMano, puntosTruco);
 
                 limpiarMano();
 
-                notificar(Evento.FIN_MANO);
+                notificarObservadoresObservadores(Evento.FIN_MANO);
                 if (finPartida()){
-                    notificar(Evento.FIN_PARTIDA);
+                    notificarObservadoresObservadores(Evento.FIN_PARTIDA);
                 } else {
                     iniciarMano();
-                    notificar(Evento.MOSTRAR_MENU);
+                    notificarObservadoresObservadores(Evento.MOSTRAR_MENU);
                 }
             } else {
-                notificar(Evento.MOSTRAR_MENU);
+                notificarObservadoresObservadores(Evento.MOSTRAR_MENU);
             }
         }
     }
 
     // Chequea si alguno de los jugadores tiene 30 puntos o más y retorna true si eso sucede
 
-    public boolean finPartida(){
+    @Override
+    public boolean finPartida() throws RemoteException{
         if (jugador1.getPuntos() >= 30){
             jugadorActual = 1;
             return true;
@@ -277,7 +311,8 @@ public class ModeloTruco implements Observado {
         return false;
     }
 
-    public int determinarGanadorRonda(){
+    @Override
+    public int determinarGanadorRonda() throws RemoteException{
 
         // Calculo cual carta es la ganadora.
         int diferencia = cartaJ1.getValor().compareTo(cartaJ2.getValor());
@@ -296,7 +331,8 @@ public class ModeloTruco implements Observado {
         return 0;
     }
 
-    public int determinarGanadorMano(){
+    @Override
+    public int determinarGanadorMano() throws RemoteException{
 
         int rondasJ1 = 0;
         int rondasJ2 = 0;
@@ -328,18 +364,20 @@ public class ModeloTruco implements Observado {
         return jugadorMano;
     }
 
-    public void irseAlMazo(){
-        notificar(Evento.IRSE_AL_MAZO);
+    @Override
+    public void irseAlMazo() throws RemoteException{
+        notificarObservadoresObservadores(Evento.IRSE_AL_MAZO);
         cambiarTurno();
         ganadorMano = jugadorActual;
         darPuntos(ganadorMano, puntosTruco);
-        notificar(Evento.FIN_MANO);
+        notificarObservadoresObservadores(Evento.FIN_MANO);
         limpiarMano();
         iniciarMano();
-        notificar(Evento.MOSTRAR_MENU);
+        notificarObservadoresObservadores(Evento.MOSTRAR_MENU);
     }
 
-    public void guardarCartasJugadasAlMazo(){
+    @Override
+    public void guardarCartasJugadasAlMazo() throws RemoteException{
         if (cartaJ1 != null){
             mazo.recibirCarta(cartaJ1);
         }
@@ -350,7 +388,8 @@ public class ModeloTruco implements Observado {
         cartaJ2 = null;
     }
 
-    public void guardarCartasNoJugadasAlMazo(){
+    @Override
+    public void guardarCartasNoJugadasAlMazo() throws RemoteException{
         ArrayList<Carta> cartasJ1 = jugador1.devolverCartas();
         ArrayList<Carta> cartasJ2 = jugador2.devolverCartas();
 
@@ -369,7 +408,8 @@ public class ModeloTruco implements Observado {
         jugador2.removerCartas();
     }
 
-    public void limpiarRonda(){
+    @Override
+    public void limpiarRonda() throws RemoteException{
         numeroRonda++;
         guardarCartasJugadasAlMazo();
         // Si se produce una parda
@@ -381,7 +421,8 @@ public class ModeloTruco implements Observado {
         ganadoresRondas.add(ganadorRonda);
     }
 
-    public void limpiarMano(){
+    @Override
+    public void limpiarMano() throws RemoteException{
         numeroRonda = 0;
         trucoCantado = false;
         trucoActual = null;
@@ -396,7 +437,8 @@ public class ModeloTruco implements Observado {
     //////// MÉTODOS SOBRE APUESTAS /////////
     /////////////////////////////////////////
 
-    public void cantarTruco(){
+    @Override
+    public void cantarTruco() throws RemoteException{
         if (!trucoCantado){
             trucoCantado = true;
             trucoActual = Apuesta.TRUCO;
@@ -406,29 +448,32 @@ public class ModeloTruco implements Observado {
                 case RETRUCO -> trucoActual = Apuesta.VALECUATRO;
             }
         }
-        notificar(trucoActual);
+        notificarObservadores(trucoActual);
         jugadorOriginal = jugadorActual;
         cambiarTurno();
-        notificar(Evento.RESPONDER_APUESTA);
+        notificarObservadores(Evento.RESPONDER_APUESTA);
     }
 
     // Para el envido inicial
-    public void cantarEnvido(Apuesta apuesta){
+    @Override
+    public void cantarEnvido(Apuesta apuesta) throws RemoteException{
         envidoCantado = true;
-        notificar(apuesta);
+        notificarObservadores(apuesta);
         jugadorOriginal = jugadorActual;
         cambiarTurno();
-        notificar(Evento.RESPONDER_APUESTA);
+        notificarObservadores(Evento.RESPONDER_APUESTA);
     }
 
-    public void cantarEnvidoTruco(Apuesta apuesta){
+    @Override
+    public void cantarEnvidoTruco(Apuesta apuesta) throws RemoteException{
         envidoCantado = true;
-        notificar(apuesta);
+        notificarObservadores(apuesta);
         cambiarTurno();
-        notificar(Evento.RESPONDER_APUESTA);
+        notificarObservadores(Evento.RESPONDER_APUESTA);
     }
 
-    public int calcularEnvido(){
+    @Override
+    public int calcularEnvido() throws RemoteException{
         int tantoJ1 = jugador1.getTanto();
         int tantoJ2 = jugador2.getTanto();
 
@@ -439,7 +484,8 @@ public class ModeloTruco implements Observado {
         } else return jugadorMano;
     }
 
-    public void quiero(Apuesta apuesta){
+    @Override
+    public void quiero(Apuesta apuesta) throws RemoteException{
         switch (apuesta){
             case TRUCO -> puntosTruco = 2;
             case RETRUCO -> puntosTruco = 3;
@@ -452,16 +498,16 @@ public class ModeloTruco implements Observado {
         }
 
         // Retorna el turno al jugador que apostó inicialmente
-        notificar(Evento.DIJO_QUIERO);
+        notificarObservadores(Evento.DIJO_QUIERO);
 
         jugadorQuieroTruco = jugadorActual;
         jugadorActual = jugadorOriginal;
 
         switch (apuesta){
-            case TRUCO, RETRUCO -> notificar(Evento.MOSTRAR_MENU);
+            case TRUCO, RETRUCO -> notificarObservadores(Evento.MOSTRAR_MENU);
             case VALECUATRO -> {
                 jugadorQuieroTruco = 0;
-                notificar(Evento.MOSTRAR_MENU);
+                notificarObservadores(Evento.MOSTRAR_MENU);
             }
 
             // Casos de falta envido
@@ -470,7 +516,7 @@ public class ModeloTruco implements Observado {
                     ENVIDO_ENVIDO_REAL_ENVIDO_FALTA_ENVIDO ->
             {
                 ganadorEnvido = calcularEnvido();
-                notificar(Evento.RESULTADO_ENVIDO);
+                notificarObservadores(Evento.RESULTADO_ENVIDO);
                 int puntosFalta = 0;
                 if (ganadorEnvido != 1){
                     puntosFalta = 30 - jugador1.getPuntos();
@@ -479,27 +525,28 @@ public class ModeloTruco implements Observado {
                 }
                 darPuntos(ganadorEnvido, puntosFalta);
                 if (finPartida()){
-                    notificar(Evento.FIN_PARTIDA);
+                    notificarObservadores(Evento.FIN_PARTIDA);
                 } else {
-                    notificar(Evento.MOSTRAR_MENU);
+                    notificarObservadores(Evento.MOSTRAR_MENU);
                 }
             }
 
             // Para el resto de los casos de envido
             default -> {
                 ganadorEnvido = calcularEnvido();
-                notificar(Evento.RESULTADO_ENVIDO);
+                notificarObservadores(Evento.RESULTADO_ENVIDO);
                 darPuntos(ganadorEnvido, puntosEnvido);
                 if (finPartida()){
-                    notificar(Evento.FIN_PARTIDA);
+                    notificarObservadores(Evento.FIN_PARTIDA);
                 } else {
-                    notificar(Evento.MOSTRAR_MENU);
+                    notificarObservadores(Evento.MOSTRAR_MENU);
                 }
             }
         }
     }
 
-    public void noQuiero(Apuesta apuesta){
+    @Override
+    public void noQuiero(Apuesta apuesta) throws RemoteException{
         switch (apuesta){
             case TRUCO -> puntosTruco = 1;
             case RETRUCO -> puntosTruco = 2;
@@ -515,55 +562,58 @@ public class ModeloTruco implements Observado {
         // Retorna el turno al jugador que apostó inicialmente
         switch (apuesta){
             case TRUCO, RETRUCO, VALECUATRO -> {
-                notificar(Evento.DIJO_NO_QUIERO);
+                notificarObservadores(Evento.DIJO_NO_QUIERO);
                 cambiarTurno();
                 ganadorMano = jugadorActual;
                 darPuntos(ganadorMano, puntosTruco);
-                notificar(Evento.FIN_MANO);
+                notificarObservadores(Evento.FIN_MANO);
                 if (finPartida()){
-                    notificar(Evento.FIN_PARTIDA);
+                    notificarObservadores(Evento.FIN_PARTIDA);
                 } else {
                     limpiarMano();
                     iniciarMano();
-                    notificar(Evento.MOSTRAR_MENU);
+                    notificarObservadores(Evento.MOSTRAR_MENU);
                 }
             }
 
             // Para los casos de envido
             default -> {
-                notificar(Evento.DIJO_NO_QUIERO);
+                notificarObservadores(Evento.DIJO_NO_QUIERO);
                 cambiarTurno();
                 darPuntos(jugadorActual, puntosEnvido);
                 jugadorActual = jugadorOriginal;
-                notificar(Evento.MOSTRAR_MENU);
+                notificarObservadores(Evento.MOSTRAR_MENU);
             }
         }
     }
 
     // Para el primer envido
-    public void redoblarEnvido(Apuesta apuesta){
-        notificarApuesta(apuesta);
+    @Override
+    public void redoblarEnvido(Apuesta apuesta) throws RemoteException{
+        notificarObservadoresApuesta(apuesta);
     }
 
-    public void redoblarApuesta(Apuesta apuesta){
+    @Override
+    public void redoblarApuesta(Apuesta apuesta) throws RemoteException{
         switch (apuesta){
             case TRUCO -> {
                 trucoActual = Apuesta.RETRUCO;
-                notificarApuesta(Apuesta.RETRUCO);
+                notificarObservadoresApuesta(Apuesta.RETRUCO);
             }
             case RETRUCO -> {
                 trucoActual = Apuesta.VALECUATRO;
-                notificarApuesta(Apuesta.VALECUATRO);
+                notificarObservadoresApuesta(Apuesta.VALECUATRO);
             }
-            case ENVIDO -> notificarApuesta(apuesta);
+            case ENVIDO -> notificarObservadoresApuesta(apuesta);
             // Envido se puede responder con ENVIDO, REAL_ENVIDO, FALTA_ENVIDO
-            case REAL_ENVIDO -> notificarApuesta(Apuesta.REAL_ENVIDO_FALTA_ENVIDO);
-            case ENVIDO_ENVIDO -> notificarApuesta(Apuesta.ENVIDO_ENVIDO_REAL_ENVIDO);
-            case ENVIDO_ENVIDO_REAL_ENVIDO -> notificarApuesta(Apuesta.ENVIDO_ENVIDO_REAL_ENVIDO_FALTA_ENVIDO);
+            case REAL_ENVIDO -> notificarObservadoresApuesta(Apuesta.REAL_ENVIDO_FALTA_ENVIDO);
+            case ENVIDO_ENVIDO -> notificarObservadoresApuesta(Apuesta.ENVIDO_ENVIDO_REAL_ENVIDO);
+            case ENVIDO_ENVIDO_REAL_ENVIDO -> notificarObservadoresApuesta(Apuesta.ENVIDO_ENVIDO_REAL_ENVIDO_FALTA_ENVIDO);
         }
     }
 
-    public void darPuntos(int jugador, int puntos){
+    @Override
+    public void darPuntos(int jugador, int puntos) throws RemoteException{
         if (jugador == 1){
             jugador1.darPuntos(puntos);
         } else if (jugador == 2){
