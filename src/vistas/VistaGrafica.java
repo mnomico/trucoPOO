@@ -20,6 +20,8 @@ public class VistaGrafica implements IVista {
     private final JPanel opciones;
     private final JLabel respuestaOponente;
     private final JPanel cartasJugadas;
+    private final JLayeredPane[] paneles;
+
     private final JLabel respuestaJugador;
     private final JPanel cartasJugador;
     private final JLabel puntos;
@@ -119,14 +121,25 @@ public class VistaGrafica implements IVista {
         constraints.anchor = GridBagConstraints.CENTER;
         mesa.add(respuestaOponente, constraints);
 
-        // Cartas Jugadas
-        constraints = new GridBagConstraints();
-
+        // Cartas jugadas
         cartasJugadas = new JPanel();
-        cartasJugadas.setBorder(BorderFactory.createLineBorder(Color.black));
-        cartasJugadas.setLayout(new GridBagLayout());
-        cartasJugadas.setPreferredSize(new Dimension(0, 300));
         cartasJugadas.setOpaque(false);
+        //cartasJugadas.setLayout(new GridBagLayout());
+        cartasJugadas.setBorder(BorderFactory.createLineBorder(Color.black));
+        paneles = new JLayeredPane[3];
+        for (int i = 0; i < 3; i++){
+            paneles[i] = new JLayeredPane();
+            paneles[i].setOpaque(false);
+            paneles[i].setBorder(BorderFactory.createLineBorder(Color.black));
+            paneles[i].setPreferredSize(new Dimension(350,400));
+            paneles[i].setBounds(400*i,0,400,400);
+            cartasJugadas.add(paneles[i]);
+        }
+
+        cartasJugadas.setPreferredSize(new Dimension(0, 300));
+        cartasJugadas.setBounds(0,200,1200,400);
+
+
         constraints.gridx = 0;
         constraints.gridy = 1;
         constraints.gridheight = 2;
@@ -312,16 +325,24 @@ public class VistaGrafica implements IVista {
 
     @Override
     public void mostrarCartaJugada(String jugadorActual, String cartaJugada) {
+
         String path = "src/vistas/imagenes/cartas/" + cartaJugada + ".png";
-        constraints = new GridBagConstraints();
-        if (cartaJugada1 != null){
-            cartaJugada1 = new JLabel (new ImageIcon(path));
-            cartasJugadas.add(cartaJugada1);
+
+        int nroRonda = controlador.getNumeroRonda();
+
+        JLabel carta = new JLabel(new ImageIcon(path));
+
+        if (controlador.esMiTurno()){
+            carta.setBounds(150,100,carta.getIcon().getIconWidth(),carta.getIcon().getIconHeight());
+            cartaJ1 = cartaJugada;
         } else {
-            cartaJugada2 = new JLabel (new ImageIcon(path));
-            constraints.insets = new Insets(0,0,-10,-10);
-            cartasJugadas.add(cartaJugada2);
+            carta.setBounds(100,50,carta.getIcon().getIconWidth(),carta.getIcon().getIconHeight());
+            cartaJ2 = cartaJugada;
         }
+
+        paneles[nroRonda-1].add(carta, JLayeredPane.DEFAULT_LAYER);
+
+        paneles[nroRonda-1].updateUI();
     }
 
     @Override
@@ -356,16 +377,20 @@ public class VistaGrafica implements IVista {
 
     @Override
     public void mostrarGanadorRonda(String ganadorRonda) {
-        String path = "src/vistas/imagenes/cartas";
         String cartaGanadora = controlador.getCartaGanadora();
-        ImageIcon icon = new ImageIcon(path + cartaGanadora + "png");
-        if (cartaJugada1.getIcon().equals(icon)){
-            cartasJugadas.removeAll();
-            cartasJugadas.add(cartaJugada2);
-            constraints = new GridBagConstraints();
-            constraints.insets = new Insets(0,0,-10,-10);
-            cartasJugadas.add(cartaJugada1, constraints);
+        int nroRonda = controlador.getNumeroRonda();
+
+        if (Objects.equals(cartaGanadora, cartaJ1)){
+            Component carta = paneles[nroRonda-2].getComponentAt(150,100);
+            paneles[nroRonda-2].moveToFront(carta);
+        } else if (Objects.equals(cartaGanadora, cartaJ2)){
+            Component carta = paneles[nroRonda-2].getComponentAt(100,50);
+            paneles[nroRonda-2].moveToFront(carta);
+        } else {
+            // TODO parda
         }
+
+        paneles[nroRonda-1].updateUI();
     }
 
     @Override
