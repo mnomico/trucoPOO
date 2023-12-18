@@ -162,7 +162,7 @@ public class VistaGrafica implements IVista {
             @Override
             public void actionPerformed(ActionEvent e) {
                 controlador.quiero(apuestaActual);
-                deshabilitarComponentes(opciones);
+                //deshabilitarComponentes(opciones);
             }
         });
 
@@ -173,7 +173,7 @@ public class VistaGrafica implements IVista {
             @Override
             public void actionPerformed(ActionEvent e) {
                 controlador.noQuiero(apuestaActual);
-                deshabilitarComponentes(opciones);
+                //deshabilitarComponentes(opciones);
             }
         });
 
@@ -193,7 +193,7 @@ public class VistaGrafica implements IVista {
         opciones.add(botonMazo);
 
         // Deshabilito los botones
-        deshabilitarComponentes(opciones);
+        //deshabilitarComponentes(opciones);
         opciones.setVisible(true);
 
         // Respuesta Oponente
@@ -309,10 +309,8 @@ public class VistaGrafica implements IVista {
     }
 
     public void habilitarComponentes(JPanel contenedor){
-        if (contenedor != null){
-            for (Component componente : contenedor.getComponents()){
-                componente.setEnabled(true);
-            }
+        for (Component componente : contenedor.getComponents()){
+            componente.setEnabled(true);
         }
     }
 
@@ -327,7 +325,7 @@ public class VistaGrafica implements IVista {
     @Override
     public void mostrarMenuPrincipal() {
         mostrarCartas();
-        deshabilitarComponentes(opciones);
+        //deshabilitarComponentes(opciones);
         if (controlador.esMiTurno()) {
             mostrarOpcionesRonda();
             // TODO
@@ -380,20 +378,20 @@ public class VistaGrafica implements IVista {
 
     @Override
     public void mostrarOpcionesRonda() {
-        habilitarComponentes(opciones);
         restaurarOpciones();
+        habilitarComponentes(opciones);
     }
 
     public void jugarCarta(int nroCarta){
         controlador.jugarCarta(nroCarta);
         mostrarCartas();
-        deshabilitarComponentes(opciones);
+        //deshabilitarComponentes(opciones);
     }
 
     public void cantarTruco(){
         if (controlador.esMiTurno()) {
             controlador.cantarTruco();
-            deshabilitarComponentes(opciones);
+            //deshabilitarComponentes(opciones);
             if (apuestaActual != null) {
                 opciones.remove(0);
                 switch (apuestaActual) {
@@ -555,7 +553,8 @@ public class VistaGrafica implements IVista {
             // TODO parda
         }
 
-        paneles[nroRonda-1].updateUI();
+        paneles[nroRonda-2].revalidate();
+        paneles[nroRonda-2].repaint();
     }
 
     @Override
