@@ -25,9 +25,17 @@ public class VistaGrafica implements IVista {
     private final JLabel respuestaJugador;
     private final JPanel cartasJugador;
     private final JLabel puntos;
+
+    private final JButton botonQuiero;
+    private final JButton botonNoQuiero;
     private final JButton botonTruco;
+    private final JButton botonRetruco;
+    private final JButton botonValecuatro;
     private final JButton botonEnvido;
+    private final JButton botonRealEnvido;
+    private final JButton botonFaltaEnvido;
     private final JButton botonMazo;
+
     private JLabel carta1;
     private JLabel carta2;
     private JLabel carta3;
@@ -79,6 +87,26 @@ public class VistaGrafica implements IVista {
             }
         });
 
+        // Botón RETRUCO
+        botonRetruco = new JButton("RETRUCO");
+
+        botonRetruco.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cantarTruco();
+            }
+        });
+
+        // Botón VALECUATRO
+        botonValecuatro = new JButton("VALECUATRO");
+
+        botonValecuatro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cantarTruco();
+            }
+        });
+
         // Botón ENVIDO
         botonEnvido = new JButton("ENVIDO");
 
@@ -86,6 +114,48 @@ public class VistaGrafica implements IVista {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cantarEnvido();
+            }
+        });
+
+        // Botón REAL ENVIDO
+        botonRealEnvido = new JButton("REAL ENVIDO");
+
+        botonRealEnvido.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cantarEnvido();
+            }
+        });
+
+        // Botón FALTA ENVIDO
+        botonFaltaEnvido = new JButton("FALTA ENVIDO");
+
+        botonFaltaEnvido.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cantarEnvido();
+            }
+        });
+
+        // Botón QUIERO
+        botonQuiero = new JButton("QUIERO");
+
+        botonQuiero.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controlador.quiero(apuestaActual);
+                deshabilitarComponentes(opciones);
+            }
+        });
+
+        // Botón QUIERO
+        botonNoQuiero = new JButton("NO QUIERO");
+
+        botonNoQuiero.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controlador.noQuiero(apuestaActual);
+                deshabilitarComponentes(opciones);
             }
         });
 
@@ -105,8 +175,8 @@ public class VistaGrafica implements IVista {
         opciones.add(botonMazo);
 
         // Deshabilito los botones
-        deshabilitarBotones(opciones);
-        opciones.setVisible(false);
+        deshabilitarComponentes(opciones);
+        opciones.setVisible(true);
 
         // Respuesta Oponente
         constraints = new GridBagConstraints();
@@ -243,6 +313,46 @@ public class VistaGrafica implements IVista {
             // TODO
             // acá es donde se muestra el speechBubble del oponente indicando que es su turno
         }
+        apuestaActual = null;
+    }
+
+    public void restaurarOpciones(){
+
+        opciones.removeAll();
+        Apuesta trucoActual = controlador.getTrucoActual();
+        if (trucoActual != null) {
+
+            switch (trucoActual) {
+                case TRUCO -> {
+                    opciones.add(botonRetruco);
+                    // Si el jugador no es quien cantó quiero truco, no puede cantar retruco
+                    if (controlador.getJugadorQuieroTruco() != controlador.getJugador()){
+                        botonRetruco.setEnabled(false);
+                    }
+                }
+                case RETRUCO -> {
+                    opciones.add(botonValecuatro);
+                    // Si el jugador no es quien cantó quiero truco, no puede cantar valecuatro
+                    if (controlador.getJugadorQuieroTruco() != controlador.getJugador()){
+                        botonValecuatro.setEnabled(false);
+                    }
+                }
+                // case VALECUATRO -> no se agrega botón
+            }
+
+        } else {
+            opciones.add(botonTruco);
+        }
+
+        // Si ya se cantó envido o ya no es la primera ronda, no se puede cantar
+        if (controlador.getEnvidoCantado() || controlador.getNumeroRonda() != 1){
+            //
+        } else {
+            opciones.add(botonEnvido);
+        }
+
+        opciones.add(botonMazo);
+
     }
 
     @Override
@@ -259,7 +369,18 @@ public class VistaGrafica implements IVista {
     }
 
     public void cantarTruco(){
-
+        if (controlador.esMiTurno()) {
+            controlador.cantarTruco();
+            deshabilitarComponentes(opciones);
+            if (apuestaActual != null) {
+                opciones.remove(0);
+                switch (apuestaActual) {
+                    case TRUCO -> opciones.add(botonRetruco, 0);
+                    case RETRUCO -> opciones.add(botonValecuatro, 0);
+                    //case VALECUATRO -> opciones.remove(0);
+                }
+            }
+        }
     }
 
     public void cantarEnvido(){
@@ -347,7 +468,23 @@ public class VistaGrafica implements IVista {
 
     @Override
     public void mostrarResponderApuesta() {
-
+        deshabilitarComponentes(cartasJugador);
+        opciones.removeAll();
+        opciones.add(botonQuiero);
+        opciones.add(botonNoQuiero);
+        switch (apuestaActual){
+            case TRUCO -> opciones.add(botonRetruco);
+            case RETRUCO -> opciones.add(botonValecuatro);
+            case ENVIDO -> {
+                opciones.add(botonEnvido);
+                opciones.add(botonRealEnvido);
+                opciones.add(botonFaltaEnvido);
+            }
+            case ENVIDO_ENVIDO -> opciones.add(botonRealEnvido);
+            case ENVIDO_ENVIDO_REAL_ENVIDO, ENVIDO_REAL_ENVIDO, REAL_ENVIDO -> opciones.add(botonFaltaEnvido);
+        }
+        habilitarComponentes(opciones);/////////
+        opciones.updateUI();
     }
 
     @Override
