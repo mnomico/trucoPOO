@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Objects;
 
 public class VistaGrafica implements IVista {
 
@@ -187,7 +188,6 @@ public class VistaGrafica implements IVista {
         constraints.gridwidth = 3;
         constraints.gridheight = 1;
         constraints.weighty = 0.0;
-        constraints.insets = new Insets(0,0,0,50);
         constraints.anchor = GridBagConstraints.CENTER;
         mesa.add(respuestaOponente, constraints);
 
@@ -248,10 +248,11 @@ public class VistaGrafica implements IVista {
 
         // Cartas
         carta1 = new JLabel();
+        carta1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         carta2 = new JLabel();
+        carta2.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         carta3 = new JLabel();
-        cartaJugada1 = new JLabel();
-        cartaJugada2 = new JLabel();
+        carta3.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         // Puntos
         constraints = new GridBagConstraints();
@@ -305,6 +306,7 @@ public class VistaGrafica implements IVista {
     @Override
     public void mostrarMenuPrincipal() {
         mostrarCartas();
+        deshabilitarComponentes(opciones);
         if (controlador.esMiTurno()) {
             mostrarOpcionesRonda();
             // TODO
@@ -413,7 +415,9 @@ public class VistaGrafica implements IVista {
                     carta1.setIcon(new ImageIcon(path));
                     carta1.addMouseListener(new MouseAdapter() {
                         public void mouseClicked(MouseEvent e){
-                            jugarCarta(0);
+                            if (controlador.esMiTurno()) {
+                                jugarCarta(0);
+                            }
                         }
                     });
                     cartasJugador.add(carta1, constraints);
@@ -423,7 +427,9 @@ public class VistaGrafica implements IVista {
                     carta2.setIcon(new ImageIcon(path));
                     carta2.addMouseListener(new MouseAdapter() {
                         public void mouseClicked(MouseEvent e){
-                            jugarCarta(1);
+                            if (controlador.esMiTurno()) {
+                                jugarCarta(1);
+                            }
                         }
                     });
                     cartasJugador.add(carta2, constraints);
@@ -433,7 +439,9 @@ public class VistaGrafica implements IVista {
                     carta3.setIcon(new ImageIcon(path));
                     carta3.addMouseListener(new MouseAdapter() {
                         public void mouseClicked(MouseEvent e){
-                            jugarCarta(2);
+                            if (controlador.esMiTurno()) {
+                                jugarCarta(2);
+                            }
                         }
                     });
                     cartasJugador.add(carta3, constraints);
