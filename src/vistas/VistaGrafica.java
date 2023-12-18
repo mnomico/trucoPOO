@@ -32,6 +32,7 @@ public class VistaGrafica implements IVista {
     private final JButton botonTruco;
     private final JButton botonRetruco;
     private final JButton botonValecuatro;
+    private final JButton botonPrimerEnvido;
     private final JButton botonEnvido;
     private final JButton botonRealEnvido;
     private final JButton botonFaltaEnvido;
@@ -109,13 +110,28 @@ public class VistaGrafica implements IVista {
             }
         });
 
+        // Botón PRIMER ENVIDO
+        botonPrimerEnvido = new JButton("ENVIDO");
+
+        botonPrimerEnvido.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (controlador.esMiTurno() && !controlador.getEnvidoCantado() && controlador.getNumeroRonda() == 1){
+                    opciones.removeAll();
+                    opciones.add(botonEnvido);
+                    opciones.add(botonRealEnvido);
+                    opciones.add(botonFaltaEnvido);
+                }
+            }
+        });
+
         // Botón ENVIDO
         botonEnvido = new JButton("ENVIDO");
 
         botonEnvido.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cantarEnvido();
+                cantarEnvido(Apuesta.ENVIDO);
             }
         });
 
@@ -125,7 +141,7 @@ public class VistaGrafica implements IVista {
         botonRealEnvido.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cantarEnvido();
+                cantarEnvido(Apuesta.REAL_ENVIDO);
             }
         });
 
@@ -135,7 +151,7 @@ public class VistaGrafica implements IVista {
         botonFaltaEnvido.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cantarEnvido();
+                cantarEnvido(Apuesta.FALTA_ENVIDO);
             }
         });
 
@@ -173,7 +189,7 @@ public class VistaGrafica implements IVista {
 
         // Agrego los botones al JPanel opciones
         opciones.add(botonTruco);
-        opciones.add(botonEnvido);
+        opciones.add(botonPrimerEnvido);
         opciones.add(botonMazo);
 
         // Deshabilito los botones
@@ -355,7 +371,7 @@ public class VistaGrafica implements IVista {
         if (controlador.getEnvidoCantado() || controlador.getNumeroRonda() != 1){
             //
         } else {
-            opciones.add(botonEnvido);
+            opciones.add(botonPrimerEnvido);
         }
 
         opciones.add(botonMazo);
