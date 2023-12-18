@@ -40,8 +40,9 @@ public class VistaGrafica implements IVista {
     private JLabel carta1;
     private JLabel carta2;
     private JLabel carta3;
-    private JLabel cartaJugada1;
-    private JLabel cartaJugada2;
+
+    private String cartaJ1;
+    private String cartaJ2;
 
     //private final JLabel carta1;
     //private final JLabel carta2;
@@ -269,6 +270,8 @@ public class VistaGrafica implements IVista {
 
     }
 
+    private Apuesta apuestaActual;
+
     @Override
     public int returnFrameXPos() {
         return 0;
@@ -289,17 +292,19 @@ public class VistaGrafica implements IVista {
         this.controlador = controlador;
     }
 
-    public void habilitarBotones(JPanel panelBotones){
-        Component[] botones = panelBotones.getComponents();
-        for (Component boton : botones){
-            boton.setEnabled(true);
+    public void habilitarComponentes(JPanel contenedor){
+        if (contenedor != null){
+            for (Component componente : contenedor.getComponents()){
+                componente.setEnabled(true);
+            }
         }
     }
 
-    public void deshabilitarBotones(JPanel panelBotones){
-        Component[] botones = panelBotones.getComponents();
-        for (Component boton : botones){
-            boton.setEnabled(false);
+    public void deshabilitarComponentes(JPanel contenedor){
+        if (contenedor != null){
+            for (Component componente : contenedor.getComponents()){
+                componente.setEnabled(false);
+            }
         }
     }
 
