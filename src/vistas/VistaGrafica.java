@@ -364,15 +364,14 @@ public class VistaGrafica implements IVista {
 
     @Override
     public void mostrarOpcionesRonda() {
-        habilitarBotones(opciones);
+        habilitarComponentes(opciones);
+        restaurarOpciones();
     }
 
     public void jugarCarta(int nroCarta){
-        // TODO
-        if (controlador.esMiTurno()) {
-            controlador.jugarCarta(nroCarta);
-            mostrarCartas();
-        }
+        controlador.jugarCarta(nroCarta);
+        mostrarCartas();
+        deshabilitarComponentes(opciones);
     }
 
     public void cantarTruco(){
@@ -559,7 +558,8 @@ public class VistaGrafica implements IVista {
     }
 
     @Override
-    public void mostrarApuesta(String jugadorActual, Apuesta apuestaActual) {
-
+    public void mostrarApuesta(String jugadorActual, Apuesta apuesta) {
+        apuestaActual = apuesta;
+        // TODO mostrar lo que se cantó
     }
 }
