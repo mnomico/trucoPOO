@@ -154,6 +154,9 @@ public class ModeloTruco implements Observado {
     }
 
     public String getCartaGanadora(){
+        if (cartaGanadora == null){
+            return "";
+        }
         return cartaGanadora.toString();
     }
 
