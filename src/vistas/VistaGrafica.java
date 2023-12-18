@@ -403,12 +403,16 @@ public class VistaGrafica implements IVista {
         }
     }
 
-    public void cantarEnvido(){
-
+    public void cantarEnvido(Apuesta envido){
+        if (!controlador.getEnvidoCantado()) {
+            controlador.cantarEnvido(envido);
+        } else {
+            controlador.redoblarEnvido(envido);
+        }
     }
 
     public void irseAlMazo(){
-
+        controlador.irseAlMazo();
     }
 
     @Override
@@ -530,7 +534,7 @@ public class VistaGrafica implements IVista {
 
     @Override
     public void mostrarResultadoEnvido(String ganadorEnvido, String tantos) {
-
+        JOptionPane.showMessageDialog(ventanaPrincipal, tantos + "\n" + ganadorEnvido + " gana.");
     }
 
     @Override
@@ -559,7 +563,12 @@ public class VistaGrafica implements IVista {
 
     @Override
     public void mostrarGanadorMano(String ganadorMano) {
-
+        for (JLayeredPane panel : paneles){
+            panel.removeAll();
+            panel.revalidate();
+            panel.repaint();
+        }
+        cartasJugador.removeAll();
     }
 
     @Override
@@ -569,7 +578,8 @@ public class VistaGrafica implements IVista {
 
     @Override
     public void mostrarFinPartida(String jugadorGanador) {
-
+        String mensaje = "--- FIN DE LA PARTIDA ---\n" + jugadorGanador + " ganó.";
+        JOptionPane.showMessageDialog(ventanaPrincipal, mensaje);
     }
 
     @Override
