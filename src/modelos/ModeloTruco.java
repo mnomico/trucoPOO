@@ -57,7 +57,7 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
     /////////////////////////////////////////
 
     @Override
-    public void notificarObservadoresObservadores(Object arg) throws RemoteException {
+    public void notificarObservadores(Object arg) throws RemoteException {
         for (IControladorRemoto observer : observers){
             observer.actualizar(this, arg);
         }
@@ -65,15 +65,15 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
 
     @Override
     public void notificarObservadoresJugarCarta() throws RemoteException {
-        notificarObservadoresObservadores(Evento.JUGAR_CARTA);
+        notificarObservadores(Evento.JUGAR_CARTA);
         cambiarTurno();
     }
 
     @Override
     public void notificarObservadoresApuesta(Apuesta apuesta) throws RemoteException {
-        notificarObservadoresObservadores(apuesta);
+        notificarObservadores(apuesta);
         cambiarTurno();
-        notificarObservadoresObservadores(Evento.RESPONDER_APUESTA);
+        notificarObservadores(Evento.RESPONDER_APUESTA);
     }
 
     /////////////////////////////////////////
@@ -186,7 +186,7 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
     @Override
     public String getEstadoPartida() throws RemoteException{
         return "\t" + jugador1.getNombre() + ": " + jugador1.getPuntos() + " - " +
-               jugador2.getNombre() + ": " + jugador2.getPuntos();
+                jugador2.getNombre() + ": " + jugador2.getPuntos();
     }
 
     @Override
@@ -207,7 +207,7 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
     @Override
     public String getTantos() throws RemoteException{
         return "\tTANTO " + jugador1.getNombre() + ": " + jugador1.getTanto() + "\n" +
-               "\tTANTO " + jugador2.getNombre() + ": " + jugador2.getTanto();
+                "\tTANTO " + jugador2.getNombre() + ": " + jugador2.getTanto();
     }
 
     /////////////////////////////////////////
@@ -281,27 +281,27 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
         notificarObservadoresJugarCarta();
 
         if (cartaJ1 == null || cartaJ2 == null){
-            notificarObservadoresObservadores(Evento.CAMBIO_TURNO);
+            notificarObservadores(Evento.CAMBIO_TURNO);
         } else {
             ganadorRonda = determinarGanadorRonda();
 
             limpiarRonda();
-            notificarObservadoresObservadores(Evento.FIN_RONDA);
+            notificarObservadores(Evento.FIN_RONDA);
             if (numeroRonda > 3) {
                 ganadorMano = determinarGanadorMano();
                 darPuntos(ganadorMano, puntosTruco);
 
                 limpiarMano();
 
-                notificarObservadoresObservadores(Evento.FIN_MANO);
+                notificarObservadores(Evento.FIN_MANO);
                 if (finPartida()){
-                    notificarObservadoresObservadores(Evento.FIN_PARTIDA);
+                    notificarObservadores(Evento.FIN_PARTIDA);
                 } else {
                     iniciarMano();
-                    notificarObservadoresObservadores(Evento.MOSTRAR_MENU);
+                    notificarObservadores(Evento.MOSTRAR_MENU);
                 }
             } else {
-                notificarObservadoresObservadores(Evento.MOSTRAR_MENU);
+                notificarObservadores(Evento.MOSTRAR_MENU);
             }
         }
     }
@@ -375,14 +375,14 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
 
     @Override
     public void irseAlMazo() throws RemoteException{
-        notificarObservadoresObservadores(Evento.IRSE_AL_MAZO);
+        notificarObservadores(Evento.IRSE_AL_MAZO);
         cambiarTurno();
         ganadorMano = jugadorActual;
         darPuntos(ganadorMano, puntosTruco);
-        notificarObservadoresObservadores(Evento.FIN_MANO);
+        notificarObservadores(Evento.FIN_MANO);
         limpiarMano();
         iniciarMano();
-        notificarObservadoresObservadores(Evento.MOSTRAR_MENU);
+        notificarObservadores(Evento.MOSTRAR_MENU);
     }
 
     @Override

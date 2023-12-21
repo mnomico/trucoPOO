@@ -204,6 +204,8 @@ public class VistaGrafica implements IVista {
         mensaje.setEnabled(false);
         mensaje.setHorizontalAlignment(JTextField.CENTER);
         mensaje.setPreferredSize(new Dimension(1200,30));
+        mensaje.setBackground(Color.black);
+        mensaje.setDisabledTextColor(Color.white);
         //respuestaOponente = new JLabel(new ImageIcon("src/vistas/imagenes/speechBubble.png"));
         constraints.gridx = 0;
         constraints.gridy = 0;
@@ -342,10 +344,12 @@ public class VistaGrafica implements IVista {
         mostrarCartas();
         //deshabilitarComponentes(opciones);
         if (controlador.esMiTurno()) {
+            mostrarTurno(true);
             mostrarOpcionesRonda();
             // TODO
             // acá es donde se muestra el speechBubble del jugador indicando que es su turno
         } else {
+            mostrarTurno(false);
             // TODO
             // acá es donde se muestra el speechBubble del oponente indicando que es su turno
         }
@@ -382,9 +386,9 @@ public class VistaGrafica implements IVista {
 
         // Si ya se cantó envido o ya no es la primera ronda, no se puede cantar
         //if (controlador.getEnvidoCantado() || controlador.getNumeroRonda() != 1){
-            //
+        //
         //} else {
-            opciones.add(botonPrimerEnvido);
+        opciones.add(botonPrimerEnvido);
         //}
 
         opciones.add(botonMazo);
@@ -538,12 +542,12 @@ public class VistaGrafica implements IVista {
 
     @Override
     public void mostrarDijoQuiero(String jugadorActual) {
-
+        mensaje.setText(jugadorActual + " dijo QUIERO");
     }
 
     @Override
     public void mostrarDijoNoQuiero(String jugadorActual) {
-
+        mensaje.setText(jugadorActual + " dijo NO QUIERO");
     }
 
     @Override
@@ -553,7 +557,7 @@ public class VistaGrafica implements IVista {
 
     @Override
     public void mostrarIrseAlMazo(String jugadorActual) {
-
+        mensaje.setText(jugadorActual + " se fue al mazo.");
     }
 
     @Override
@@ -588,7 +592,11 @@ public class VistaGrafica implements IVista {
 
     @Override
     public void mostrarTurno(boolean esMiTurno) {
-
+        if (esMiTurno){
+            mensaje.setText("--- ES TU TURNO ---");
+        } else {
+            mensaje.setText("--- TURNO DE " + controlador.getNombreJugadorActual() + " ---");
+        }
     }
 
     @Override
@@ -601,5 +609,6 @@ public class VistaGrafica implements IVista {
     public void mostrarApuesta(String jugadorActual, Apuesta apuesta) {
         apuestaActual = apuesta;
         // TODO mostrar lo que se cantó
+        mensaje.setText(jugadorActual + " canta " + apuestaActual.toString());
     }
 }

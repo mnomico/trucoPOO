@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public interface ModeloTrucoI extends IObservableRemoto {
     void setObservers(IControladorRemoto observer) throws RemoteException;
 
-    void notificarObservadoresObservadores(Object arg) throws RemoteException;
+    void notificarObservadores(Object arg) throws RemoteException;
 
     void notificarObservadoresJugarCarta() throws RemoteException;
 
