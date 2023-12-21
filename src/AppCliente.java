@@ -1,7 +1,7 @@
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 import ar.edu.unlu.rmimvc.RMIMVCException;
 import ar.edu.unlu.rmimvc.Util;
@@ -12,7 +12,7 @@ import vistas.*;
 public class AppCliente {
 
 	private static int jugador = 1;
-
+	
 	public static void main(String[] args) {
 		ArrayList<String> ips = Util.getIpDisponibles();
 		String ip = (String) JOptionPane.showInputDialog(
@@ -74,18 +74,16 @@ public class AppCliente {
 			vista = new ConsolaGrafica();
 		}
 
-		Controlador controlador = new Controlador(vista, jugador++);
+		Controlador controlador = new Controlador(vista, nombreJugador);
 		Cliente c = new Cliente(ip, Integer.parseInt(port), ipServidor, Integer.parseInt(portServidor));
 		vista.setVisible(true);
 		try {
 			c.iniciar(controlador);
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (RMIMVCException e) {
+			vista.mostrarMenuPrincipal();
+		} catch (RemoteException | RMIMVCException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+    }
 
 }

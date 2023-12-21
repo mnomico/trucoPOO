@@ -1,14 +1,13 @@
 package modelos;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import ar.edu.unlu.rmimvc.cliente.IControladorRemoto;
 import ar.edu.unlu.rmimvc.observer.ObservableRemoto;
-import vistas.Observador;
 
-
-public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI {
+public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Serializable {
     private final ArrayList<IControladorRemoto> observers;
 
     private final Mazo mazo;
@@ -38,12 +37,14 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI {
     private boolean trucoCantado;
     private Apuesta trucoActual;
 
-    public ModeloTruco(){
+    public ModeloTruco() throws RemoteException {
         observers = new ArrayList<>();
         numeroMano = 0;
         numeroRonda = 0;
         mazo = new Mazo();
         ganadoresRondas = new ArrayList<>();
+        ingresarJugador();
+        iniciarJuego();
     }
 
     @Override
@@ -214,12 +215,18 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI {
     /////////////////////////////////////////
 
     @Override
-    public void ingresarJugador(Jugador jugador) throws RemoteException{
-        if (jugador1 == null){
-            jugador1 = jugador;
+    public void ingresarJugador() throws RemoteException{
+        /*if (jugador1 == null){
+            //jugador1 = jugador;
+            jugador1 = new Jugador(jugador);
         } else if (jugador2 == null){
-            jugador2 = jugador;
+            //jugador2 = jugador;
+            jugador2 = new Jugador(jugador);
         }
+        */
+        jugador1 = new Jugador("J1");
+        jugador2 = new Jugador("J2");
+
     }
 
     @Override
@@ -244,6 +251,8 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI {
         mazo.repartirCartas(jugador1, jugador2);
         jugador1.calcularTanto();
         jugador2.calcularTanto();
+
+
     }
 
     @Override

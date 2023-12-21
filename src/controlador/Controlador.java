@@ -13,12 +13,14 @@ public class Controlador implements IControladorRemoto {
     private final IVista vista;
     //private final Jugador jugador;
     private final int jugador;
+    private final String nombreJugador;
+    private static int numeroJugador = 1;
 
-    public Controlador(IVista vista, int numeroJugador){
+    public Controlador(IVista vista, String nombreJugador){
         vista.setControlador(this);
-        //this.modelo = modelo;
         this.vista = vista;
-        this.jugador = numeroJugador;
+        this.jugador = numeroJugador++;
+        this.nombreJugador = nombreJugador;
     }
 
     public int getJugador(){

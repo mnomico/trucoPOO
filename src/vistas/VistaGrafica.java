@@ -19,11 +19,12 @@ public class VistaGrafica implements IVista {
     private final JFrame ventanaPrincipal;
     private final JLabel mesa;
     private final JPanel opciones;
-    private final JLabel respuestaOponente;
+    //private final JLabel respuestaOponente;
+    private final JTextField mensaje;
     private final JPanel cartasJugadas;
     private final JLayeredPane[] paneles;
 
-    private final JLabel respuestaJugador;
+    //private final JLabel respuestaJugador;
     private final JPanel cartasJugador;
     private final JLabel puntos;
 
@@ -54,7 +55,7 @@ public class VistaGrafica implements IVista {
         ventanaPrincipal.setIconImage(new ImageIcon("src/vistas/imagenes/icono.png").getImage());
         ventanaPrincipal.setLayout(new GridBagLayout());
         ventanaPrincipal.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        //ventanaPrincipal.setSize(1200, 600);
+        //ventanaPrincipal.setPreferredSize(new Dimension(1200, 600));
         ventanaPrincipal.setResizable(false);
 
         // GridBagConstraints
@@ -199,14 +200,22 @@ public class VistaGrafica implements IVista {
         // Respuesta Oponente
         constraints = new GridBagConstraints();
 
-        respuestaOponente = new JLabel(new ImageIcon("src/vistas/imagenes/speechBubble.png"));
+        mensaje = new JTextField();
+        mensaje.setEnabled(false);
+        mensaje.setHorizontalAlignment(JTextField.CENTER);
+        mensaje.setPreferredSize(new Dimension(1200,30));
+        //respuestaOponente = new JLabel(new ImageIcon("src/vistas/imagenes/speechBubble.png"));
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.gridwidth = 3;
         constraints.gridheight = 1;
-        constraints.weighty = 0.0;
-        constraints.anchor = GridBagConstraints.CENTER;
-        mesa.add(respuestaOponente, constraints);
+        constraints.weightx = 1;
+        //constraints.weighty = 1;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.anchor = GridBagConstraints.NORTH;
+
+        //mesa.add(respuestaOponente, constraints);
+        mesa.add(mensaje,constraints);
 
         // Cartas jugadas
         cartasJugadas = new JPanel();
@@ -231,10 +240,12 @@ public class VistaGrafica implements IVista {
         constraints.gridy = 1;
         constraints.gridheight = 2;
         constraints.gridwidth = 3;
-        constraints.weightx = 1.0;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.weightx = 1;
+        constraints.weighty = 1;
+        constraints.fill = GridBagConstraints.BOTH;
         mesa.add(cartasJugadas, constraints);
 
+        /*
         // Respuesta Jugador
         constraints = new GridBagConstraints();
 
@@ -245,6 +256,7 @@ public class VistaGrafica implements IVista {
         constraints.gridwidth = 1;
         constraints.anchor = GridBagConstraints.SOUTH;
         mesa.add(respuestaJugador, constraints);
+        */
 
         // Cartas Jugador
         constraints = new GridBagConstraints();
@@ -369,19 +381,18 @@ public class VistaGrafica implements IVista {
         }
 
         // Si ya se cantó envido o ya no es la primera ronda, no se puede cantar
-        if (controlador.getEnvidoCantado() || controlador.getNumeroRonda() != 1){
+        //if (controlador.getEnvidoCantado() || controlador.getNumeroRonda() != 1){
             //
-        } else {
+        //} else {
             opciones.add(botonPrimerEnvido);
-        }
+        //}
 
         opciones.add(botonMazo);
-
+        opciones.repaint();
     }
 
     @Override
     public void mostrarOpcionesRonda() {
-        restaurarOpciones();
         habilitarComponentes(opciones);
     }
 
@@ -572,6 +583,7 @@ public class VistaGrafica implements IVista {
             panel.repaint();
         }
         cartasJugador.removeAll();
+        restaurarOpciones();
     }
 
     @Override
