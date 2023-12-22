@@ -3,9 +3,9 @@ package modelos;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-
 import ar.edu.unlu.rmimvc.cliente.IControladorRemoto;
 import ar.edu.unlu.rmimvc.observer.ObservableRemoto;
+import services.Serializador;
 
 public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Serializable {
     private final ArrayList<IControladorRemoto> observers;
@@ -36,6 +36,8 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
     private boolean envidoCantado;
     private boolean trucoCantado;
     private Apuesta trucoActual;
+
+    //private static Serializador scoreboard = new Serializador("scoreboard.dat");
 
     public ModeloTruco() throws RemoteException {
         observers = new ArrayList<>();
@@ -224,8 +226,8 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
             jugador2 = new Jugador(jugador);
         }
         */
-        jugador1 = new Jugador("J1");
-        jugador2 = new Jugador("J2");
+        jugador1 = new Jugador("JUGADOR 1");
+        jugador2 = new Jugador("JUGADOR 2");
 
     }
 
@@ -296,6 +298,7 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
                 notificarObservadores(Evento.FIN_MANO);
                 if (finPartida()){
                     notificarObservadores(Evento.FIN_PARTIDA);
+                    guardarPuntaje(getNombreJugadorActual());
                 } else {
                     iniciarMano();
                     notificarObservadores(Evento.MOSTRAR_MENU);
@@ -578,6 +581,7 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
                 notificarObservadores(Evento.FIN_MANO);
                 if (finPartida()){
                     notificarObservadores(Evento.FIN_PARTIDA);
+                    // TODO guardar puntaje
                 } else {
                     limpiarMano();
                     iniciarMano();
@@ -628,6 +632,38 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
         } else if (jugador == 2){
             jugador2.darPuntos(puntos);
         }
+    }
+
+    public void guardarPuntaje(String jugador){
+        Serializador scoreboard = new Serializador("scoreboard.dat");
+        Object[] puntajes = scoreboard.readObjects();
+        Object[] jugadorPuntaje = new Object[2];
+        boolean existe = false;
+        Serializador nuevoScoreboard = new Serializador("scoreboard.dat");
+
+        if (puntajes.length > 0){
+            for (Object o : puntajes) {
+                Object[] puntaje = (Object[]) o;
+                if (puntaje[0] == jugador) {
+                    puntaje[1] = (int) puntaje[1] + 1;
+                    existe = true;
+                }
+                nuevoScoreboard.addOneObject(puntaje);
+            }
+            if (!existe){
+                jugadorPuntaje[0] = jugador;
+                jugadorPuntaje[1] = 1;
+                nuevoScoreboard.addOneObject(jugadorPuntaje);
+            }
+        } else {
+            jugadorPuntaje[0] = jugador;
+            jugadorPuntaje[1] = 1;
+            nuevoScoreboard.writeOneObject(jugadorPuntaje);
+        }
+    }
+
+    public void ordenarPuntajes(){
+
     }
 
 }
