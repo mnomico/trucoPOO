@@ -4,44 +4,65 @@ import controlador.Controlador;
 import modelos.Apuesta;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.Objects;
 
 public class VistaGrafica implements IVista {
 
     private Controlador controlador;
 
-    private GridBagConstraints constraints;
-    private final JFrame ventanaPrincipal;
-    private final JLabel mesa;
-    private final JPanel opciones;
-    //private final JLabel respuestaOponente;
-    private final JTextField mensaje;
-    private final JPanel cartasJugadas;
+    private int boardWidth = 1280;
+    private int boardHeight = 720;
+
+    private int textoWidth = 240;
+    private int textoHeight = 720;
+
+    private int cardWidth = 160;
+    private int cardHeight = 104;
+
+    private Color verde = new Color(53, 101, 77);
+
+    private JFrame ventanaPrincipal = new JFrame("Truco");
+    private JPanel mesa = new JPanel() {
+        @Override
+        public void paintComponent(Graphics g){
+            super.paintComponent(g);
+        }
+    };
+    private JTextPane consola = new JTextPane();
+    private StyledDocument doc = consola.getStyledDocument();
+    private JPanel opciones = new JPanel();
+    private JPanel cartasJugador = new JPanel();
+    private JPanel subpanel = new JPanel();
+
+    private final JPanel cartasJugadas = new JPanel();
     private final JLayeredPane[] paneles;
 
-    //private final JLabel respuestaJugador;
-    private final JPanel cartasJugador;
-    private final JLabel puntos;
+    private JButton botonQuiero = new JButton("QUIERO");
+    private JButton botonNoQuiero = new JButton("NO QUIERO");
+    private JButton botonTruco = new JButton("TRUCO");
+    private JButton botonRetruco = new JButton("RETRUCO");
+    private JButton botonValecuatro = new JButton("VALECUATRO");
+    private JButton botonPrimerEnvido = new JButton("ENVIDO");
+    private JButton botonEnvido = new JButton("ENVIDO");
+    private JButton botonRealEnvido = new JButton("REAL ENVIDO");
+    private JButton botonFaltaEnvido = new JButton("FALTA ENVIDO");
+    private JButton botonMazo = new JButton("MAZO");
+    private JButton[] botones = new JButton[]{
+        botonQuiero, botonNoQuiero, botonTruco, botonRetruco, botonValecuatro, botonPrimerEnvido, botonEnvido,
+            botonRealEnvido, botonFaltaEnvido, botonMazo
+    };
 
-    private final JButton botonQuiero;
-    private final JButton botonNoQuiero;
-    private final JButton botonTruco;
-    private final JButton botonRetruco;
-    private final JButton botonValecuatro;
-    private final JButton botonPrimerEnvido;
-    private final JButton botonEnvido;
-    private final JButton botonRealEnvido;
-    private final JButton botonFaltaEnvido;
-    private final JButton botonMazo;
+    private JLabel carta1 = new JLabel();
+    private JLabel carta2 = new JLabel();
+    private JLabel carta3 = new JLabel();
 
-    private JLabel carta1;
-    private JLabel carta2;
-    private JLabel carta3;
+    private JPanel panelCartas = new JPanel();
 
     private String cartaJ1;
     private String cartaJ2;
@@ -51,69 +72,79 @@ public class VistaGrafica implements IVista {
 
     public VistaGrafica(){
         // Ventana Principal
-        ventanaPrincipal = new JFrame("Truco");
-        ventanaPrincipal.setIconImage(new ImageIcon("src/vistas/imagenes/icono.png").getImage());
-        ventanaPrincipal.setLayout(new GridBagLayout());
+        ventanaPrincipal.setLayout(new BorderLayout());
         ventanaPrincipal.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        //ventanaPrincipal.setPreferredSize(new Dimension(1200, 600));
+        ventanaPrincipal.setPreferredSize(new Dimension(boardWidth, boardHeight));
         ventanaPrincipal.setResizable(false);
-
-        // GridBagConstraints
-        constraints = new GridBagConstraints();
+        ventanaPrincipal.setVisible(true);
 
         // Mesa
-        mesa = new JLabel(new ImageIcon("src/vistas/imagenes/fondo.jpg"));
-        mesa.setLayout(new GridBagLayout());
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        ventanaPrincipal.add(mesa, constraints);
+        mesa.setLayout(new BorderLayout());
+        mesa.setBackground(verde);
+        ventanaPrincipal.add(mesa, BorderLayout.CENTER);
+
+        // Consola
+        consola.setLayout(new BorderLayout());
+        consola.setBackground(Color.BLACK);
+        consola.setPreferredSize(new Dimension(textoWidth, textoHeight));
+        consola.setEnabled(false);
+        SimpleAttributeSet centrado = new SimpleAttributeSet();
+        StyleConstants.setAlignment(centrado, StyleConstants.ALIGN_CENTER);
+        StyleConstants.setForeground(centrado, Color.WHITE);
+        doc.setParagraphAttributes(0, doc.getLength(), centrado, false);
+
+        ventanaPrincipal.add(new JScrollPane(consola), BorderLayout.EAST);
 
         // Opciones
-        constraints = new GridBagConstraints();
+        inicializarOpciones();
+        opciones.setBackground(verde);
+        //ventanaPrincipal.add(opciones, BorderLayout.SOUTH);
 
-        opciones = new JPanel();
-        opciones.setLayout(new GridLayout());
-        constraints.gridx = 0;
-        constraints.gridy = 1;
-        constraints.weightx = 1.0;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        ventanaPrincipal.add(opciones, constraints);
+        // Cartas Jugador
+        cartasJugador.setLayout(new BoxLayout(cartasJugador, BoxLayout.X_AXIS));
+        cartasJugador.setOpaque(true);
+        cartasJugador.setBackground(verde);
+        cartasJugador.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+        //mesa.add(cartasJugador, BorderLayout.SOUTH);
 
-        // Botones
+        // Subpanel para opciones y cartas jugador
+        subpanel.setLayout(new FlowLayout());
+        subpanel.add(cartasJugador);
+        subpanel.add(opciones);
+        subpanel.setBackground(verde);
+        mesa.add(subpanel, BorderLayout.SOUTH);
 
         // Botón TRUCO
-        botonTruco = new JButton("TRUCO");
-
         botonTruco.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cantarTruco();
+                if (controlador.esMiTurno()) {
+                    cantarTruco();
+                }
             }
         });
 
         // Botón RETRUCO
-        botonRetruco = new JButton("RETRUCO");
-
         botonRetruco.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cantarTruco();
+                if (controlador.esMiTurno()) {
+                    cantarTruco();
+                }
             }
         });
 
         // Botón VALECUATRO
-        botonValecuatro = new JButton("VALECUATRO");
-
         botonValecuatro.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cantarTruco();
+                if (controlador.esMiTurno()) {
+                    cantarTruco();
+                }
             }
         });
 
         // Botón PRIMER ENVIDO
-        botonPrimerEnvido = new JButton("ENVIDO");
-
         botonPrimerEnvido.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -127,38 +158,36 @@ public class VistaGrafica implements IVista {
         });
 
         // Botón ENVIDO
-        botonEnvido = new JButton("ENVIDO");
-
         botonEnvido.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cantarEnvido(Apuesta.ENVIDO);
+                if (controlador.esMiTurno()) {
+                    cantarEnvido(Apuesta.ENVIDO);
+                }
             }
         });
 
         // Botón REAL ENVIDO
-        botonRealEnvido = new JButton("REAL ENVIDO");
-
         botonRealEnvido.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cantarEnvido(Apuesta.REAL_ENVIDO);
+                if (controlador.esMiTurno()) {
+                    cantarEnvido(Apuesta.REAL_ENVIDO);
+                }
             }
         });
 
         // Botón FALTA ENVIDO
-        botonFaltaEnvido = new JButton("FALTA ENVIDO");
-
         botonFaltaEnvido.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cantarEnvido(Apuesta.FALTA_ENVIDO);
+                if (controlador.esMiTurno()) {
+                    cantarEnvido(Apuesta.FALTA_ENVIDO);
+                }
             }
         });
 
         // Botón QUIERO
-        botonQuiero = new JButton("QUIERO");
-
         botonQuiero.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -167,9 +196,7 @@ public class VistaGrafica implements IVista {
             }
         });
 
-        // Botón QUIERO
-        botonNoQuiero = new JButton("NO QUIERO");
-
+        // Botón NO QUIERO
         botonNoQuiero.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -179,124 +206,33 @@ public class VistaGrafica implements IVista {
         });
 
         // Botón IRSE AL MAZO
-        botonMazo = new JButton("IRSE AL MAZO");
-
         botonMazo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                irseAlMazo();
+                if (controlador.esMiTurno()) {
+                    irseAlMazo();
+                }
             }
         });
 
-        // Agrego los botones al JPanel opciones
-        opciones.add(botonTruco);
-        opciones.add(botonPrimerEnvido);
-        opciones.add(botonMazo);
-
-        // Deshabilito los botones
-        //deshabilitarComponentes(opciones);
-        opciones.setVisible(true);
-
-        // Respuesta Oponente
-        constraints = new GridBagConstraints();
-
-        mensaje = new JTextField();
-        mensaje.setEnabled(false);
-        mensaje.setHorizontalAlignment(JTextField.CENTER);
-        mensaje.setPreferredSize(new Dimension(1200,30));
-        mensaje.setBackground(Color.black);
-        mensaje.setDisabledTextColor(Color.white);
-        //respuestaOponente = new JLabel(new ImageIcon("src/vistas/imagenes/speechBubble.png"));
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.gridwidth = 3;
-        constraints.gridheight = 1;
-        constraints.weightx = 1;
-        //constraints.weighty = 1;
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.anchor = GridBagConstraints.NORTH;
-
-        //mesa.add(respuestaOponente, constraints);
-        mesa.add(mensaje,constraints);
-
         // Cartas jugadas
-        cartasJugadas = new JPanel();
-        cartasJugadas.setOpaque(false);
-        //cartasJugadas.setLayout(new GridBagLayout());
-        cartasJugadas.setBorder(BorderFactory.createLineBorder(Color.black));
+
         paneles = new JLayeredPane[3];
         for (int i = 0; i < 3; i++){
             paneles[i] = new JLayeredPane();
-            paneles[i].setOpaque(false);
-            paneles[i].setBorder(BorderFactory.createLineBorder(Color.black));
-            paneles[i].setPreferredSize(new Dimension(350,400));
-            paneles[i].setBounds(400*i,0,400,400);
+            paneles[i].setPreferredSize(new Dimension((int) (cardWidth * 1.5), cardHeight * 2));
+            paneles[i].setBounds(50*i,0, 0, 0);
             cartasJugadas.add(paneles[i]);
         }
 
-        cartasJugadas.setPreferredSize(new Dimension(0, 300));
-        cartasJugadas.setBounds(0,200,1200,400);
+        cartasJugadas.setPreferredSize(new Dimension(boardWidth - textoWidth, cardHeight * 2));
+        cartasJugadas.setBackground(verde);
 
-
-        constraints.gridx = 0;
-        constraints.gridy = 1;
-        constraints.gridheight = 2;
-        constraints.gridwidth = 3;
-        constraints.weightx = 1;
-        constraints.weighty = 1;
-        constraints.fill = GridBagConstraints.BOTH;
-        mesa.add(cartasJugadas, constraints);
-
-        /*
-        // Respuesta Jugador
-        constraints = new GridBagConstraints();
-
-        respuestaJugador = new JLabel(new ImageIcon("src/vistas/imagenes/speechBubble2.png"));
-        constraints = new GridBagConstraints();
-        constraints.gridx = 0;
-        constraints.gridy = 3;
-        constraints.gridwidth = 1;
-        constraints.anchor = GridBagConstraints.SOUTH;
-        mesa.add(respuestaJugador, constraints);
-        */
-
-        // Cartas Jugador
-        constraints = new GridBagConstraints();
-
-        cartasJugador = new JPanel();
-        cartasJugador.setBorder(BorderFactory.createLineBorder(Color.black));
-        cartasJugador.setLayout(new GridBagLayout());
-        cartasJugador.setPreferredSize(new Dimension(0, 200));
-        cartasJugador.setOpaque(false);
-        constraints.gridx = 1;
-        constraints.gridy = 3;
-        constraints.gridheight = 1;
-        constraints.gridwidth = 1;
-        constraints.weightx = 1.0;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.anchor = GridBagConstraints.SOUTH;
-        mesa.add(cartasJugador, constraints);
-
-        // Cartas
-        carta1 = new JLabel();
-        carta1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        carta2 = new JLabel();
-        carta2.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        carta3 = new JLabel();
-        carta3.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
-        // Puntos
-        constraints = new GridBagConstraints();
-
-        puntos = new JLabel(new ImageIcon("src/vistas/imagenes/puntos.png"));
-        constraints.gridx = 2;
-        constraints.gridy = 3;
-        constraints.gridwidth = 1;
-        mesa.add(puntos, constraints);
+        mesa.add(cartasJugadas, BorderLayout.NORTH);
 
         // Mostrar Ventana Principal
         ventanaPrincipal.pack();
-        ventanaPrincipal.setVisible(false);
+        mesa.repaint();
     }
 
     private Apuesta apuestaActual;
@@ -325,39 +261,34 @@ public class VistaGrafica implements IVista {
         this.controlador = controlador;
     }
 
-    public void habilitarComponentes(JPanel contenedor){
-        for (Component componente : contenedor.getComponents()){
-            componente.setEnabled(true);
-        }
-    }
-
-    public void deshabilitarComponentes(JPanel contenedor){
-        if (contenedor != null){
-            for (Component componente : contenedor.getComponents()){
-                componente.setEnabled(false);
-            }
-        }
+    public void inicializarOpciones() {
+        opciones.add(botonTruco);
+        opciones.add(botonPrimerEnvido);
+        opciones.add(botonRealEnvido);
+        opciones.add(botonFaltaEnvido);
+        opciones.add(botonMazo);
     }
 
     @Override
     public void mostrarMenuPrincipal() {
         mostrarCartas();
+        inicializarOpciones();
         //deshabilitarComponentes(opciones);
         if (controlador.esMiTurno()) {
             mostrarTurno(true);
-            mostrarOpcionesRonda();
-            // TODO
-            // acá es donde se muestra el speechBubble del jugador indicando que es su turno
         } else {
             mostrarTurno(false);
-            // TODO
-            // acá es donde se muestra el speechBubble del oponente indicando que es su turno
         }
         apuestaActual = null;
     }
 
-    public void restaurarOpciones(){
+    @Override
+    public void mostrarOpcionesRonda() {
 
+    }
+
+    /*
+    public void restaurarOpciones(){
         opciones.removeAll();
         Apuesta trucoActual = controlador.getTrucoActual();
         if (trucoActual != null) {
@@ -394,11 +325,8 @@ public class VistaGrafica implements IVista {
         opciones.add(botonMazo);
         opciones.repaint();
     }
+     */
 
-    @Override
-    public void mostrarOpcionesRonda() {
-        habilitarComponentes(opciones);
-    }
 
     public void jugarCarta(int nroCarta){
         controlador.jugarCarta(nroCarta);
@@ -413,9 +341,17 @@ public class VistaGrafica implements IVista {
             if (apuestaActual != null) {
                 opciones.remove(0);
                 switch (apuestaActual) {
-                    case TRUCO -> opciones.add(botonRetruco, 0);
-                    case RETRUCO -> opciones.add(botonValecuatro, 0);
-                    //case VALECUATRO -> opciones.remove(0);
+                    case TRUCO -> {
+                        opciones.remove(botonTruco);
+                        opciones.add(botonRetruco, 0);
+                    }
+                    case RETRUCO -> {
+                        opciones.remove(botonRetruco);
+                        opciones.add(botonValecuatro, 0);
+                    }
+                    case VALECUATRO -> {
+                        opciones.remove(botonValecuatro);
+                    }
                 }
             }
         }
@@ -438,14 +374,23 @@ public class VistaGrafica implements IVista {
 
     }
 
+    private void eliminarMouseListeners(JLabel carta) {
+        for (MouseListener listener : carta.getMouseListeners()) {
+            carta.removeMouseListener(listener);
+        }
+    }
+
     @Override
     public void mostrarCartas() {
         String path;
-        constraints = new GridBagConstraints();
-        constraints.insets = new Insets(0,10,0,10);
         int nroCarta = 1;
 
+        eliminarMouseListeners(carta1);
+        eliminarMouseListeners(carta2);
+        eliminarMouseListeners(carta3);
+
         cartasJugador.removeAll();
+        cartasJugador.add(Box.createHorizontalGlue());
 
         for (String carta : controlador.getCartas()){
             path = "src/vistas/imagenes/cartas/" + carta + ".png";
@@ -460,7 +405,8 @@ public class VistaGrafica implements IVista {
                             }
                         }
                     });
-                    cartasJugador.add(carta1, constraints);
+                    cartasJugador.add(carta1);
+                    //cartasJugador.add(Box.createRigidArea(new Dimension(20, 0)));
                 }
 
                 case 2 -> {
@@ -472,7 +418,8 @@ public class VistaGrafica implements IVista {
                             }
                         }
                     });
-                    cartasJugador.add(carta2, constraints);
+                    cartasJugador.add(carta2);
+                    //cartasJugador.add(Box.createRigidArea(new Dimension(20, 0)));
                 }
 
                 case 3 -> {
@@ -484,14 +431,20 @@ public class VistaGrafica implements IVista {
                             }
                         }
                     });
-                    cartasJugador.add(carta3, constraints);
+                    cartasJugador.add(carta3);
+                    //cartasJugador.add(Box.createRigidArea(new Dimension(20, 0)));
                 }
             }
+
             nroCarta++;
         }
+        cartasJugador.add(Box.createHorizontalGlue());
         cartasJugador.updateUI();
+        cartasJugador.repaint();
     }
 
+
+    //TODO arreglar que no se muestre la ultima carta jugada
     @Override
     public void mostrarCartaJugada(String jugadorActual, String cartaJugada) {
 
@@ -502,21 +455,19 @@ public class VistaGrafica implements IVista {
         JLabel carta = new JLabel(new ImageIcon(path));
 
         if (controlador.esMiTurno()){
-            carta.setBounds(150,100,carta.getIcon().getIconWidth(),carta.getIcon().getIconHeight());
+            carta.setBounds(35,0,carta.getIcon().getIconWidth(),carta.getIcon().getIconHeight());
             cartaJ1 = cartaJugada;
         } else {
-            carta.setBounds(100,50,carta.getIcon().getIconWidth(),carta.getIcon().getIconHeight());
+            carta.setBounds(0,35,carta.getIcon().getIconWidth(),carta.getIcon().getIconHeight());
             cartaJ2 = cartaJugada;
         }
 
         paneles[nroRonda-1].add(carta, JLayeredPane.DEFAULT_LAYER);
-
         paneles[nroRonda-1].updateUI();
     }
 
     @Override
     public void mostrarResponderApuesta() {
-        deshabilitarComponentes(cartasJugador);
         opciones.removeAll();
         opciones.add(botonQuiero);
         opciones.add(botonNoQuiero);
@@ -531,23 +482,34 @@ public class VistaGrafica implements IVista {
             case ENVIDO_ENVIDO -> opciones.add(botonRealEnvido);
             case ENVIDO_ENVIDO_REAL_ENVIDO, ENVIDO_REAL_ENVIDO, REAL_ENVIDO -> opciones.add(botonFaltaEnvido);
         }
-        habilitarComponentes(opciones);/////////
         opciones.updateUI();
     }
 
     @Override
     public void mostrarEsperandoRespuesta(String jugadorActual) {
-
+        try {
+            doc.insertString(doc.getLength(), "\nEsperando respuesta...", null);
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void mostrarDijoQuiero(String jugadorActual) {
-        mensaje.setText(jugadorActual + " dijo QUIERO");
+        try {
+            doc.insertString(doc.getLength(), "\n" + jugadorActual + " dijo QUIERO", null);
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void mostrarDijoNoQuiero(String jugadorActual) {
-        mensaje.setText(jugadorActual + " dijo NO QUIERO");
+        try {
+            doc.insertString(doc.getLength(), "\n" + jugadorActual + " dijo NO QUIERO", null);
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -557,19 +519,24 @@ public class VistaGrafica implements IVista {
 
     @Override
     public void mostrarIrseAlMazo(String jugadorActual) {
-        mensaje.setText(jugadorActual + " se fue al mazo.");
+        try {
+            doc.insertString(doc.getLength(), "\n" + jugadorActual + " se fue al mazo.", null);
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
     }
 
+    // TODO REFACTORIZAR ESTO
     @Override
     public void mostrarGanadorRonda(String ganadorRonda) {
         String cartaGanadora = controlador.getCartaGanadora();
         int nroRonda = controlador.getNumeroRonda();
 
         if (Objects.equals(cartaGanadora, cartaJ1)){
-            Component carta = paneles[nroRonda-2].getComponentAt(150,100);
+            Component carta = paneles[nroRonda-2].getComponentAt(35,0);
             paneles[nroRonda-2].moveToFront(carta);
         } else if (Objects.equals(cartaGanadora, cartaJ2)){
-            Component carta = paneles[nroRonda-2].getComponentAt(100,50);
+            Component carta = paneles[nroRonda-2].getComponentAt(0,35);
             paneles[nroRonda-2].moveToFront(carta);
         } else {
             // TODO parda
@@ -577,38 +544,59 @@ public class VistaGrafica implements IVista {
 
         paneles[nroRonda-2].revalidate();
         paneles[nroRonda-2].repaint();
+
+        try {
+            doc.insertString(doc.getLength(), "\n " + ganadorRonda + " ganó la ronda.\n", null);
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void mostrarGanadorMano(String ganadorMano) {
+        try {
+            doc.insertString(doc.getLength(), "\n" + controlador.getNombreGanadorMano() + " ganó la mano.", null);
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+
         for (JLayeredPane panel : paneles){
             panel.removeAll();
             panel.revalidate();
             panel.repaint();
         }
-        cartasJugador.removeAll();
-        restaurarOpciones();
     }
 
     @Override
     public void mostrarTurno(boolean esMiTurno) {
         if (esMiTurno){
-            mensaje.setText("--- ES TU TURNO ---");
+            try {
+                doc.insertString(doc.getLength(), "\n- ES TU TURNO -\n", null);
+            } catch (BadLocationException e) {
+                e.printStackTrace();
+            }
         } else {
-            mensaje.setText("--- TURNO DE " + controlador.getNombreJugadorActual() + " ---");
+            try {
+                doc.insertString(doc.getLength(), "\n- TURNO DE " + controlador.getNombreJugadorActual() + " -\n", null);
+            } catch (BadLocationException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     @Override
     public void mostrarFinPartida(String jugadorGanador) {
-        String mensaje = "--- FIN DE LA PARTIDA ---\n" + jugadorGanador + " ganó.";
-        JOptionPane.showMessageDialog(ventanaPrincipal, mensaje);
+        String textoConsola = "\n- FIN DE LA PARTIDA -\n" + jugadorGanador + " ganó.";
+        JOptionPane.showMessageDialog(ventanaPrincipal, textoConsola);
     }
 
     @Override
     public void mostrarApuesta(String jugadorActual, Apuesta apuesta) {
         apuestaActual = apuesta;
-        // TODO mostrar lo que se cantó
-        mensaje.setText(jugadorActual + " canta " + apuestaActual.toString());
+        try {
+            doc.insertString(doc.getLength(), "\n" + jugadorActual + " canta " + apuestaActual.toString(), null);
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
     }
 }
