@@ -27,7 +27,18 @@ public class Controlador implements IControladorRemoto {
             e.printStackTrace();
         }
     }
+
+    public Controlador() {
+
+    }
+
+    public void setAsObserver() throws RemoteException {
+        this.modelo.setObservers(this);
+    }
+
+    public void setVista(IVista vista) {
         this.vista = vista;
+    }
         this.jugador = numeroJugador++;
         this.nombreJugador = nombreJugador;
     }
