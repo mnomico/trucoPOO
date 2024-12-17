@@ -15,7 +15,7 @@ public interface IVista {
 
     void setVisible(boolean flag);
 
-    void setControlador(Controlador controlador);
+    //void setControlador(Controlador controlador);
 
     void mostrarMenuPrincipal();
 
