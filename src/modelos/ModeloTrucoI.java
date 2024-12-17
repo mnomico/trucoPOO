@@ -2,7 +2,6 @@ package modelos;
 
 import ar.edu.unlu.rmimvc.cliente.IControladorRemoto;
 import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
-import vistas.Observador;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
