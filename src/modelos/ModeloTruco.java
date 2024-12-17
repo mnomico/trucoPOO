@@ -259,7 +259,7 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
         jugador1.calcularTanto();
         jugador2.calcularTanto();
 
-
+        notificarObservadores(Evento.MOSTRAR_MENU);
     }
 
     @Override
