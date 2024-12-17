@@ -10,10 +10,10 @@ import java.util.ArrayList;
 
 public class Controlador implements IControladorRemoto {
     private ModeloTrucoI modelo;
-    private final IVista vista;
+    private IVista vista;
     //private final Jugador jugador;
-    private final int jugador;
-    private final String nombreJugador;
+    private int jugador;
+    private String nombreJugador;
     private static int numeroJugador = 1;
 
     public Controlador(IVista vista, String nombreJugador){
