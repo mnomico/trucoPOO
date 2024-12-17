@@ -39,9 +39,12 @@ public class Controlador implements IControladorRemoto {
     }
 
     public void ingresarJugador(String nombre) throws RemoteException {
-        this.jugador = numeroJugador++;
-        this.nombreJugador = nombre;
-        modelo.ingresarJugador(nombreJugador);
+        int nroJugador = this.modelo.obtenerJugador();
+        if (nroJugador != 0) {
+            this.jugador = nroJugador;
+            this.nombreJugador = nombre;
+            modelo.ingresarJugador(nombreJugador);
+        }
     }
 
     public int getJugador(){
