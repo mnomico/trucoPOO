@@ -11,33 +11,22 @@ public class Main {
     public static void main(String[] args) throws RemoteException {
         ModeloTruco juego = new ModeloTruco();
 
-        Jugador jugador1 = new Jugador("JUGADOR 1");
-        Jugador jugador2 = new Jugador("JUGADOR 2");
+        Controlador controlador1 = new Controlador(juego);
+        Controlador controlador2 = new Controlador(juego);
 
-        //juego.ingresarJugador(jugador1);
-        //juego.ingresarJugador(jugador2);
+        IVista vista1 = new VistaGrafica(controlador1);
+        IVista vista2 = new ConsolaGrafica(controlador2);
 
-        IVista vista1 = new VistaGrafica();
-        IVista vista2 = new ConsolaGrafica();
+        controlador1.ingresarJugador("Jugador 1");
+        controlador2.ingresarJugador("Jugador 2");
 
-        vista2.setLocation(vista1.returnFrameXPos(), vista1.returnFrameYPos());
+        //juego.setObservers(controlador1);
+        //juego.setObservers(controlador2);
 
-        Controlador controlador1 = new Controlador(vista1, "JUGADOR 1");
-        Controlador controlador2 = new Controlador(vista2, "JUGADOR 2");
+        //vista1.setVisible(true);
+        //vista2.setVisible(true);
 
-        controlador1.setModeloRemoto(juego);
-        controlador2.setModeloRemoto(juego);
-
-        vista1.setControlador(controlador1);
-        vista2.setControlador(controlador2);
-
-        juego.setObservers(controlador1);
-        juego.setObservers(controlador2);
-
-        vista1.setVisible(true);
-        vista2.setVisible(true);
-
-        vista1.mostrarMenuPrincipal();
-        vista2.mostrarMenuPrincipal();
+        //vista1.mostrarMenuPrincipal();
+        //vista2.mostrarMenuPrincipal();
     }
 }
