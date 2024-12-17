@@ -47,6 +47,12 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
         ganadoresRondas = new ArrayList<>();
         ingresarJugador();
         iniciarJuego();
+    public static ModeloTruco instancia;
+    public static ModeloTruco getInstancia() throws RemoteException {
+        if (instancia == null) {
+            instancia = new ModeloTruco();
+        }
+        return instancia;
     }
 
     @Override
