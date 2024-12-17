@@ -18,6 +18,15 @@ public class Controlador implements IControladorRemoto {
 
     public Controlador(IVista vista, String nombreJugador){
         vista.setControlador(this);
+    public <T extends IObservableRemoto> Controlador(T modelo) {
+        try {
+            this.setModeloRemoto(modelo);
+            // TODO esto es lo que falta para que funcione con RMI, supuestamente
+            this.modelo.setObservers(this);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
         this.vista = vista;
         this.jugador = numeroJugador++;
         this.nombreJugador = nombreJugador;
