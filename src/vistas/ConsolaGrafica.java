@@ -20,7 +20,10 @@ public class ConsolaGrafica implements IVista {
     // Controlador
     private Controlador controlador;
 
-    public ConsolaGrafica() {
+    public ConsolaGrafica(Controlador controlador) {
+        this.controlador = controlador;
+        controlador.setVista(this);
+
         frame = new JFrame ("Truco");
         frame.setContentPane(panel2);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -40,11 +43,7 @@ public class ConsolaGrafica implements IVista {
 
         enterButton.addActionListener(procesarInputField);
         inputField.addActionListener(procesarInputField);
-    }
-
-    @Override
-    public void setControlador(Controlador controlador) {
-        this.controlador = controlador;
+        frame.setVisible(true);
     }
 
     public int returnFrameXPos(){
