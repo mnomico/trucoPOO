@@ -14,7 +14,6 @@ public class Controlador implements IControladorRemoto {
     //private final Jugador jugador;
     private int jugador;
     private String nombreJugador;
-    private static int numeroJugador = 1;
 
     public <T extends IObservableRemoto> Controlador(T modelo) {
         try {
