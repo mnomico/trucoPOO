@@ -53,7 +53,7 @@ public interface ModeloTrucoI extends IObservableRemoto {
 
     String getTantos() throws RemoteException;
 
-    public void ingresarJugador() throws RemoteException;
+    public void ingresarJugador(String nombreJugador) throws RemoteException;
 
     void iniciarJuego() throws RemoteException;
 
