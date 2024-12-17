@@ -55,6 +55,8 @@ public interface ModeloTrucoI extends IObservableRemoto {
 
     public void ingresarJugador(String nombreJugador) throws RemoteException;
 
+    int obtenerJugador() throws RemoteException;
+
     void iniciarJuego() throws RemoteException;
 
     void iniciarMano() throws RemoteException;
