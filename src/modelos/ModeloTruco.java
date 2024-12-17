@@ -402,7 +402,6 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
         notificarObservadores(Evento.FIN_MANO);
         limpiarMano();
         iniciarMano();
-        notificarObservadores(Evento.MOSTRAR_MENU);
     }
 
     @Override
