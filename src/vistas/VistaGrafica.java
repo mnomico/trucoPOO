@@ -259,11 +259,6 @@ public class VistaGrafica implements IVista {
         ventanaPrincipal.setVisible(flag);
     }
 
-    @Override
-    public void setControlador(Controlador controlador) {
-        this.controlador = controlador;
-    }
-
     public void inicializarOpciones() {
         opciones.add(botonTruco);
         opciones.add(botonPrimerEnvido);
