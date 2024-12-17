@@ -70,7 +70,10 @@ public class VistaGrafica implements IVista {
     //private final JLabel carta1;
     //private final JLabel carta2;
 
-    public VistaGrafica(){
+    public VistaGrafica(Controlador controlador){
+        this.controlador = controlador;
+        controlador.setVista(this);
+
         // Ventana Principal
         ventanaPrincipal.setLayout(new BorderLayout());
         ventanaPrincipal.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
