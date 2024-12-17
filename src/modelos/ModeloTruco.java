@@ -239,6 +239,16 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
     }
 
     @Override
+    public int obtenerJugador() throws RemoteException{
+        if (jugador1 == null) {
+            return 1;
+        } else if (jugador2 == null) {
+            return 2;
+        }
+        return 0;
+    }
+
+    @Override
     public void iniciarJuego() throws RemoteException{
         envidoCantado = false;
         trucoCantado = false;
