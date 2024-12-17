@@ -13,7 +13,7 @@ public class AppCliente {
 
 	private static int jugador = 1;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws RemoteException {
 		ArrayList<String> ips = Util.getIpDisponibles();
 		String ip = (String) JOptionPane.showInputDialog(
 				null,
@@ -37,7 +37,7 @@ public class AppCliente {
 				JOptionPane.QUESTION_MESSAGE,
 				null,
 				null,
-				null
+				"127.0.0.1"
 		);
 		String portServidor = (String) JOptionPane.showInputDialog(
 				null,
@@ -67,23 +67,27 @@ public class AppCliente {
 				opciones[0]
 		);
 
+		Controlador controlador = new Controlador();
+
 		IVista vista;
 		if (tipoVista == 0){
-			vista = new VistaGrafica();
+			vista = new VistaGrafica(controlador);
 		} else {
-			vista = new ConsolaGrafica();
+			vista = new ConsolaGrafica(controlador);
 		}
+		controlador.setVista(vista);
 
-		Controlador controlador = new Controlador(vista, nombreJugador);
 		Cliente c = new Cliente(ip, Integer.parseInt(port), ipServidor, Integer.parseInt(portServidor));
-		vista.setVisible(true);
 		try {
 			c.iniciar(controlador);
-			vista.mostrarMenuPrincipal();
 		} catch (RemoteException | RMIMVCException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		controlador.setAsObserver();
+		controlador.ingresarJugador(nombreJugador);
+		//vista.mostrarMenuPrincipal();
+		//vista.setVisible(true);
 	}
 
 }
