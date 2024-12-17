@@ -16,8 +16,6 @@ public class Controlador implements IControladorRemoto {
     private String nombreJugador;
     private static int numeroJugador = 1;
 
-    public Controlador(IVista vista, String nombreJugador){
-        vista.setControlador(this);
     public <T extends IObservableRemoto> Controlador(T modelo) {
         try {
             this.setModeloRemoto(modelo);
