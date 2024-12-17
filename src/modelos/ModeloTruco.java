@@ -223,17 +223,16 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
     /////////////////////////////////////////
 
     @Override
-    public void ingresarJugador() throws RemoteException{
-        /*if (jugador1 == null){
-            //jugador1 = jugador;
+    public void ingresarJugador(String jugador) throws RemoteException{
+        if (jugador1 == null){
             jugador1 = new Jugador(jugador);
         } else if (jugador2 == null){
-            //jugador2 = jugador;
             jugador2 = new Jugador(jugador);
+            iniciarJuego();
         }
-        */
-        jugador1 = new Jugador("JUGADOR 1");
-        jugador2 = new Jugador("JUGADOR 2");
+
+        //jugador1 = new Jugador("JUGADOR 1");
+        //jugador2 = new Jugador("JUGADOR 2");
 
     }
 
