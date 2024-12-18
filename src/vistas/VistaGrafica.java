@@ -579,6 +579,11 @@ public class VistaGrafica implements IVista {
     public void mostrarFinPartida(String jugadorGanador) {
         String textoConsola = "\n- FIN DE LA PARTIDA -\n\n" + jugadorGanador + " ganó.";
         JOptionPane.showMessageDialog(ventanaPrincipal, textoConsola);
+        mostrarLeaderboard();
+    }
+
+    private void mostrarLeaderboard() {
+        new Leaderboard("scoreboard.dat");
     }
 
     @Override
