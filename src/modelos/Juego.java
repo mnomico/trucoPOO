@@ -314,6 +314,7 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
 
                 notificarObservadores(Evento.FIN_MANO);
                 if (finPartida()){
+                    guardarPuntaje(getNombreJugadorActual());
                     notificarObservadores(Evento.FIN_PARTIDA);
                     guardarPuntaje(getNombreJugadorActual());
                 } else {
@@ -553,6 +554,7 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
                 }
                 darPuntos(ganadorEnvido, puntosFalta);
                 if (finPartida()){
+                    guardarPuntaje(getNombreJugadorActual());
                     notificarObservadores(Evento.FIN_PARTIDA);
                 } else {
                     notificarObservadores(Evento.MOSTRAR_MENU);
@@ -565,6 +567,7 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
                 notificarObservadores(Evento.RESULTADO_ENVIDO);
                 darPuntos(ganadorEnvido, puntosEnvido);
                 if (finPartida()){
+                    guardarPuntaje(getNombreJugadorActual());
                     notificarObservadores(Evento.FIN_PARTIDA);
                 } else {
                     notificarObservadores(Evento.MOSTRAR_MENU);
@@ -596,6 +599,7 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
                 darPuntos(ganadorMano, puntosTruco);
                 notificarObservadores(Evento.FIN_MANO);
                 if (finPartida()){
+                    guardarPuntaje(getNombreJugadorActual());
                     notificarObservadores(Evento.FIN_PARTIDA);
                     // TODO guardar puntaje
                 } else {
@@ -650,36 +654,48 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
         }
     }
 
-    public void guardarPuntaje(String jugador){
+    public void guardarPuntaje(String jugador) throws IOException {
+        File archivoPuntajes = new File("scoreboard.dat");
+
+        if (!archivoPuntajes.exists()) {
+            archivoPuntajes.createNewFile();
+        }
+
         Serializador scoreboard = new Serializador("scoreboard.dat");
         Object[] puntajes = scoreboard.readObjects();
-        Object[] jugadorPuntaje = new Object[2];
-        boolean existe = false;
-        Serializador nuevoScoreboard = new Serializador("scoreboard.dat");
 
-        if (puntajes.length > 0){
+        ArrayList<Object[]> listaPuntajes = new ArrayList<>();
+        boolean existe = false;
+
+        // Actualizar puntaje o añadir un nuevo jugador
+        if (puntajes != null) {
             for (Object o : puntajes) {
                 Object[] puntaje = (Object[]) o;
-                if (puntaje[0] == jugador) {
-                    puntaje[1] = (int) puntaje[1] + 1;
+
+                // Verificar si el jugador ya existe
+                if (puntaje[0].equals(jugador)) {
+                    puntaje[1] = (int) puntaje[1] + 1; // Incrementar puntaje
                     existe = true;
                 }
-                nuevoScoreboard.addOneObject(puntaje);
+                listaPuntajes.add(puntaje);
             }
-            if (!existe){
-                jugadorPuntaje[0] = jugador;
-                jugadorPuntaje[1] = 1;
-                nuevoScoreboard.addOneObject(jugadorPuntaje);
+        }
+
+        // Si el jugador no existía, se añade uno nuevo
+        if (!existe) {
+            Object[] nuevoPuntaje = {jugador, 1};
+            listaPuntajes.add(nuevoPuntaje);
+        }
+
+        // Guardar todos los puntajes actualizados en el archivo
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(archivoPuntajes))) {
+            for (Object[] puntaje : listaPuntajes) {
+                oos.writeObject(puntaje);
             }
-        } else {
-            jugadorPuntaje[0] = jugador;
-            jugadorPuntaje[1] = 1;
-            nuevoScoreboard.writeOneObject(jugadorPuntaje);
         }
     }
 
     public void ordenarPuntajes(){
 
     }
-
 }
