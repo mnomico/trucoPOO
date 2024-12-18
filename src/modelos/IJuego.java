@@ -3,10 +3,11 @@ package modelos;
 import ar.edu.unlu.rmimvc.cliente.IControladorRemoto;
 import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-public interface ModeloTrucoI extends IObservableRemoto {
+public interface IJuego extends IObservableRemoto {
     void setObservers(IControladorRemoto observer) throws RemoteException;
 
     void notificarObservadores(Object arg) throws RemoteException;
@@ -65,7 +66,7 @@ public interface ModeloTrucoI extends IObservableRemoto {
 
     void cambiarJugadorMano() throws RemoteException;
 
-    void jugarCarta(int numeroCarta) throws RemoteException;
+    void jugarCarta(int numeroCarta) throws IOException, InterruptedException;
 
     boolean finPartida() throws RemoteException;
 
@@ -92,9 +93,9 @@ public interface ModeloTrucoI extends IObservableRemoto {
 
     int calcularEnvido() throws RemoteException;
 
-    void quiero(Apuesta apuesta) throws RemoteException;
+    void quiero(Apuesta apuesta) throws IOException;
 
-    void noQuiero(Apuesta apuesta) throws RemoteException;
+    void noQuiero(Apuesta apuesta) throws IOException;
 
     // Para el primer envido
     void redoblarEnvido(Apuesta apuesta) throws RemoteException;
