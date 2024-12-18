@@ -43,7 +43,7 @@ public interface IVista {
 
     public void mostrarGanadorRonda(String ganadorRonda);
 
-    public void mostrarGanadorMano(String ganadorMano);
+    public void mostrarGanadorMano(String ganadorMano) throws InterruptedException;
 
     public void mostrarTurno(boolean esMiTurno);
 
