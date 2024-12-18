@@ -5,11 +5,12 @@ import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
 import modelos.*;
 import vistas.IVista;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class Controlador implements IControladorRemoto {
-    private ModeloTrucoI modelo;
+    private IJuego modelo;
     private IVista vista;
     //private final Jugador jugador;
     private int jugador;
@@ -229,6 +230,8 @@ public class Controlador implements IControladorRemoto {
             modelo.jugarCarta(numeroCarta);
         }catch (RemoteException e){
             e.printStackTrace();
+        } catch (InterruptedException | IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -269,13 +272,15 @@ public class Controlador implements IControladorRemoto {
             modelo.quiero(apuesta);
         } catch (RemoteException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
     public void noQuiero(Apuesta apuesta)  {
         try {
             modelo.noQuiero(apuesta);
-        } catch (RemoteException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -349,7 +354,11 @@ public class Controlador implements IControladorRemoto {
 
                 case FIN_MANO -> {
                     String ganadorMano = getNombreGanadorMano();
-                    vista.mostrarGanadorMano(ganadorMano);
+                    try {
+                        vista.mostrarGanadorMano(ganadorMano);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
 
                 case CAMBIO_TURNO -> vista.mostrarTurno(esMiTurno());
@@ -370,6 +379,6 @@ public class Controlador implements IControladorRemoto {
 
     @Override
     public <T extends IObservableRemoto> void setModeloRemoto(T modeloRemoto) throws RemoteException{
-        this.modelo = (ModeloTrucoI) modeloRemoto;
+        this.modelo = (IJuego) modeloRemoto;
     }
 }
