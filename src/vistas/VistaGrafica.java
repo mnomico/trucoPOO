@@ -16,8 +16,8 @@ public class VistaGrafica implements IVista {
 
     private Controlador controlador;
 
-    private int boardWidth = 1280;
-    private int boardHeight = 720;
+    private int boardWidth = 1150;
+    private int boardHeight = 450;
 
     private int textoWidth = 240;
     private int textoHeight = 720;
@@ -278,53 +278,13 @@ public class VistaGrafica implements IVista {
             mostrarTurno(false);
         }
         apuestaActual = null;
+
     }
 
     @Override
     public void mostrarOpcionesRonda() {
 
     }
-
-    /*
-    public void restaurarOpciones(){
-        opciones.removeAll();
-        Apuesta trucoActual = controlador.getTrucoActual();
-        if (trucoActual != null) {
-
-            switch (trucoActual) {
-                case TRUCO -> {
-                    opciones.add(botonRetruco);
-                    // Si el jugador no es quien cantó quiero truco, no puede cantar retruco
-                    if (controlador.getJugadorQuieroTruco() != controlador.getJugador()){
-                        botonRetruco.setEnabled(false);
-                    }
-                }
-                case RETRUCO -> {
-                    opciones.add(botonValecuatro);
-                    // Si el jugador no es quien cantó quiero truco, no puede cantar valecuatro
-                    if (controlador.getJugadorQuieroTruco() != controlador.getJugador()){
-                        botonValecuatro.setEnabled(false);
-                    }
-                }
-                // case VALECUATRO -> no se agrega botón
-            }
-
-        } else {
-            opciones.add(botonTruco);
-        }
-
-        // Si ya se cantó envido o ya no es la primera ronda, no se puede cantar
-        //if (controlador.getEnvidoCantado() || controlador.getNumeroRonda() != 1){
-        //
-        //} else {
-        opciones.add(botonPrimerEnvido);
-        //}
-
-        opciones.add(botonMazo);
-        opciones.repaint();
-    }
-     */
-
 
     public void jugarCarta(int nroCarta){
         controlador.jugarCarta(nroCarta);
@@ -441,8 +401,6 @@ public class VistaGrafica implements IVista {
         cartasJugador.repaint();
     }
 
-
-    //TODO arreglar que no se muestre la ultima carta jugada
     @Override
     public void mostrarCartaJugada(String jugadorActual, String cartaJugada) {
 
@@ -486,7 +444,7 @@ public class VistaGrafica implements IVista {
     @Override
     public void mostrarEsperandoRespuesta(String jugadorActual) {
         try {
-            doc.insertString(doc.getLength(), "\nEsperando respuesta...", null);
+            doc.insertString(doc.getLength(), "\nEsperando respuesta...\n", null);
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
@@ -495,7 +453,7 @@ public class VistaGrafica implements IVista {
     @Override
     public void mostrarDijoQuiero(String jugadorActual) {
         try {
-            doc.insertString(doc.getLength(), "\n" + jugadorActual + " dijo QUIERO", null);
+            doc.insertString(doc.getLength(), "\n" + jugadorActual + " dijo QUIERO\n", null);
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
@@ -504,7 +462,7 @@ public class VistaGrafica implements IVista {
     @Override
     public void mostrarDijoNoQuiero(String jugadorActual) {
         try {
-            doc.insertString(doc.getLength(), "\n" + jugadorActual + " dijo NO QUIERO", null);
+            doc.insertString(doc.getLength(), "\n" + jugadorActual + " dijo NO QUIERO\n", null);
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
@@ -518,7 +476,7 @@ public class VistaGrafica implements IVista {
     @Override
     public void mostrarIrseAlMazo(String jugadorActual) {
         try {
-            doc.insertString(doc.getLength(), "\n" + jugadorActual + " se fue al mazo.", null);
+            doc.insertString(doc.getLength(), "\n" + jugadorActual + " se fue al mazo.\n", null);
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
@@ -544,7 +502,11 @@ public class VistaGrafica implements IVista {
         paneles[nroRonda-2].repaint();
 
         try {
-            doc.insertString(doc.getLength(), "\n " + ganadorRonda + " ganó la ronda.\n", null);
+            if (ganadorRonda != null) {
+                doc.insertString(doc.getLength(), "\n" + ganadorRonda + " ganó la ronda.\n", null);
+            } else {
+                doc.insertString(doc.getLength(), "\nParda.\n", null);
+            }
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
@@ -606,6 +568,7 @@ public class VistaGrafica implements IVista {
         } else {
             try {
                 doc.insertString(doc.getLength(), "\n- TURNO DE " + controlador.getNombreJugadorActual() + " -\n", null);
+                doc.insertString(doc.getLength(), "\nEsperando respuesta...\n", null);
             } catch (BadLocationException e) {
                 e.printStackTrace();
             }
@@ -614,7 +577,7 @@ public class VistaGrafica implements IVista {
 
     @Override
     public void mostrarFinPartida(String jugadorGanador) {
-        String textoConsola = "\n- FIN DE LA PARTIDA -\n" + jugadorGanador + " ganó.";
+        String textoConsola = "\n- FIN DE LA PARTIDA -\n\n" + jugadorGanador + " ganó.";
         JOptionPane.showMessageDialog(ventanaPrincipal, textoConsola);
     }
 
@@ -622,7 +585,7 @@ public class VistaGrafica implements IVista {
     public void mostrarApuesta(String jugadorActual, Apuesta apuesta) {
         apuestaActual = apuesta;
         try {
-            doc.insertString(doc.getLength(), "\n" + jugadorActual + " canta " + apuestaActual.toString(), null);
+            doc.insertString(doc.getLength(), "\n" + jugadorActual + " canta " + apuestaActual.toString() + "\n", null);
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
