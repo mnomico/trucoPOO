@@ -550,19 +550,49 @@ public class VistaGrafica implements IVista {
         }
     }
 
+    public void mostrarDialogoConBoton(String mensaje) {
+        // Crear el diálogo
+        JDialog dialog = new JDialog();
+        dialog.setModal(true); // Bloquea la interacción con otras ventanas
+        dialog.setTitle("Fin de la mano");
+        dialog.setSize(300, 150);
+        dialog.setLocationRelativeTo(null); // Centrar la ventana
+
+        // Crear un panel para contener los elementos
+        JPanel panel = new JPanel(new BorderLayout());
+        JLabel label = new JLabel(mensaje, SwingConstants.CENTER);
+        JButton botonContinuar = new JButton("Continuar");
+
+        // Acción al presionar el botón
+        botonContinuar.addActionListener(e -> dialog.dispose());
+
+        // Agregar los componentes al panel
+        panel.add(label, BorderLayout.CENTER);
+        panel.add(botonContinuar, BorderLayout.SOUTH);
+
+        // Agregar el panel al diálogo
+        dialog.add(panel);
+
+        // Hacer visible el diálogo
+        dialog.setVisible(true);
+    }
+
     @Override
-    public void mostrarGanadorMano(String ganadorMano) {
+    public void mostrarGanadorMano(String ganadorMano) throws InterruptedException {
         try {
-            doc.insertString(doc.getLength(), "\n" + controlador.getNombreGanadorMano() + " ganó la mano.", null);
+            doc.insertString(doc.getLength(), "\n" + ganadorMano + " ganó la mano.", null);
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
+
+        mostrarDialogoConBoton("Presione el botón para continuar.");
 
         for (JLayeredPane panel : paneles){
             panel.removeAll();
             panel.revalidate();
             panel.repaint();
         }
+
     }
 
     @Override
