@@ -1,13 +1,14 @@
 package modelos;
 
-import java.io.Serializable;
+import java.io.*;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import ar.edu.unlu.rmimvc.cliente.IControladorRemoto;
 import ar.edu.unlu.rmimvc.observer.ObservableRemoto;
 import services.Serializador;
-
-public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Serializable {
+public class Juego extends ObservableRemoto implements IJuego, Serializable {
     private final ArrayList<IControladorRemoto> observers;
 
     private final Mazo mazo;
@@ -23,7 +24,7 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
     private int ganadorEnvido;
     private int jugadorOriginal;
     private int jugadorQuieroTruco;
-    private final ArrayList<Integer> ganadoresRondas;
+    private final int[] ganadoresRondas;
 
     private Jugador jugador1;
     private Carta cartaJ1;
@@ -39,22 +40,12 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
 
     //private static Serializador scoreboard = new Serializador("scoreboard.dat");
 
-    public ModeloTruco() throws RemoteException {
+    public Juego() throws RemoteException {
         observers = new ArrayList<>();
         numeroMano = 0;
         numeroRonda = 0;
         mazo = new Mazo();
-        ganadoresRondas = new ArrayList<>();
-        //ingresarJugador();
-        //iniciarJuego();
-    }
-
-    public static ModeloTruco instancia;
-    public static ModeloTruco getInstancia() throws RemoteException {
-        if (instancia == null) {
-            instancia = new ModeloTruco();
-        }
-        return instancia;
+        ganadoresRondas = new int[3];
     }
 
     @Override
@@ -232,10 +223,6 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
             jugador2 = new Jugador(jugador);
             iniciarJuego();
         }
-
-        //jugador1 = new Jugador("JUGADOR 1");
-        //jugador2 = new Jugador("JUGADOR 2");
-
     }
 
     @Override
@@ -289,7 +276,7 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
     }
 
     @Override
-    public void jugarCarta(int numeroCarta) throws RemoteException{
+    public void jugarCarta(int numeroCarta) throws IOException {
 
         if (jugadorActual == 1) {
             cartaJ1 = jugador1.jugarCarta(numeroCarta);
@@ -302,6 +289,7 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
         if (cartaJ1 == null || cartaJ2 == null){
             notificarObservadores(Evento.CAMBIO_TURNO);
         } else {
+
             ganadorRonda = determinarGanadorRonda();
 
             limpiarRonda();
@@ -316,10 +304,10 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
                 if (finPartida()){
                     guardarPuntaje(getNombreJugadorActual());
                     notificarObservadores(Evento.FIN_PARTIDA);
-                    guardarPuntaje(getNombreJugadorActual());
+                    //guardarPuntaje(getNombreJugadorActual());
                 } else {
                     iniciarMano();
-                    notificarObservadores(Evento.MOSTRAR_MENU);
+                    //notificarObservadores(Evento.MOSTRAR_MENU);
                 }
             } else {
                 notificarObservadores(Evento.MOSTRAR_MENU);
@@ -328,7 +316,6 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
     }
 
     // Chequea si alguno de los jugadores tiene 30 puntos o más y retorna true si eso sucede
-
     @Override
     public boolean finPartida() throws RemoteException{
         if (jugador1.getPuntos() >= 30){
@@ -439,7 +426,6 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
 
     @Override
     public void limpiarRonda() throws RemoteException{
-        numeroRonda++;
         guardarCartasJugadasAlMazo();
         // Si se produce una parda
         if (ganadorRonda == 0){
@@ -447,7 +433,9 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
         } else {
             jugadorActual = ganadorRonda;
         }
-        ganadoresRondas.add(ganadorRonda);
+        //ganadoresRondas.add(ganadorRonda);
+        ganadoresRondas[numeroRonda-1] = ganadorRonda;
+        numeroRonda++;
     }
 
     @Override
@@ -458,7 +446,8 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
         envidoCantado = false;
         guardarCartasJugadasAlMazo();
         guardarCartasNoJugadasAlMazo();
-        ganadoresRondas.clear();
+        //ganadoresRondas.clear();
+        Arrays.fill(ganadoresRondas, 0);
         jugadorQuieroTruco = 0;
     }
 
@@ -514,7 +503,7 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
     }
 
     @Override
-    public void quiero(Apuesta apuesta) throws RemoteException{
+    public void quiero(Apuesta apuesta) throws IOException {
         switch (apuesta){
             case TRUCO -> puntosTruco = 2;
             case RETRUCO -> puntosTruco = 3;
@@ -577,7 +566,7 @@ public class ModeloTruco extends ObservableRemoto implements ModeloTrucoI, Seria
     }
 
     @Override
-    public void noQuiero(Apuesta apuesta) throws RemoteException{
+    public void noQuiero(Apuesta apuesta) throws IOException {
         switch (apuesta){
             case TRUCO -> puntosTruco = 1;
             case RETRUCO -> puntosTruco = 2;
