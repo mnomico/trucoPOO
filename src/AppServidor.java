@@ -1,42 +1,79 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-
-import javax.swing.JOptionPane;
 
 import ar.edu.unlu.rmimvc.RMIMVCException;
 import ar.edu.unlu.rmimvc.Util;
 import ar.edu.unlu.rmimvc.servidor.Servidor;
-import modelos.ModeloTruco;
+import modelos.Juego;
 
-public class AppServidor {
+public class AppServidor extends JFrame {
 
-	public static void main(String[] args) throws RemoteException {
+	private JTextField ipField;
+	private JTextField portField;
+
+	public AppServidor() {
+		setTitle("Servidor");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(400, 200);
+		setLayout(new BorderLayout());
+
+		// Panel de entrada de datos
+		JPanel inputPanel = new JPanel();
+		inputPanel.setLayout(new GridLayout(2, 2, 5, 5));
+
+		// IP del servidor
+		inputPanel.add(new JLabel("IP del servidor:"));
 		ArrayList<String> ips = Util.getIpDisponibles();
-		String ip = (String) JOptionPane.showInputDialog(
-				null,
-				"Seleccione la IP en la que escuchar� peticiones el servidor", "IP del servidor",
-				JOptionPane.QUESTION_MESSAGE,
-				null,
-				ips.toArray(),
-				null
-		);
-		String port = (String) JOptionPane.showInputDialog(
-				null,
-				"Seleccione el puerto en el que escuchar� peticiones el servidor", "Puerto del servidor",
-				JOptionPane.QUESTION_MESSAGE,
-				null,
-				null,
-				8888
-		);
+		JComboBox<String> ipComboBox = new JComboBox<>(ips.toArray(new String[0]));
+		ipField = new JTextField(ips.get(0));
+		ipComboBox.addActionListener(e -> ipField.setText((String) ipComboBox.getSelectedItem()));
+		inputPanel.add(ipComboBox);
 
-		ModeloTruco modelo = new ModeloTruco();
-		Servidor servidor = new Servidor(ip, Integer.parseInt(port));
+		// Puerto del servidor
+		inputPanel.add(new JLabel("Puerto del servidor:"));
+		portField = new JTextField("8888");
+		inputPanel.add(portField);
+
+		add(inputPanel, BorderLayout.CENTER);
+
+		// Botón para iniciar
+		JButton iniciarButton = new JButton("Iniciar");
+		iniciarButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				iniciarServidor();
+			}
+		});
+		add(iniciarButton, BorderLayout.SOUTH);
+	}
+
+	private void iniciarServidor() {
 		try {
+			String ip = ipField.getText();
+			int port = Integer.parseInt(portField.getText());
+
+			Juego modelo = new Juego();
+			Servidor servidor = new Servidor(ip, port);
 			servidor.iniciar(modelo);
-		} catch (RemoteException | RMIMVCException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+			JOptionPane.showMessageDialog(this, "Servidor iniciado.");
+			dispose();
+		} catch (RemoteException | RMIMVCException ex) {
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(this, "Error al iniciar el servidor: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		} catch (NumberFormatException ex) {
+			JOptionPane.showMessageDialog(this, "El puerto debe ser un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(() -> {
+			AppServidor frame = new AppServidor();
+			frame.setVisible(true);
+		});
+	}
 }
