@@ -1,5 +1,4 @@
-import modelos.Jugador;
-import modelos.ModeloTruco;
+import modelos.Juego;
 import controlador.Controlador;
 import vistas.ConsolaGrafica;
 import vistas.IVista;
@@ -9,7 +8,7 @@ import java.rmi.RemoteException;
 
 public class Main {
     public static void main(String[] args) throws RemoteException {
-        ModeloTruco juego = new ModeloTruco();
+        Juego juego = new Juego();
 
         Controlador controlador1 = new Controlador(juego);
         Controlador controlador2 = new Controlador(juego);
@@ -19,14 +18,5 @@ public class Main {
 
         controlador1.ingresarJugador("Jugador 1");
         controlador2.ingresarJugador("Jugador 2");
-
-        //juego.setObservers(controlador1);
-        //juego.setObservers(controlador2);
-
-        //vista1.setVisible(true);
-        //vista2.setVisible(true);
-
-        //vista1.mostrarMenuPrincipal();
-        //vista2.mostrarMenuPrincipal();
     }
 }
