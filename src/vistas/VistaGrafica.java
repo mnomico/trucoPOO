@@ -59,6 +59,18 @@ public class VistaGrafica implements IVista {
         this.controlador = controlador;
         controlador.setVista(this);
 
+        // Constantes
+        int boardWidth = 1150;
+        int boardHeight = 450;
+
+        int textoWidth = 240;
+        int textoHeight = 720;
+
+        int cardWidth = 160;
+        int cardHeight = 104;
+
+        Color verde = new Color(53, 101, 77);
+
         // Ventana Principal
         ventanaPrincipal.setLayout(new BorderLayout());
         ventanaPrincipal.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
