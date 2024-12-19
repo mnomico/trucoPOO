@@ -14,53 +14,38 @@ import java.util.Objects;
 
 public class VistaGrafica implements IVista {
 
-    private Controlador controlador;
+    private final Controlador controlador;
 
-    private int boardWidth = 1150;
-    private int boardHeight = 450;
-
-    private int textoWidth = 240;
-    private int textoHeight = 720;
-
-    private int cardWidth = 160;
-    private int cardHeight = 104;
-
-    private Color verde = new Color(53, 101, 77);
-
-    private JFrame ventanaPrincipal = new JFrame("Truco");
+    private final JFrame ventanaPrincipal = new JFrame("Truco");
     private JPanel mesa = new JPanel() {
         @Override
         public void paintComponent(Graphics g){
             super.paintComponent(g);
         }
     };
-    private JTextPane consola = new JTextPane();
-    private StyledDocument doc = consola.getStyledDocument();
-    private JPanel opciones = new JPanel();
-    private JPanel cartasJugador = new JPanel();
+    private final JTextPane consola = new JTextPane();
+    private final StyledDocument doc = consola.getStyledDocument();
+    private final JPanel opciones = new JPanel();
+    private final JPanel cartasJugador = new JPanel();
     private JPanel subpanel = new JPanel();
 
     private final JPanel cartasJugadas = new JPanel();
     private final JLayeredPane[] paneles;
 
-    private JButton botonQuiero = new JButton("QUIERO");
-    private JButton botonNoQuiero = new JButton("NO QUIERO");
-    private JButton botonTruco = new JButton("TRUCO");
-    private JButton botonRetruco = new JButton("RETRUCO");
-    private JButton botonValecuatro = new JButton("VALECUATRO");
-    private JButton botonPrimerEnvido = new JButton("ENVIDO");
-    private JButton botonEnvido = new JButton("ENVIDO");
-    private JButton botonRealEnvido = new JButton("REAL ENVIDO");
-    private JButton botonFaltaEnvido = new JButton("FALTA ENVIDO");
-    private JButton botonMazo = new JButton("MAZO");
-    private JButton[] botones = new JButton[]{
-        botonQuiero, botonNoQuiero, botonTruco, botonRetruco, botonValecuatro, botonPrimerEnvido, botonEnvido,
-            botonRealEnvido, botonFaltaEnvido, botonMazo
-    };
+    private final JButton botonQuiero = new JButton("QUIERO");
+    private final JButton botonNoQuiero = new JButton("NO QUIERO");
+    private final JButton botonTruco = new JButton("TRUCO");
+    private final JButton botonRetruco = new JButton("RETRUCO");
+    private final JButton botonValecuatro = new JButton("VALECUATRO");
+    private final JButton botonPrimerEnvido = new JButton("ENVIDO");
+    private final JButton botonEnvido = new JButton("ENVIDO");
+    private final JButton botonRealEnvido = new JButton("REAL ENVIDO");
+    private final JButton botonFaltaEnvido = new JButton("FALTA ENVIDO");
+    private final JButton botonMazo = new JButton("MAZO");
 
-    private JLabel carta1 = new JLabel();
-    private JLabel carta2 = new JLabel();
-    private JLabel carta3 = new JLabel();
+    private final JLabel carta1 = new JLabel();
+    private final JLabel carta2 = new JLabel();
+    private final JLabel carta3 = new JLabel();
 
     private JPanel panelCartas = new JPanel();
 
