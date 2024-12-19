@@ -74,7 +74,7 @@ public interface IJuego extends IObservableRemoto {
 
     int determinarGanadorMano() throws RemoteException;
 
-    void irseAlMazo() throws RemoteException;
+    void irseAlMazo() throws RemoteException, IOException;
 
     void guardarCartasJugadasAlMazo() throws RemoteException;
 
