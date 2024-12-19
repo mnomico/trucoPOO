@@ -38,8 +38,6 @@ public class Juego extends ObservableRemoto implements IJuego, Serializable {
     private boolean trucoCantado;
     private Apuesta trucoActual;
 
-    //private static Serializador scoreboard = new Serializador("scoreboard.dat");
-
     public Juego() throws RemoteException {
         observers = new ArrayList<>();
         numeroMano = 0;
@@ -590,7 +588,6 @@ public class Juego extends ObservableRemoto implements IJuego, Serializable {
                 if (finPartida()){
                     guardarPuntaje(getNombreJugadorActual());
                     notificarObservadores(Evento.FIN_PARTIDA);
-                    // TODO guardar puntaje
                 } else {
                     limpiarMano();
                     iniciarMano();
