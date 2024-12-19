@@ -11,29 +11,36 @@ import services.Serializador;
 public class Juego extends ObservableRemoto implements IJuego, Serializable {
     private final ArrayList<IControladorRemoto> observers;
 
+    // Mazo, variables para mano y ronda
     private final Mazo mazo;
     private int numeroMano;
     private int numeroRonda;
     private int puntosTruco;
     private int puntosEnvido;
 
-    private int jugadorActual;
+    // Variables para estado de los jugadores
+    private int jugadorActual; // Representa el jugador que tiene que jugar actualmente
     private int jugadorMano;
-    private int ganadorRonda;
+    private int ganadorRonda; // Representa el ganador de la ronda anterior, el cual empieza la ronda siguiente
     private int ganadorMano;
     private int ganadorEnvido;
-    private int jugadorOriginal;
+    private int jugadorOriginal;// Se utiliza para cuando se hace el canto, para que luego de la disputa se retorne
+                                // el turno al jugador que cantó primero
     private int jugadorQuieroTruco;
     private final int[] ganadoresRondas;
 
+    // Jugador 1
     private Jugador jugador1;
     private Carta cartaJ1;
 
+    // Jugador 2
     private Jugador jugador2;
     private Carta cartaJ2;
 
+    // Carta jugada con mayor valor en una ronda
     private Carta cartaGanadora;
 
+    // Variables de estado de cantos
     private boolean envidoCantado;
     private boolean trucoCantado;
     private Apuesta trucoActual;
@@ -215,6 +222,8 @@ public class Juego extends ObservableRemoto implements IJuego, Serializable {
 
     @Override
     public void ingresarJugador(String jugador) throws RemoteException{
+        // Si no hay jugadores se registra el primer jugador
+        // Una vez ingresado el jugador, cuando se registre el segundo se inicia el juego
         if (jugador1 == null){
             jugador1 = new Jugador(jugador);
         } else if (jugador2 == null){
@@ -225,6 +234,8 @@ public class Juego extends ObservableRemoto implements IJuego, Serializable {
 
     @Override
     public int obtenerJugador() throws RemoteException{
+        // Si no hay jugadores, retorna el id 1, si ya ingresó un jugador
+        // retorna el id 2, y si ambos jugadores ya ingresaron se retorna 0
         if (jugador1 == null) {
             return 1;
         } else if (jugador2 == null) {
@@ -284,14 +295,18 @@ public class Juego extends ObservableRemoto implements IJuego, Serializable {
 
         notificarObservadoresJugarCarta();
 
+        // Si todavía falta que un jugador juegue su carta, se cambia el turno
         if (cartaJ1 == null || cartaJ2 == null){
             notificarObservadores(Evento.CAMBIO_TURNO);
         } else {
-
+            // Si ambos jugaron sus cartas, se determina el ganador de la ronda,
             ganadorRonda = determinarGanadorRonda();
 
             limpiarRonda();
             notificarObservadores(Evento.FIN_RONDA);
+
+            // Si ya se jugaron todas las rondas, se procede a determinar el ganador de la mano
+            // y se distribuyen los puntos, verificando también si ya se tienen los puntos suficientes para ganar
             if (numeroRonda > 3) {
                 ganadorMano = determinarGanadorMano();
                 darPuntos(ganadorMano, puntosTruco);
@@ -302,10 +317,8 @@ public class Juego extends ObservableRemoto implements IJuego, Serializable {
                 if (finPartida()){
                     guardarPuntaje(getNombreJugadorActual());
                     notificarObservadores(Evento.FIN_PARTIDA);
-                    //guardarPuntaje(getNombreJugadorActual());
                 } else {
                     iniciarMano();
-                    //notificarObservadores(Evento.MOSTRAR_MENU);
                 }
             } else {
                 notificarObservadores(Evento.MOSTRAR_MENU);
@@ -313,9 +326,9 @@ public class Juego extends ObservableRemoto implements IJuego, Serializable {
         }
     }
 
-    // Chequea si alguno de los jugadores tiene 30 puntos o más y retorna true si eso sucede
     @Override
     public boolean finPartida() throws RemoteException{
+        // Verifica si alguno de los jugadores tiene 30 puntos o más
         if (jugador1.getPuntos() >= 30){
             jugadorActual = 1;
             return true;
@@ -328,16 +341,13 @@ public class Juego extends ObservableRemoto implements IJuego, Serializable {
 
     @Override
     public int determinarGanadorRonda() throws RemoteException{
-
-        // Calculo cual carta es la ganadora.
+        // Calculo cual carta es la ganadora a partir de los valores que tienen las cartas
         int diferencia = cartaJ1.getValor().compareTo(cartaJ2.getValor());
 
         if (diferencia < 0){
-            // La carta del jugador 2 gana
             cartaGanadora = cartaJ2;
             return 2;
         } else if (diferencia > 0) {
-            // La carta del jugador 1 gana
             cartaGanadora = cartaJ1;
             return 1;
         }
@@ -379,19 +389,33 @@ public class Juego extends ObservableRemoto implements IJuego, Serializable {
         return jugadorMano;
     }
 
+    // TODO ver si esto funciona bien
     @Override
-    public void irseAlMazo() throws RemoteException{
+    public void irseAlMazo() throws IOException{
         notificarObservadores(Evento.IRSE_AL_MAZO);
         cambiarTurno();
         ganadorMano = jugadorActual;
+
+        /*
         darPuntos(ganadorMano, puntosTruco);
         notificarObservadores(Evento.FIN_MANO);
         limpiarMano();
         iniciarMano();
+        */
+
+        darPuntos(ganadorMano, puntosTruco);
+        limpiarMano();
+        notificarObservadores(Evento.FIN_MANO);
+        if (finPartida()){
+            guardarPuntaje(getNombreJugadorActual());
+            notificarObservadores(Evento.FIN_PARTIDA);
+        } else {
+            iniciarMano();
+        }
     }
 
     @Override
-    public void guardarCartasJugadasAlMazo() throws RemoteException{
+    public void guardarCartasJugadasAlMazo() throws RemoteException {
         if (cartaJ1 != null){
             mazo.recibirCarta(cartaJ1);
         }
@@ -425,7 +449,7 @@ public class Juego extends ObservableRemoto implements IJuego, Serializable {
     @Override
     public void limpiarRonda() throws RemoteException{
         guardarCartasJugadasAlMazo();
-        // Si se produce una parda
+        // Si se produce una parda, se da el turno al jugador mano, sino al que ganó la ronda
         if (ganadorRonda == 0){
             jugadorActual = jugadorMano;
         } else {
@@ -459,6 +483,7 @@ public class Juego extends ObservableRemoto implements IJuego, Serializable {
             trucoCantado = true;
             trucoActual = Apuesta.TRUCO;
         } else {
+            // TODO creo que este else no sirve para nada, redoblarApuesta lo resuelve
             switch (trucoActual){
                 case TRUCO -> trucoActual = Apuesta.RETRUCO;
                 case RETRUCO -> trucoActual = Apuesta.VALECUATRO;
@@ -480,6 +505,7 @@ public class Juego extends ObservableRemoto implements IJuego, Serializable {
         notificarObservadores(Evento.RESPONDER_APUESTA);
     }
 
+    // Para cantar envido cuando primero se canta truco
     @Override
     public void cantarEnvidoTruco(Apuesta apuesta) throws RemoteException{
         envidoCantado = true;
@@ -679,9 +705,5 @@ public class Juego extends ObservableRemoto implements IJuego, Serializable {
                 oos.writeObject(puntaje);
             }
         }
-    }
-
-    public void ordenarPuntajes(){
-
     }
 }
