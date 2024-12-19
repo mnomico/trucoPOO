@@ -12,14 +12,11 @@ import java.util.ArrayList;
 public class Controlador implements IControladorRemoto {
     private IJuego modelo;
     private IVista vista;
-    //private final Jugador jugador;
     private int jugador;
-    private String nombreJugador;
 
     public <T extends IObservableRemoto> Controlador(T modelo) {
         try {
             this.setModeloRemoto(modelo);
-            // TODO esto es lo que falta para que funcione con RMI, supuestamente
             this.modelo.setObservers(this);
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -42,8 +39,7 @@ public class Controlador implements IControladorRemoto {
         int nroJugador = this.modelo.obtenerJugador();
         if (nroJugador != 0) {
             this.jugador = nroJugador;
-            this.nombreJugador = nombre;
-            modelo.ingresarJugador(nombreJugador);
+            modelo.ingresarJugador(nombre);
         }
     }
 
@@ -146,12 +142,6 @@ public class Controlador implements IControladorRemoto {
         }
         return 0;
     }
-
-    /*
-    public int getGanadorEnvido() throws RemoteException {
-        return modelo.getGanadorEnvido();
-    }
-    */
 
     public String getNombreGanadorEnvido() {
         try {
