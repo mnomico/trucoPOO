@@ -613,5 +613,22 @@ public class VistaGrafica implements IVista {
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
+        switch (apuestaActual) {
+            case TRUCO, RETRUCO, VALECUATRO -> {
+                opciones.remove(botonTruco);
+                opciones.remove(botonRetruco);
+                opciones.remove(botonValecuatro);
+                opciones.remove(botonQuiero);
+                opciones.remove(botonNoQuiero);
+            }
+            default -> {
+                opciones.remove(botonPrimerEnvido);
+                opciones.remove(botonEnvido);
+                opciones.remove(botonRealEnvido);
+                opciones.remove(botonFaltaEnvido);
+                opciones.remove(botonQuiero);
+                opciones.remove(botonNoQuiero);
+            }
+        }
     }
 }
