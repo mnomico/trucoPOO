@@ -487,7 +487,9 @@ public class VistaGrafica implements IVista {
 
     @Override
     public void mostrarResultadoEnvido(String ganadorEnvido, String tantos) {
-        JOptionPane.showMessageDialog(ventanaPrincipal, tantos + "\n" + ganadorEnvido + " gana.");
+        SwingUtilities.invokeLater(() -> {
+            JOptionPane.showMessageDialog(ventanaPrincipal, tantos + "\n" + ganadorEnvido + " gana.");
+        });
     }
 
     @Override
