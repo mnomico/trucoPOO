@@ -118,7 +118,7 @@ public class VistaGrafica implements IVista {
         botonTruco.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (controlador.esMiTurno()) {
+                if (controlador.esMiTurno() && !controlador.getTrucoCantado()) {
                     cantarTruco();
                 }
             }
@@ -129,7 +129,7 @@ public class VistaGrafica implements IVista {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (controlador.esMiTurno()) {
-                    cantarTruco();
+                    controlador.redoblarApuesta(Apuesta.TRUCO);
                 }
             }
         });
@@ -139,7 +139,7 @@ public class VistaGrafica implements IVista {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (controlador.esMiTurno()) {
-                    cantarTruco();
+                    controlador.redoblarApuesta(Apuesta.VALECUATRO);
                 }
             }
         });
@@ -148,11 +148,16 @@ public class VistaGrafica implements IVista {
         botonPrimerEnvido.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                /*
                 if (controlador.esMiTurno() && !controlador.getEnvidoCantado() && controlador.getNumeroRonda() == 1){
                     opciones.removeAll();
                     opciones.add(botonEnvido);
                     opciones.add(botonRealEnvido);
                     opciones.add(botonFaltaEnvido);
+                }
+                */
+                if (controlador.esMiTurno()) {
+                    cantarEnvido(Apuesta.ENVIDO);
                 }
             }
         });
@@ -162,7 +167,7 @@ public class VistaGrafica implements IVista {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (controlador.esMiTurno()) {
-                    cantarEnvido(Apuesta.ENVIDO);
+                    cantarEnvido(Apuesta.ENVIDO_ENVIDO);
                 }
             }
         });
@@ -192,6 +197,8 @@ public class VistaGrafica implements IVista {
             @Override
             public void actionPerformed(ActionEvent e) {
                 controlador.quiero(apuestaActual);
+                opciones.removeAll();
+                inicializarOpciones();
                 //deshabilitarComponentes(opciones);
             }
         });
@@ -201,6 +208,8 @@ public class VistaGrafica implements IVista {
             @Override
             public void actionPerformed(ActionEvent e) {
                 controlador.noQuiero(apuestaActual);
+                opciones.removeAll();
+                inicializarOpciones();
                 //deshabilitarComponentes(opciones);
             }
         });
