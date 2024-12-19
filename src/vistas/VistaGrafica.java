@@ -596,8 +596,14 @@ public class VistaGrafica implements IVista {
 
     @Override
     public void mostrarFinPartida(String jugadorGanador) {
+        subpanel.remove(opciones);
+        eliminarMouseListeners(carta1);
+        eliminarMouseListeners(carta2);
+        eliminarMouseListeners(carta3);
         String textoConsola = "\n- FIN DE LA PARTIDA -\n\n" + jugadorGanador + " ganó.";
-        JOptionPane.showMessageDialog(ventanaPrincipal, textoConsola);
+        SwingUtilities.invokeLater(() -> {
+            JOptionPane.showMessageDialog(ventanaPrincipal, textoConsola);
+        });
         mostrarLeaderboard();
     }
 
