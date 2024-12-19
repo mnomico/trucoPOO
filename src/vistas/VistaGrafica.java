@@ -266,11 +266,22 @@ public class VistaGrafica implements IVista {
     }
 
     public void inicializarOpciones() {
-        opciones.add(botonTruco);
-        opciones.add(botonPrimerEnvido);
-        opciones.add(botonRealEnvido);
-        opciones.add(botonFaltaEnvido);
+        if (!controlador.getTrucoCantado()) {
+            opciones.add(botonTruco);
+        }
+        //int nroRonda = controlador.getNumeroRonda();
+        if (controlador.getNumeroRonda() == 1 && !controlador.getEnvidoCantado()) {
+            opciones.add(botonPrimerEnvido);
+            opciones.add(botonRealEnvido);
+            opciones.add(botonFaltaEnvido);
+        } else {
+            opciones.remove(botonPrimerEnvido);
+            opciones.remove(botonEnvido);
+            opciones.remove(botonRealEnvido);
+            opciones.remove(botonFaltaEnvido);
+        }
         opciones.add(botonMazo);
+        opciones.updateUI();
     }
 
     @Override
