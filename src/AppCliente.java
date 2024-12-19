@@ -1,15 +1,13 @@
 import java.util.ArrayList;
-
 import javax.swing.*;
-
 import ar.edu.unlu.rmimvc.Util;
 import ar.edu.unlu.rmimvc.cliente.Cliente;
 import controlador.Controlador;
 import vistas.*;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 public class AppCliente extends JFrame {
 	private JTextField ipField;
