@@ -53,17 +53,6 @@ public class Jugador implements Serializable {
         return cartas;
     }
 
-    /*
-    public String mostrarCartas(){
-        StringBuilder stringCartas = new StringBuilder();
-        int nroCarta = 1;
-        for (Carta carta : cartas){
-            stringCartas.append("\t           (").append(nroCarta++).append(") - ").append(carta.toString()).append("\n");
-        }
-        return stringCartas.toString();
-    }
-    */
-
     public void darPuntos(int puntos){
         this.puntos += puntos;
     }
