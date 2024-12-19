@@ -52,9 +52,6 @@ public class VistaGrafica implements IVista {
     private String cartaJ1;
     private String cartaJ2;
 
-    //private final JLabel carta1;
-    //private final JLabel carta2;
-
     public VistaGrafica(Controlador controlador){
         this.controlador = controlador;
         controlador.setVista(this);
@@ -96,9 +93,7 @@ public class VistaGrafica implements IVista {
         ventanaPrincipal.add(new JScrollPane(consola), BorderLayout.EAST);
 
         // Opciones
-        inicializarOpciones();
         opciones.setBackground(verde);
-        //ventanaPrincipal.add(opciones, BorderLayout.SOUTH);
 
         // Cartas Jugador
         cartasJugador.setLayout(new BoxLayout(cartasJugador, BoxLayout.X_AXIS));
@@ -148,14 +143,6 @@ public class VistaGrafica implements IVista {
         botonPrimerEnvido.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                /*
-                if (controlador.esMiTurno() && !controlador.getEnvidoCantado() && controlador.getNumeroRonda() == 1){
-                    opciones.removeAll();
-                    opciones.add(botonEnvido);
-                    opciones.add(botonRealEnvido);
-                    opciones.add(botonFaltaEnvido);
-                }
-                */
                 if (controlador.esMiTurno()) {
                     cantarEnvido(Apuesta.ENVIDO);
                 }
@@ -288,14 +275,8 @@ public class VistaGrafica implements IVista {
     public void mostrarMenuPrincipal() {
         mostrarCartas();
         inicializarOpciones();
-        //deshabilitarComponentes(opciones);
-        if (controlador.esMiTurno()) {
-            mostrarTurno(true);
-        } else {
-            mostrarTurno(false);
-        }
+        mostrarTurno(controlador.esMiTurno());
         apuestaActual = null;
-
     }
 
     @Override
@@ -318,11 +299,9 @@ public class VistaGrafica implements IVista {
                 switch (apuestaActual) {
                     case TRUCO -> {
                         opciones.remove(botonTruco);
-                        opciones.add(botonRetruco, 0);
                     }
                     case RETRUCO -> {
                         opciones.remove(botonRetruco);
-                        opciones.add(botonValecuatro, 0);
                     }
                     case VALECUATRO -> {
                         opciones.remove(botonValecuatro);
@@ -381,7 +360,6 @@ public class VistaGrafica implements IVista {
                         }
                     });
                     cartasJugador.add(carta1);
-                    //cartasJugador.add(Box.createRigidArea(new Dimension(20, 0)));
                 }
 
                 case 2 -> {
@@ -394,7 +372,6 @@ public class VistaGrafica implements IVista {
                         }
                     });
                     cartasJugador.add(carta2);
-                    //cartasJugador.add(Box.createRigidArea(new Dimension(20, 0)));
                 }
 
                 case 3 -> {
@@ -407,7 +384,6 @@ public class VistaGrafica implements IVista {
                         }
                     });
                     cartasJugador.add(carta3);
-                    //cartasJugador.add(Box.createRigidArea(new Dimension(20, 0)));
                 }
             }
 
