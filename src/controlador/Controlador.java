@@ -252,7 +252,7 @@ public class Controlador implements IControladorRemoto {
     public void irseAlMazo()  {
         try {
             modelo.irseAlMazo();
-        } catch (RemoteException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
