@@ -16,11 +16,23 @@ public class Leaderboard extends JFrame {
         setLocationRelativeTo(null);
 
         // Leer datos del archivo
+        JTable table = getJTable(filePath);
+        JScrollPane scrollPane = new JScrollPane(table);
+
+        // Configurar el diseño de la ventana
+        setLayout(new BorderLayout());
+        add(scrollPane, BorderLayout.CENTER);
+
+        // Hacer visible la ventana
+        setVisible(true);
+    }
+
+    private static JTable getJTable(String filePath) {
         Serializador scoreboard = new Serializador(filePath);
         Object[] leaderboardData = scoreboard.readObjects();
 
         // Crear la tabla
-        String[] columnNames = {"Jugador", "Puntaje"};
+        String[] columnNames = {"Jugador", "Partidas ganadas"};
         DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
 
         // Rellenar la tabla con los datos del archivo
@@ -30,13 +42,7 @@ public class Leaderboard extends JFrame {
         }
 
         JTable table = new JTable(tableModel);
-        JScrollPane scrollPane = new JScrollPane(table);
-
-        // Configurar el diseño de la ventana
-        setLayout(new BorderLayout());
-        add(scrollPane, BorderLayout.CENTER);
-
-        // Hacer visible la ventana
-        setVisible(true);
+        table.setEnabled(false);
+        return table;
     }
 }
