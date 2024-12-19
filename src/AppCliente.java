@@ -20,7 +20,7 @@ public class AppCliente extends JFrame {
 	public AppCliente() {
 		setTitle("Configuración del Cliente");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(400, 300);
+		setSize(400, 350);
 		setLayout(new BorderLayout());
 
 		// Panel de entrada de datos
@@ -63,6 +63,10 @@ public class AppCliente extends JFrame {
 
 		add(inputPanel, BorderLayout.CENTER);
 
+		// Panel de botones
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new FlowLayout());
+
 		// Botón para iniciar
 		JButton iniciarButton = new JButton("Iniciar");
 		iniciarButton.addActionListener(new ActionListener() {
@@ -72,7 +76,19 @@ public class AppCliente extends JFrame {
 				dispose();
 			}
 		});
-		add(iniciarButton, BorderLayout.SOUTH);
+		buttonPanel.add(iniciarButton);
+
+		// Botón para ver el leaderboard
+		JButton leaderboardButton = new JButton("Ver Leaderboard");
+		leaderboardButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mostrarLeaderboard();
+			}
+		});
+		buttonPanel.add(leaderboardButton);
+
+		add(buttonPanel, BorderLayout.SOUTH);
 	}
 
 	private void iniciarCliente() {
@@ -104,6 +120,15 @@ public class AppCliente extends JFrame {
 			ex.printStackTrace();
 		}
 	}
+
+	private void mostrarLeaderboard() {
+        File file = new File("scoreboard.dat");
+        if (!file.exists()) {
+            JOptionPane.showMessageDialog(this, "Todavía no se han jugado partidas.", "Leaderboard", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+		new Leaderboard("scoreboard.dat");
+    }
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
