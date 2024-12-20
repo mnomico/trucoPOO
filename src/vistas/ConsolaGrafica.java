@@ -432,6 +432,11 @@ public class ConsolaGrafica implements IVista {
         mostrarPuntos();
         println("\n\t ** " + jugadorGanador + " HA GANADO. **");
         estadoActual = ConsolaGrafica.Estado.FIN_PARTIDA;
+        mostrarLeaderboard();
+    }
+
+    private void mostrarLeaderboard() {
+        new Leaderboard("scoreboard.dat");
     }
 
     public void mostrarApuesta(String jugadorActual, Apuesta apuesta){
