@@ -273,6 +273,8 @@ public class VistaGrafica implements IVista {
 
     @Override
     public void mostrarMenuPrincipal() {
+        mostrarPuntos();
+        mostrarManoRonda();
         mostrarCartas();
         inicializarOpciones();
         mostrarTurno(controlador.esMiTurno());
@@ -325,7 +327,20 @@ public class VistaGrafica implements IVista {
 
     @Override
     public void mostrarPuntos() {
+        try {
+            doc.insertString(doc.getLength(), "\n - PUNTOS - \n", null);
+            doc.insertString(doc.getLength(), controlador.getEstadoPartida() + "\n", null);
+        } catch (BadLocationException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    public void mostrarManoRonda(){
+        try {
+            doc.insertString(doc.getLength(), "\n- Mano " + controlador.getNumeroMano() + " - Ronda " + controlador.getNumeroRonda() + "-\n", null);
+        } catch (BadLocationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void eliminarMouseListeners(JLabel carta) {
@@ -537,7 +552,7 @@ public class VistaGrafica implements IVista {
     @Override
     public void mostrarGanadorMano(String ganadorMano) throws InterruptedException {
         try {
-            doc.insertString(doc.getLength(), "\n" + ganadorMano + " ganó la mano.", null);
+            doc.insertString(doc.getLength(), "\n" + ganadorMano + " ganó la mano.\n", null);
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
