@@ -444,8 +444,12 @@ public class Juego extends ObservableRemoto implements IJuego, Serializable {
         // Retorna el turno al jugador que apostó inicialmente
         notificarObservadores(Evento.DIJO_QUIERO);
 
-        jugadorQuieroTruco = jugadorActual;
-        jugadorActual = jugadorOriginal;
+        if (apuesta == Apuesta.TRUCO || apuesta == Apuesta.RETRUCO || apuesta == Apuesta.VALECUATRO) {
+            jugadorQuieroTruco = jugadorActual;
+            if (manoActual.getCarta(jugadorQuieroTruco) == null) {
+                jugadorActual = jugadorQuieroTruco;
+            } else jugadorActual = jugadorOriginal;
+        } else jugadorActual = jugadorOriginal;
 
         switch (apuesta){
             case TRUCO, RETRUCO -> notificarObservadores(Evento.MOSTRAR_MENU);
