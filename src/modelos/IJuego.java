@@ -62,9 +62,9 @@ public interface IJuego extends IObservableRemoto {
 
     void iniciarMano() throws RemoteException;
 
-    void cambiarTurno() throws RemoteException;
+    int cambiarTurno() throws RemoteException;
 
-    void cambiarJugadorMano() throws RemoteException;
+    int cambiarJugadorMano() throws RemoteException;
 
     void jugarCarta(int numeroCarta) throws IOException, InterruptedException;
 
