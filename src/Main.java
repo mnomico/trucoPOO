@@ -14,7 +14,7 @@ public class Main {
         Controlador controlador2 = new Controlador(juego);
 
         IVista vista1 = new VistaGrafica(controlador1);
-        IVista vista2 = new ConsolaGrafica(controlador2);
+        IVista vista2 = new VistaGrafica(controlador2);
 
         controlador1.ingresarJugador("Jugador 1");
         controlador2.ingresarJugador("Jugador 2");

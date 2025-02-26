@@ -4,6 +4,8 @@ import controlador.Controlador;
 import modelos.Apuesta;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -83,12 +85,33 @@ public class VistaGrafica implements IVista {
         // Consola
         consola.setLayout(new BorderLayout());
         consola.setBackground(Color.BLACK);
+        consola.setForeground(Color.WHITE);
+        consola.setEditable(false);
         consola.setPreferredSize(new Dimension(textoWidth, textoHeight));
-        consola.setEnabled(false);
         SimpleAttributeSet centrado = new SimpleAttributeSet();
         StyleConstants.setAlignment(centrado, StyleConstants.ALIGN_CENTER);
         StyleConstants.setForeground(centrado, Color.WHITE);
         doc.setParagraphAttributes(0, doc.getLength(), centrado, false);
+
+        // Agregar un CaretListener para autoscroll
+        doc.addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                SwingUtilities.invokeLater(() -> {
+                    consola.setCaretPosition(consola.getDocument().getLength());
+                });
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                // No es necesario hacer nada aquí
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                // No es necesario hacer nada aquí
+            }
+        });
 
         ventanaPrincipal.add(new JScrollPane(consola), BorderLayout.EAST);
 
@@ -257,7 +280,7 @@ public class VistaGrafica implements IVista {
             opciones.add(botonTruco);
         }
         //int nroRonda = controlador.getNumeroRonda();
-        if (controlador.getNumeroRonda() == 1 && !controlador.getEnvidoCantado()) {
+        if (controlador.getNumeroRonda() == 0 && !controlador.getEnvidoCantado()) {
             opciones.add(botonPrimerEnvido);
             opciones.add(botonRealEnvido);
             opciones.add(botonFaltaEnvido);
@@ -277,13 +300,29 @@ public class VistaGrafica implements IVista {
         mostrarManoRonda();
         mostrarCartas();
         inicializarOpciones();
+        // TODO chequear esto
+        mostrarOpcionesRonda();
         mostrarTurno(controlador.esMiTurno());
         apuestaActual = null;
     }
 
+    // TODO chequear esto tambien
     @Override
     public void mostrarOpcionesRonda() {
-
+        boolean trucoCantado = controlador.getTrucoCantado();
+        int jugadorQuiero = controlador.getJugadorQuieroTruco();
+        if (trucoCantado && jugadorQuiero == controlador.getJugador()) {
+            opciones.remove(botonMazo);
+            switch (controlador.getTrucoActual()) {
+                case TRUCO -> {
+                    opciones.add(botonRetruco);
+                }
+                case RETRUCO -> {
+                    opciones.add(botonValecuatro);
+                }
+            }
+            opciones.add(botonMazo);
+        }
     }
 
     public void jugarCarta(int nroCarta){
@@ -337,7 +376,7 @@ public class VistaGrafica implements IVista {
 
     public void mostrarManoRonda(){
         try {
-            doc.insertString(doc.getLength(), "\n- Mano " + controlador.getNumeroMano() + " - Ronda " + controlador.getNumeroRonda() + "-\n", null);
+            doc.insertString(doc.getLength(), "\n- Mano " + controlador.getNumeroMano() + " - Ronda " + (controlador.getNumeroRonda() + 1) + "-\n", null);
         } catch (BadLocationException e) {
             throw new RuntimeException(e);
         }
@@ -426,8 +465,8 @@ public class VistaGrafica implements IVista {
             cartaJ2 = cartaJugada;
         }
 
-        paneles[nroRonda-1].add(carta, JLayeredPane.DEFAULT_LAYER);
-        paneles[nroRonda-1].updateUI();
+        paneles[nroRonda].add(carta, JLayeredPane.DEFAULT_LAYER);
+        paneles[nroRonda].updateUI();
     }
 
     @Override
@@ -499,23 +538,23 @@ public class VistaGrafica implements IVista {
         int nroRonda = controlador.getNumeroRonda();
 
         if (Objects.equals(cartaGanadora, cartaJ1)){
-            Component carta = paneles[nroRonda-2].getComponentAt(35,0);
-            paneles[nroRonda-2].moveToFront(carta);
+            Component carta = paneles[nroRonda].getComponentAt(35,0);
+            paneles[nroRonda].moveToFront(carta);
         } else if (Objects.equals(cartaGanadora, cartaJ2)){
-            Component carta = paneles[nroRonda-2].getComponentAt(0,35);
-            paneles[nroRonda-2].moveToFront(carta);
+            Component carta = paneles[nroRonda].getComponentAt(0,35);
+            paneles[nroRonda].moveToFront(carta);
         } else {
             // TODO parda
         }
 
-        paneles[nroRonda-2].revalidate();
-        paneles[nroRonda-2].repaint();
+        paneles[nroRonda].revalidate();
+        paneles[nroRonda].repaint();
 
         try {
             if (ganadorRonda != null) {
-                doc.insertString(doc.getLength(), "\n" + ganadorRonda + " ganó la ronda.\n", null);
+                doc.insertString(doc.getLength(), "\n------------------------------\n" + ganadorRonda + " ganó la ronda.\n------------------------------\n", null);
             } else {
-                doc.insertString(doc.getLength(), "\nParda.\n", null);
+                doc.insertString(doc.getLength(), "\n------------------------------\nParda.\n------------------------------\n", null);
             }
         } catch (BadLocationException e) {
             e.printStackTrace();
@@ -551,19 +590,24 @@ public class VistaGrafica implements IVista {
 
     @Override
     public void mostrarGanadorMano(String ganadorMano) throws InterruptedException {
+        String mensaje = ganadorMano + " ganó la mano.";
         try {
-            doc.insertString(doc.getLength(), "\n" + ganadorMano + " ganó la mano.\n", null);
+            doc.insertString(doc.getLength(), "\n------------------------------\n" + mensaje + "\n------------------------------\n", null);
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
 
-        mostrarDialogoConBoton("Presione el botón para continuar.");
+        SwingUtilities.invokeLater(() -> {
+            mostrarDialogoConBoton(mensaje);
+        });
 
-        for (JLayeredPane panel : paneles){
-            panel.removeAll();
-            panel.revalidate();
-            panel.repaint();
-        }
+        SwingUtilities.invokeLater(() -> {
+            for (JLayeredPane panel : paneles){
+                panel.removeAll();
+                panel.revalidate();
+                panel.repaint();
+            }
+        });
 
     }
 
@@ -591,7 +635,7 @@ public class VistaGrafica implements IVista {
         eliminarMouseListeners(carta1);
         eliminarMouseListeners(carta2);
         eliminarMouseListeners(carta3);
-        String textoConsola = "\n- FIN DE LA PARTIDA -\n\n" + jugadorGanador + " ganó.";
+        String textoConsola = "\n------------------------------\n- FIN DE LA PARTIDA -\n\n" + jugadorGanador + " ganó.\n------------------------------";
         SwingUtilities.invokeLater(() -> {
             JOptionPane.showMessageDialog(ventanaPrincipal, textoConsola);
         });

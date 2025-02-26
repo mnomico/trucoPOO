@@ -70,10 +70,6 @@ public interface IJuego extends IObservableRemoto {
 
     boolean finPartida() throws RemoteException;
 
-    int determinarGanadorRonda() throws RemoteException;
-
-    int determinarGanadorMano() throws RemoteException;
-
     void irseAlMazo() throws RemoteException, IOException;
 
     void guardarCartasJugadasAlMazo() throws RemoteException;
@@ -90,8 +86,6 @@ public interface IJuego extends IObservableRemoto {
     void cantarEnvido(Apuesta apuesta) throws RemoteException;
 
     void cantarEnvidoTruco(Apuesta apuesta) throws RemoteException;
-
-    int calcularEnvido() throws RemoteException;
 
     void quiero(Apuesta apuesta) throws IOException;
 
