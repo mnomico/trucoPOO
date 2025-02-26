@@ -276,6 +276,7 @@ public class VistaGrafica implements IVista {
     }
 
     public void inicializarOpciones() {
+        opciones.removeAll();
         if (!controlador.getTrucoCantado()) {
             opciones.add(botonTruco);
         }
@@ -322,6 +323,7 @@ public class VistaGrafica implements IVista {
                 }
             }
             opciones.add(botonMazo);
+            opciones.updateUI();
         }
     }
 
