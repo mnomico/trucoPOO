@@ -147,7 +147,7 @@ public class VistaGrafica implements IVista {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (controlador.esMiTurno()) {
-                    controlador.redoblarApuesta(Apuesta.TRUCO);
+                    controlador.cantarTruco();
                 }
             }
         });
@@ -157,7 +157,7 @@ public class VistaGrafica implements IVista {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (controlador.esMiTurno()) {
-                    controlador.redoblarApuesta(Apuesta.RETRUCO);
+                    controlador.cantarTruco();
                 }
             }
         });
