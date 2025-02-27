@@ -208,8 +208,9 @@ public class VistaGrafica implements IVista {
             public void actionPerformed(ActionEvent e) {
                 controlador.quiero(apuestaActual);
                 opciones.removeAll();
-                inicializarOpciones();
+                //inicializarOpciones();
                 //deshabilitarComponentes(opciones);
+                mostrarOpcionesRonda();
             }
         });
 
@@ -219,8 +220,9 @@ public class VistaGrafica implements IVista {
             public void actionPerformed(ActionEvent e) {
                 controlador.noQuiero(apuestaActual);
                 opciones.removeAll();
-                inicializarOpciones();
+                //inicializarOpciones();
                 //deshabilitarComponentes(opciones);
+                mostrarOpcionesRonda();
             }
         });
 
@@ -300,7 +302,7 @@ public class VistaGrafica implements IVista {
         mostrarPuntos();
         mostrarManoRonda();
         mostrarCartas();
-        inicializarOpciones();
+        //inicializarOpciones();
         // TODO chequear esto
         mostrarOpcionesRonda();
         mostrarTurno(controlador.esMiTurno());
@@ -311,8 +313,12 @@ public class VistaGrafica implements IVista {
     @Override
     public void mostrarOpcionesRonda() {
         boolean trucoCantado = controlador.getTrucoCantado();
+        boolean envidoCantado = controlador.getEnvidoCantado();
         int jugadorQuiero = controlador.getJugadorQuieroTruco();
-        if (trucoCantado && jugadorQuiero == controlador.getJugador()) {
+        opciones.removeAll();
+        if (!trucoCantado) {
+            opciones.add(botonTruco);
+        } else if (jugadorQuiero == controlador.getJugador()) {
             opciones.remove(botonMazo);
             switch (controlador.getTrucoActual()) {
                 case TRUCO -> {
@@ -322,9 +328,14 @@ public class VistaGrafica implements IVista {
                     opciones.add(botonValecuatro);
                 }
             }
-            opciones.add(botonMazo);
-            opciones.updateUI();
         }
+        if (!envidoCantado && controlador.getNumeroRonda() == 0) {
+            opciones.add(botonPrimerEnvido);
+            opciones.add(botonRealEnvido);
+            opciones.add(botonFaltaEnvido);
+        }
+        opciones.add(botonMazo);
+        opciones.updateUI();
     }
 
     public void jugarCarta(int nroCarta){
