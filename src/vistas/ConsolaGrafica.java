@@ -120,7 +120,7 @@ public class ConsolaGrafica implements IVista {
             }
             // Elige cantar envido
             case "3" -> {
-                if (controlador.getNumeroRonda() != 1){
+                if (controlador.getNumeroRonda() != 0){
                     println("\n Sólo se puede cantar envido en la primera ronda.");
                     mostrarOpcionesRonda();
                 } else if (controlador.getEnvidoCantado()){
@@ -145,7 +145,7 @@ public class ConsolaGrafica implements IVista {
 
         switch (controlador.getNumeroRonda()){
 
-            case 1 -> {
+            case 0 -> {
                 switch (input) {
                     case "1" -> controlador.jugarCarta(0);
                     case "2" -> controlador.jugarCarta(1);
@@ -161,7 +161,7 @@ public class ConsolaGrafica implements IVista {
                 }
             }
 
-            case 2 -> {
+            case 1 -> {
                 switch (input) {
                     case "1" -> controlador.jugarCarta(0);
                     case "2" -> controlador.jugarCarta(1);
@@ -176,7 +176,7 @@ public class ConsolaGrafica implements IVista {
                 }
             }
 
-            case 3 -> {
+            case 2 -> {
                 switch (input) {
                     case "1" -> controlador.jugarCarta(0);
                     case "X", "x" -> {
