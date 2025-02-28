@@ -466,6 +466,12 @@ public class VistaGrafica implements IVista {
 
         String path = "src/vistas/imagenes/cartas/" + cartaJugada + ".png";
 
+        try {
+            doc.insertString(doc.getLength(), "\n" + jugadorActual + " jugó " + cartaJugada + "\n", null);
+        } catch (BadLocationException e) {
+            throw new RuntimeException(e);
+        }
+
         int nroRonda = controlador.getNumeroRonda();
 
         JLabel carta = new JLabel(new ImageIcon(path));
